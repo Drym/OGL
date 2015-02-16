@@ -1,4 +1,4 @@
-package fr.unice.polytech.ogl.islxx;
+package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
 
