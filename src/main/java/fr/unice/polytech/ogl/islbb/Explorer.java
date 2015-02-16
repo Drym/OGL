@@ -3,26 +3,33 @@ package fr.unice.polytech.ogl.islbb;
 import eu.ace_design.island.bot.*;
 
 public class Explorer implements IExplorerRaid {
-	/*
-	initialise notre explorateur
-	 */
+
+    /**
+     * Initialize the explorer with the given objectives.
+     * @param context Objectives given by the arena.
+     */
     @Override
 	public void initialize(String context) {
-	//ne fait rien
+	    // Nothing for the moment.
 	}
-	/*
-	Décide de la  marche à suivre
-	 */
+
+    /**
+     * The AI of the explorer, makes his decisions.
+     * @return Decision taken (JSON format).
+     */
     @Override
 	public String takeDecision() {
-		String fin="{ \"action\": \"stop\" }";
-		return fin;
+		String decision = "{ \"action\": \"stop\" }";
+		return decision;
 	}
-	/*
-	traite les informations retournées par l'action en cours
-	 */
+
+    /**
+     * Get the results returned from the arena, regarding the last decision executed.
+     * @param results Results given by the arena.
+     */
     @Override
 	public void acknowledgeResults(String results) {
-		//ne fait rien
+		//Nothing for the moment.
 	}
+
 }
