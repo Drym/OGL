@@ -11,10 +11,8 @@ public class Jsontest {
         JSONObject obj = new JSONObject();
         Scoot a = new Scoot("N");
 
-        Exit b = new Exit();
-
         System.out.print(a.getobj()+"\n");
-        System.out.print(b.obj+"\n");
+        System.out.println(Exit.exit());
     }
 }
 

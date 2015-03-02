@@ -5,11 +5,12 @@ import org.json.JSONObject;
 /**
  * Created by Lucas on 02/03/2015.
  */
-public class Exit {
-    JSONObject obj;
+public final class Exit {
 
-    public Exit(){
-        obj = new JSONObject();
+    public static JSONObject exit(){
+        JSONObject obj = new JSONObject();
         obj.put("action", "stop");
+
+        return obj;
     }
 }
