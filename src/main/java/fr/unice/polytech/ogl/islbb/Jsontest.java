@@ -10,15 +10,11 @@ public class Jsontest {
     {
         JSONObject obj = new JSONObject();
         Scoot a = new Scoot("N");
-        obj.put("name", "foo");
-        obj.put("num", new Integer(100));
-        obj.put("balance", new Double(1000.21));
-        obj.put("is_vip", new Boolean(true));
 
         Exit b = new Exit();
 
-        System.out.print(a.obj);
-        System.out.print(b.obj);
+        System.out.print(a.getobj()+"\n");
+        System.out.print(b.obj+"\n");
     }
 }
 
