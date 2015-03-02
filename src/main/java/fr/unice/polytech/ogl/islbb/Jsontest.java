@@ -9,11 +9,10 @@ public class Jsontest {
     public static void main(String[] args)
     {
         JSONObject obj = new JSONObject();
-        Scoot a = new Scoot("N");
 
         Exit b = new Exit();
 
-        System.out.print(a.getobj()+"\n");
+        System.out.print(Scoot.scoot("N")+"\n");
         System.out.print(b.obj+"\n");
     }
 }
