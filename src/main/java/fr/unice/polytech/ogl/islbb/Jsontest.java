@@ -15,7 +15,10 @@ public class Jsontest {
         obj.put("balance", new Double(1000.21));
         obj.put("is_vip", new Boolean(true));
 
+        Exit b = new Exit();
+
         System.out.print(a.obj);
+        System.out.print(b.obj);
     }
 }
 
