@@ -18,4 +18,7 @@ public class Scoot {
         obj.put("action", "scoot");
         obj.put("parameters",par);
     }
+    public JSONObject getobj(){
+    return this.obj;
+    }
 }
