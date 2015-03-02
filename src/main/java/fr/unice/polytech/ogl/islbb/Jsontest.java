@@ -9,9 +9,8 @@ public class Jsontest {
     public static void main(String[] args)
     {
         JSONObject obj = new JSONObject();
-        Scoot a = new Scoot("N");
 
-        System.out.print(a.getobj()+"\n");
+        System.out.print(Scoot.scoot("N")+"\n");
         System.out.println(Exit.exit());
     }
 }
