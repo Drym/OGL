@@ -12,6 +12,7 @@ public class Jsontest {
 
         System.out.print(Scoot.scoot("N")+"\n");
         System.out.println(Exit.exit());
+        System.out.println(Land.land("IDDD",10));
     }
 }
 
