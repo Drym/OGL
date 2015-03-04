@@ -3,13 +3,17 @@ package fr.unice.polytech.ogl.islbb;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by Ulysse RICCIO on 02/03/15.
  */
 public class Init {
 
-    private int budget , men, amount;
-    private String creek, ressource;
+    private int budget , men;
+    private String creek;
+    ArrayList<String> ressource = new ArrayList<String>();
+    ArrayList<Integer> amount = new ArrayList<Integer>();
 
     public Init(String str)
     {
@@ -18,9 +22,10 @@ public class Init {
         budget = obj.getInt("budget");
         men = obj.getInt("men");
         JSONArray arr = obj.getJSONArray("objective");
-            System.out.println(arr.getJSONObject(0).getString("resource"));
-            System.out.println(arr.getJSONObject(0).getInt("amount"));
-
+        for (int i = 0; i < arr.length(); i++) {
+            ressource.add(arr.getJSONObject(i).getString("resource"));
+            amount.add(arr.getJSONObject(i).getInt("amount"));
+        }
     }
 
     public JSONObject StrToJSON(String str)
@@ -39,7 +44,7 @@ public class Init {
         return men;
     }
 
-    public int getAmount()
+    public ArrayList<Integer> getAmount()
     {
         return amount;
     }
@@ -49,7 +54,7 @@ public class Init {
         return creek;
     }
 
-    public String getRessource()
+    public ArrayList<String> getRessource()
     {
         return ressource;
     }
@@ -64,12 +69,14 @@ public class Init {
         men = m;
     }
 
+    public void setAmount(ArrayList<Integer> m ) { amount = m; }
+
     public void setCreek( String m)
     {
         creek = m;
     }
 
-    public void setRessource( String m)
+    public void setRessource( ArrayList<String> m)
     {
         ressource = m;
     }
