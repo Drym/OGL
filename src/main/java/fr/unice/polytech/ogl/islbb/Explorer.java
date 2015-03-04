@@ -1,6 +1,7 @@
 package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
+import org.json.JSONObject;
 
 public class Explorer implements IExplorerRaid {
 
@@ -31,5 +32,7 @@ public class Explorer implements IExplorerRaid {
 	public void acknowledgeResults(String results) {
 		//Nothing for the moment.
 	}
+
+
 
 }
