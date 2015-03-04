@@ -28,4 +28,50 @@ public class Init {
         JSONObject obj1 = new JSONObject(str);
         return obj1;
     }
+
+    public int getBudget()
+    {
+        return budget;
+    }
+
+    public int getMen()
+    {
+        return men;
+    }
+
+    public int getAmount()
+    {
+        return amount;
+    }
+
+    public String getCreek()
+    {
+        return creek;
+    }
+
+    public String getRessource()
+    {
+        return ressource;
+    }
+
+    public void setBudget(int m)
+    {
+        budget = m;
+    }
+
+    public void setMen( int m)
+    {
+        men = m;
+    }
+
+    public void setCreek( String m)
+    {
+        creek = m;
+    }
+
+    public void setRessource( String m)
+    {
+        ressource = m;
+    }
+
 }
