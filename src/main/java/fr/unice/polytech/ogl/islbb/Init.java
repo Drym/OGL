@@ -12,8 +12,8 @@ public class Init {
 
     private int budget , men;
     private String creek;
-    ArrayList<String> ressource = new ArrayList<String>();
-    ArrayList<Integer> amount = new ArrayList<Integer>();
+    private ArrayList<String> ressource = new ArrayList<String>();
+    private ArrayList<Integer> amount = new ArrayList<Integer>();
 
     public Init(String str)
     {
@@ -79,6 +79,20 @@ public class Init {
     public void setRessource( ArrayList<String> m)
     {
         ressource = m;
+    }
+
+    /**
+     * Retourne le résultat de la déserialisation du JSON d'initialisation donné par l'arène au lancement, dans une forme plus lisible.
+     * @return
+     */
+    public String initDesc() {
+        String desc = "Creek ID: " + this.creek + "\nAction points: " + this.budget + "\nMens available: " + this.men + "\nObjectives:";
+        for (int i = 0 ; i < this.ressource.size() ; i++) {
+            desc += "\n" + this.ressource.get(i) + ": " + this.amount.get(i);
+        }
+        desc += "\n";
+
+        return desc;
     }
 
 }
