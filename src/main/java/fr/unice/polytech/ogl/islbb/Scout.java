@@ -7,10 +7,10 @@ import java.util.LinkedList;
 /**
  * Created by user on 02/03/2015.
  */
-public final class Scoot {
-    public Scoot() {
+public final class Scout {
+    public Scout() {
     }
-    public static JSONObject scoot(String dir){
+    public static JSONObject scout(String dir){
         JSONObject obj = new JSONObject();
         LinkedHashMap par = new LinkedHashMap();
         par.put("direction",dir);

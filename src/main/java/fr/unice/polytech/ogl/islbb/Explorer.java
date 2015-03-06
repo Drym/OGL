@@ -1,9 +1,11 @@
 package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
-import org.json.JSONObject;
 
 public class Explorer implements IExplorerRaid {
+
+    public Init explorerInitialization;
+    public int decision;
 
     /**
      * Initialize the explorer with the given objectives.
@@ -11,7 +13,8 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
 	public void initialize(String context) {
-	    // Nothing for the moment.
+        this.explorerInitialization = new Init(context);
+        this.decision = 0;
 	}
 
     /**
@@ -20,8 +23,16 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
 	public String takeDecision() {
-		String decision = "{ \"action\": \"stop\" }";
-		return decision;
+        if (this.decision == 0) {
+            this.decision++;
+            return Land.land(this.explorerInitialization.getCreek(), 1).toString();
+        }
+        else if (this.decision == 1) {
+            this.decision++;
+            return Scout.scout("N").toString();
+        }
+        this.decision = 0;
+        return Exit.exit().toString();
 	}
 
     /**
