@@ -21,7 +21,7 @@ public class Exploring {
 
     }
 
-    public JSONObject explore()
+    public static JSONObject explore()
     {
         JSONObject obj = new JSONObject();
         obj.put("action", "explore");
