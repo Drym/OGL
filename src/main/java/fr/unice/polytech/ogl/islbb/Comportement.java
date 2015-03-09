@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 /**
  * Created by user on 07/03/2015.
+ * Retour des actions réalisées par le robot
  */
 public class Comportement {
     String action;
