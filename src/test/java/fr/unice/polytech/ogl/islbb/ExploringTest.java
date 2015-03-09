@@ -1,4 +1,4 @@
-package java.fr.unice.polytech.ogl.islbb;
+package fr.unice.polytech.ogl.islbb;
 import junit.framework.*;
 
 
