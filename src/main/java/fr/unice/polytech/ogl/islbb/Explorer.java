@@ -47,6 +47,4 @@ public class Explorer implements IExplorerRaid {
 		//Nothing for the moment.
 	}
 
-
-
 }

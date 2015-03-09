@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by Ulysse on 04/03/15.
  * Classe permetant d'automatiser l'action exploring pour l'explorer.
  */
-public class Exploring {
+public class Exploring extends Command {
 
     private String status;
     private int cost;

@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * Created by Thibault on 02/03/2015.
  * Classe permetant d'automatiser l'action scout pour l'explorer.
  */
-public final class Scout {
+public final class Scout extends Command {
     public Scout() {
     }
     public static JSONObject scout(String dir){
