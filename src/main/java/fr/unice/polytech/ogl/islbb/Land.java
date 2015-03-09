@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 
 /**
  * Created by Lucas on 02/03/2015.
+ * Classe permetant d'automatiser l'action land pour l'explorer.
  */
 public final class Land {
 
