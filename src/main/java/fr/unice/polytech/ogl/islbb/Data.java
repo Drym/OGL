@@ -1,4 +1,5 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class Data {
         cardinaux.add("E");
         cardinaux.add("W");
     }
-    public String getcardinaux(int i){
+    public String getCardinaux(int i){
         return this.cardinaux.get(i);
     }
 }

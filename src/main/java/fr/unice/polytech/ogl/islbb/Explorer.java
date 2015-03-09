@@ -40,7 +40,7 @@ public class Explorer implements IExplorerRaid {
         }
         while(!hascout){
             card++;
-            Scout.scout(data.getcardinaux(card-1));
+            Scout.scout(data.getCardinaux(card - 1));
         }
         if (this.decision == 0) {
             this.decision++;
@@ -61,7 +61,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String results) {
         while(!hascout){
-            comport.getscout(data.getcardinaux(card-1));
+            comport.getscout(data.getCardinaux(card-1));
         }
     }
 
