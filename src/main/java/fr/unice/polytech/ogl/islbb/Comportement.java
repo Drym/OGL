@@ -11,9 +11,9 @@ import java.util.HashMap;
  * Retour des actions réalisées par le robot
  */
 public class Comportement {
-    HashMap<String,ArrayList<String>>resultscoot;
-    String action;
-    JSONObject obj;
+    HashMap<String,ArrayList<String>>resultscoot;//résultat des scoots ex{"N",{"WOOD","FLOWER"};...}
+    String action; //dernière action réalise
+    JSONObject obj;//résultat envoyé par Acknoledgeresult
 
     public Comportement(){
         resultscoot=new HashMap<String,ArrayList<String>>();
@@ -25,13 +25,18 @@ public class Comportement {
         obj = new JSONObject();
         action=str;
     }
-
+/*
+Renvoie true si staut=OK
+ */
     public Boolean getStatus(){
         if(obj.getString("status").equals("OK")) {
             return true;
         }
         else return false;
     }
+    /*
+    Traite les informations des scoot et les inserre dans la HASHMAP
+     */
     public void getscout(String str){
         int i;
         ArrayList<String>result=new ArrayList<String>();
@@ -43,6 +48,10 @@ public class Comportement {
             resultscoot.put(str,result);
         }
     }
+
+    /*
+    renvoie la quentité de ressource
+     */
     public int getresult(){
         int result;
         //try
@@ -50,10 +59,15 @@ public class Comportement {
         result=Integer.valueOf(num);
         return result;
     }
-
+    /*
+    setters
+     */
     public void setAction(String str){
         this.action=str;
     }
+    /*
+    setters de notre retour d'action
+     */
     public void setObj(String str){
         obj=new JSONObject(str);
     }

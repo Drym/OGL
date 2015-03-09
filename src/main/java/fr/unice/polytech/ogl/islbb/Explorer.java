@@ -34,7 +34,7 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
     public String takeDecision() {
-        if (card==5){
+        if (card>4){
             hascout=true;
             card=0;
         }
@@ -61,6 +61,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String results) {
         while(!hascout){
+            comport.setObj(results);
             comport.getscout(data.getCardinaux(card-1));
         }
     }
