@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Ulysse RICCIO on 09/03/15.
+ * Classe de test pour la classe Exploring
  */
 public class ExploringTest extends TestCase  {
 
