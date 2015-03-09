@@ -5,7 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 /**
- * Created by user on 02/03/2015.
+ * Created by Thibault on 02/03/2015.
+ * Classe permetant d'automatiser l'action scout pour l'explorer.
  */
 public final class Scout {
     public Scout() {
