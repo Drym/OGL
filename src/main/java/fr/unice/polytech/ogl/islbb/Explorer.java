@@ -2,6 +2,9 @@ package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
 
+/**
+ * Classe qui implemente les différentes actions du robot
+ */
 public class Explorer implements IExplorerRaid {
 
     public Init explorerInitialization;
