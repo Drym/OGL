@@ -2,7 +2,7 @@ package java.fr.unice.polytech.ogl.islbb;
 import junit.framework.*;
 
 
-import main.java.fr.unice.polytech.ogl.islbb.Exploring;
+import fr.unice.polytech.ogl.islbb.Exploring;
 import org.json.JSONObject;
 
 /**

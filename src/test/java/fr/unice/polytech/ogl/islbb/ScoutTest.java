@@ -1,6 +1,6 @@
-package java.fr.unice.polytech.ogl.islbb;
+package fr.unice.polytech.ogl.islbb;
 
-import main.java.fr.unice.polytech.ogl.islbb.*;
+import fr.unice.polytech.ogl.islbb.*;
 
 /**
  * Created by QWPHR on 09/03/2015.

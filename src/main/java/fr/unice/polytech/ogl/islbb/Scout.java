@@ -1,4 +1,4 @@
-package main.java.fr.unice.polytech.ogl.islbb;
+package fr.unice.polytech.ogl.islbb;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
