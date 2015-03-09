@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by user on 07/03/2015.
@@ -52,12 +54,32 @@ Renvoie true si staut=OK
     /*
     renvoie la quentité de ressource
      */
-    public int getresult(){
+    public int Exploitresult(){
         int result;
         //try
         String num=obj.getJSONObject("extras").getString("amount");
         result=Integer.valueOf(num);
         return result;
+    }
+
+    public String takeDirection(){
+        String cle;
+        ArrayList<String>liste=new ArrayList<String>();
+        HashMap<String,ArrayList<String>>trie=new HashMap<String,ArrayList<String>>();
+        Set cles = resultscoot.keySet();
+        Iterator it = cles.iterator();
+        while (it.hasNext()){
+            cle=(String)it.next();
+            liste=resultscoot.get(cle);
+            if(!liste.contains("WATER")&&liste.contains("WOOD")) {
+                trie.put(cle, liste);
+                if (!liste.contains("WATER")) {
+                    trie.put(cle, liste);
+                }
+            }
+        }if(trie.keySet().iterator().next()!=null)
+            return trie.keySet().iterator().next();
+            else return "rien";
     }
     /*
     setters
