@@ -1,4 +1,4 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
 
 /**
  * Created by Ulysse on 09/03/15.
