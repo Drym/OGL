@@ -1,12 +1,13 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
 
 import org.json.JSONObject;
 import java.util.LinkedHashMap;
 
 /**
  * Created by Lucas on 02/03/2015.
+ * Classe permetant d'automatiser l'action land pour l'explorer.
  */
-public final class Land {
+public final class Land extends Command {
 
     public static JSONObject land( String id, int people){
         JSONObject obj = new JSONObject();

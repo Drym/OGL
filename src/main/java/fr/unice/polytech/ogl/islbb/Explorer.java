@@ -1,7 +1,10 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
 
+/**
+ * Classe qui implemente les différentes actions du robot
+ */
 public class Explorer implements IExplorerRaid {
 
     public Init explorerInitialization;
@@ -61,7 +64,5 @@ public class Explorer implements IExplorerRaid {
             comport.getscout(data.getcardinaux(card-1));
         }
     }
-
-
 
 }

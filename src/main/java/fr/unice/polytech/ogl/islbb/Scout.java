@@ -1,13 +1,13 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 
 /**
- * Created by user on 02/03/2015.
+ * Created by Thibault on 02/03/2015.
+ * Classe permetant d'automatiser l'action scout pour l'explorer.
  */
-public final class Scout {
+public final class Scout extends Command {
     public Scout() {
     }
     public static JSONObject scout(String dir){

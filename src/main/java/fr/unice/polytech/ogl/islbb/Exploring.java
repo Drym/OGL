@@ -1,4 +1,4 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,8 +7,9 @@ import java.util.ArrayList;
 
 /**
  * Created by Ulysse on 04/03/15.
+ * Classe permetant d'automatiser l'action exploring pour l'explorer.
  */
-public class Exploring {
+public class Exploring extends Command {
 
     private String status;
     private int cost;

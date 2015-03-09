@@ -1,4 +1,4 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 /**
  * Created by user on 07/03/2015.
+ * Retour des actions réalisées par le robot
  */
 public class Comportement {
     HashMap<String,ArrayList<String>>resultscoot;

@@ -1,4 +1,4 @@
-package fr.unice.polytech.ogl.islbb;
+package main.java.fr.unice.polytech.ogl.islbb;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,8 +7,9 @@ import java.util.ArrayList;
 
 /**
  * Created by Ulysse RICCIO on 02/03/15.
+ * Classe permetant d'initaliser les informations envoyées par le serveur : budget, men, creek, ressource ...
  */
-public class Init {
+public class Init extends Command {
 
     private int budget , men;
     private String creek;
