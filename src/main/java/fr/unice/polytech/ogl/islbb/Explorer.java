@@ -13,6 +13,7 @@ public class Explorer implements IExplorerRaid {
     public Boolean hascout;
     public int card;
     public Comportement comport;
+    String direction;
 
     /**
      * Initialize the explorer with the given objectives.
@@ -28,6 +29,7 @@ public class Explorer implements IExplorerRaid {
         card = 0;
         this.explorerInitialization = new Init(context);
         this.decision = 0;
+        direction="N";
     }
 
     /**
@@ -37,21 +39,28 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
     public String takeDecision() {
+        if(card<4){
+            hascout=false;
+        }
         if (this.decision == 0) {
             this.decision++;
             return Land.land(this.explorerInitialization.getCreek(), 1).toString();
         }
-        if (card > 4) {
-            hascout = true;
+        if (this.decision == 20) {
+            return Exit.exit().toString();
+        }
+        if (hascout) {
+            decision++;
             card = 0;
+            return Move.move(direction).toString();
         }
         if (!hascout) {
+            decision++;
             card++;
+            if(card==4){
+                hascout=true;
+            }
             return Scout.scout(data.getCardinaux(card - 1)).toString();
-        }
-        if (this.decision == 1) {
-            this.decision++;
-            return Scout.scout("N").toString();
         }
         return Exit.exit().toString();
     }
@@ -66,7 +75,10 @@ public class Explorer implements IExplorerRaid {
         if (this.decision != 0) {
             while (!hascout) {
                 comport.setObj(results);
-                comport.getscout(data.getCardinaux(card - 1));
+                comport.getscout(results,data.getCardinaux(card - 1));
+            }
+            if(hascout){
+                direction=comport.takeDirection();
             }
         }
 

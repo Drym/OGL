@@ -39,15 +39,16 @@ Renvoie true si staut=OK
     /*
     Traite les informations des scoot et les inserre dans la HASHMAP
      */
-    public void getscout(String str){
+    public void getscout(String str,String dir){
         int i;
+        this.setObj(str);
         ArrayList<String>result=new ArrayList<String>();
         if(this.getStatus()){
             JSONArray tab=obj.getJSONObject("extras").getJSONArray("resources");
             for(i=0;i<tab.length();i++){
                 result.add(tab.getString(i));
             }
-            resultscoot.put(str,result);
+            resultscoot.put(dir,result);
         }
     }
 
@@ -66,20 +67,26 @@ Renvoie true si staut=OK
         String cle;
         ArrayList<String>liste=new ArrayList<String>();
         HashMap<String,ArrayList<String>>trie=new HashMap<String,ArrayList<String>>();
+        HashMap<String,ArrayList<String>>bois=new HashMap<String,ArrayList<String>>();
         Set cles = resultscoot.keySet();
         Iterator it = cles.iterator();
         while (it.hasNext()){
             cle=(String)it.next();
             liste=resultscoot.get(cle);
             if(!liste.contains("WATER")&&liste.contains("WOOD")) {
-                trie.put(cle, liste);
+                bois.put(cle, liste);
+            }
                 if (!liste.contains("WATER")) {
                     trie.put(cle, liste);
                 }
-            }
-        }if(trie.keySet().iterator().next()!=null)
-            return trie.keySet().iterator().next();
-            else return "rien";
+        }
+        if(!trie.keySet().iterator().hasNext()){
+            liste.add("WATER");
+            trie.put("S",liste);
+        }
+        if(bois.keySet().iterator().hasNext())
+            return (String)bois.keySet().iterator().next().toString();
+            else return trie.keySet().iterator().next().toString();
     }
     /*
     setters
@@ -92,6 +99,26 @@ Renvoie true si staut=OK
      */
     public void setObj(String str){
         obj=new JSONObject(str);
+    }
+
+    public static void main(String[] args)
+    {
+        Comportement test=new Comportement();
+        String r1="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
+        String r2="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
+        String r3="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WATER\"],\"altitude\":-23}}";
+        String r4="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WOOD\"],\"altitude\":-23}}";
+        test.getscout(r1,"N");
+        test.getscout(r2,"S");
+        test.getscout(r3,"E");
+        test.getscout(r4,"O");
+        Set cles = test.resultscoot.keySet();
+        Iterator it = cles.iterator();
+        while (it.hasNext()){
+            String clef = (String)it.next();
+            System.out.println(test.resultscoot.get(clef));
+        }
+        System.out.println(test.takeDirection());
     }
 }
 
