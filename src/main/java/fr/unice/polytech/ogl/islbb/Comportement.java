@@ -14,20 +14,21 @@ import java.util.Set;
  */
 
 public class Comportement {
-    HashMap<String,ArrayList<String>>resultscoot;//résultat des scoots ex{"N",{"WOOD","FLOWER"};...}
-    String action; //dernière action réalise
-    JSONObject obj;//résultat envoyé par Acknoledgeresult
+
+    HashMap<String,ArrayList<String>> scoutResults; //résultat des scoots ex{"N",{"WOOD","FLOWER"};...}
+    String action; //dernière action réalisée
+    JSONObject obj; //résultat envoyé par Acknoledgeresult
     String lastDirection; //dernière direction prise
 
     public Comportement(){
-        resultscoot=new HashMap<String,ArrayList<String>>();
+        scoutResults = new HashMap<String,ArrayList<String>>();
         obj = new JSONObject();
-        action="";
+        action = "";
     }
     public Comportement(String str){
-        resultscoot=new HashMap<String,ArrayList<String>>();
+        scoutResults = new HashMap<String,ArrayList<String>>();
         obj = new JSONObject();
-        action=str;
+        action = str;
     }
 /*
 Renvoie true si staut=OK
@@ -41,10 +42,10 @@ Renvoie true si staut=OK
     /*
     Traite les informations des scoot et les inserre dans la HASHMAP
      */
-    public void getscout(String str,String dir){
+    public void getScout(String str, String dir){
         int i;
-        if(resultscoot.size() == 4) {
-            resultscoot.clear();
+        if(scoutResults.size() == 4) {
+            scoutResults.clear();
         }
         this.setObj(str);
         ArrayList<String>result=new ArrayList<String>();
@@ -53,31 +54,31 @@ Renvoie true si staut=OK
             for(i=0;i<tab.length();i++){
                 result.add(tab.getString(i));
             }
-            resultscoot.put(dir,result);
+            scoutResults.put(dir, result);
         }
     }
 
     /*
     renvoie la quantité de ressource
      */
-    public int Exploitresult(){
+    public int getExploitAmount(){
         int result;
         //try
-        String num=obj.getJSONObject("extras").getString("amount");
+        String num = obj.getJSONObject("extras").getString("amount");
         result=Integer.valueOf(num);
         return result;
     }
 
     public String takeDirection(){
         String cle;
-        ArrayList<String>liste=new ArrayList<String>();
-        HashMap<String,ArrayList<String>>trie=new HashMap<String,ArrayList<String>>();
-        HashMap<String,ArrayList<String>>bois=new HashMap<String,ArrayList<String>>();
-        Set cles = resultscoot.keySet();
+        ArrayList<String>liste = new ArrayList<String>();
+        HashMap<String,ArrayList<String>>trie = new HashMap<String,ArrayList<String>>();
+        HashMap<String,ArrayList<String>>bois = new HashMap<String,ArrayList<String>>();
+        Set cles = scoutResults.keySet();
         Iterator it = cles.iterator();
         while (it.hasNext()){
             cle=(String)it.next();
-            liste=resultscoot.get(cle);
+            liste= scoutResults.get(cle);
             if(!liste.contains("WATER")&&liste.contains("WOOD")) {
                 bois.put(cle, liste);
             }
@@ -93,8 +94,8 @@ Renvoie true si staut=OK
             return (String)bois.keySet().iterator().next().toString();
             else return trie.keySet().iterator().next().toString();
     }
-    public boolean haswood(String direction){
-        if (resultscoot.get(direction).contains("WOOD")){
+    public boolean hasWood(String direction){
+        if (scoutResults.get(direction).contains("WOOD")){
             return true;
         }
         else return false;
@@ -120,20 +121,20 @@ Renvoie true si staut=OK
         String r3="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WATER\"],\"altitude\":-23}}";
         String r4="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WOOD\"],\"altitude\":-23}}";
         //String r5="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WOOD\"],\"altitude\":-23}}";
-        test.getscout(r1,"N");
-        test.getscout(r2,"S");
-        test.getscout(r3,"E");
-        test.getscout(r4,"O");
+        test.getScout(r1, "N");
+        test.getScout(r2, "S");
+        test.getScout(r3, "E");
+        test.getScout(r4, "O");
         //test.getscout(r5,"N");
-        Set cles = test.resultscoot.keySet();
+        Set cles = test.scoutResults.keySet();
         Iterator it = cles.iterator();
         while (it.hasNext()){
             String clef = (String)it.next();
-            System.out.println(test.resultscoot.get(clef));
+            System.out.println(test.scoutResults.get(clef));
         }
-        System.out.println(test.resultscoot);
+        System.out.println(test.scoutResults);
         System.out.println(test.takeDirection());
-        System.out.println(test.haswood(test.takeDirection()));
+        System.out.println(test.hasWood(test.takeDirection()));
     }
 }
 

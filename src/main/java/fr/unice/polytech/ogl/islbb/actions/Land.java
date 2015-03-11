@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
  */
 public final class Land extends Command {
 
-    public static JSONObject land( String id, int people){
+    public static String land( String id, int people){
         JSONObject obj = new JSONObject();
         LinkedHashMap param = new LinkedHashMap();
 
@@ -19,7 +19,7 @@ public final class Land extends Command {
         obj.put("action","land");
         obj.put("parameters",param);
 
-        return obj;
+        return obj.toString();
     }
 
 }

@@ -9,15 +9,14 @@ import java.util.ArrayList;
  * Created by Ulysse RICCIO on 02/03/15.
  * Classe permetant d'initaliser les informations envoyées par le serveur : budget, men, creek, ressource ...
  */
-public class Init extends Command {
+public class Init {
 
     private int budget , men;
     private String creek;
     private ArrayList<String> ressource = new ArrayList<String>();
     private ArrayList<Integer> amount = new ArrayList<Integer>();
 
-    public Init(String str)
-    {
+    public Init(String str) {
         JSONObject obj = new JSONObject(str);
         creek = obj.getString("creek");
         budget = obj.getInt("budget");
@@ -29,8 +28,7 @@ public class Init extends Command {
         }
     }
 
-    public JSONObject StrToJSON(String str)
-    {
+    public JSONObject StrToJSON(String str) {
         JSONObject obj1 = new JSONObject(str);
         return obj1;
     }

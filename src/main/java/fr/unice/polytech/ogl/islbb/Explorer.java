@@ -7,11 +7,12 @@ import fr.unice.polytech.ogl.islbb.actions.*;
  * Classe qui implemente les différentes actions du robot
  */
 public class Explorer implements IExplorerRaid {
-    public Boolean hasmoove;
+
+    public Boolean hasMoved;
     public Init explorerInitialization;
     public int decision;
     public Data data;
-    public Boolean hascout;
+    public Boolean hasScouted;
     public int card;
     public Comportement comport;
     String direction;
@@ -30,9 +31,9 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void initialize(String context) {
         data = new Data();
-        hasmoove=false;
+        hasMoved=false;
         decision = 0;
-        hascout = false;
+        hasScouted = false;
         comport = new Comportement();
         card = 0;
         this.explorerInitialization = new Init(context);
@@ -55,27 +56,27 @@ public class Explorer implements IExplorerRaid {
             this.decision++;
             return Land.land(this.explorerInitialization.getCreek(), 1).toString();
         }
-        if(hasmoove&&comport.haswood(direction)){
-            hasmoove=false;
+        if(hasMoved&&comport.hasWood(direction)){
+            hasMoved=false;
             decision++;
-            return Exploiting.exploit("WOOD").toString();
+            return Exploit.exploit("WOOD").toString();
         }
-        hasmoove=false;
+        hasMoved=false;
         if(card<4){
-            hascout=false;
+            hasScouted =false;
         }
         if (this.decision == NB_MOVE_MAX) {
             return Exit.exit().toString();
         }
-        if (hascout) {
+        if (hasScouted) {
             decision++;
             card = 0;
-            hasmoove=true;
+            hasMoved=true;
             //On stock la dernière direction
             lastDirection = direction;
             return Move.move(direction).toString();
         }
-        if (!hascout) {
+        if (!hasScouted) {
             decision++;
             card++;
             /*
@@ -83,7 +84,7 @@ public class Explorer implements IExplorerRaid {
                 return null;
             }
             */
-            return Scout.scout(data.getCardinaux(card - 1)).toString();
+            return Scout.scout(data.getCardinaux(card - 1));
         }
         return Exit.exit().toString();
     }
@@ -96,14 +97,14 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String results) {
         if (this.decision != 1) {
-            if(!hascout) {
+            if(!hasScouted) {
                 comport.setObj(results);
-                comport.getscout(results,data.getCardinaux(card - 1));
+                comport.getScout(results,data.getCardinaux(card - 1));
                 if(card>=4){
-                    hascout=true;
+                    hasScouted =true;
                 }
             }
-            if(hascout&&!hasmoove){
+            if(hasScouted &&!hasMoved){
                 direction=comport.takeDirection();
             }
             /*
@@ -116,8 +117,8 @@ public class Explorer implements IExplorerRaid {
             }
             */
             //Compteur de ressource exploité au total
-            if (comport.Exploitresult() > 0 ) {
-                resultExploit = resultExploit + comport.Exploitresult();
+            if (comport.getExploitAmount() > 0 ) {
+                resultExploit = resultExploit + comport.getExploitAmount();
             }
         }
 

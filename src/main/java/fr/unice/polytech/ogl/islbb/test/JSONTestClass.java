@@ -19,7 +19,7 @@ public class JSONTestClass {
         Init initClassTest = new Init(initializationTest);
         System.out.println(initClassTest.initDesc());
         System.out.println(Exit.exit().toString());
-        System.out.println(Scout.scout("N").toString());
+        System.out.println(Scout.scout("N"));
         System.out.println(Land.land(initClassTest.getCreek(), 1));
 
     }

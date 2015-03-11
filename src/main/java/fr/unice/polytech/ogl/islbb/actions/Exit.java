@@ -9,10 +9,11 @@ import org.json.JSONObject;
  */
 public final class Exit extends Command {
 
-    public static JSONObject exit(){
+    public static String exit(){
         JSONObject obj = new JSONObject();
         obj.put("action", "stop");
 
-        return obj;
+        return obj.toString();
     }
+
 }
