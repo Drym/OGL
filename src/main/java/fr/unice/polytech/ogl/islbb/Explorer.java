@@ -6,7 +6,7 @@ import eu.ace_design.island.bot.*;
  * Classe qui implemente les différentes actions du robot
  */
 public class Explorer implements IExplorerRaid {
-
+    public Boolean hasmoove;
     public Init explorerInitialization;
     public int decision;
     public Data data;
@@ -23,6 +23,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void initialize(String context) {
         data = new Data();
+        hasmoove=false;
         decision = 0;
         hascout = false;
         comport = new Comportement();
@@ -39,12 +40,18 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
     public String takeDecision() {
-        if(card<4){
-            hascout=false;
-        }
         if (this.decision == 0) {
             this.decision++;
             return Land.land(this.explorerInitialization.getCreek(), 1).toString();
+        }
+        if(hasmoove&&comport.haswood(direction)){
+            hasmoove=false;
+            decision++;
+            return Exploiting.exploit("WOOD").toString();
+        }
+        hasmoove=false;
+        if(card<4){
+            hascout=false;
         }
         if (this.decision == 20) {
             return Exit.exit().toString();
@@ -52,14 +59,12 @@ public class Explorer implements IExplorerRaid {
         if (hascout) {
             decision++;
             card = 0;
+            hasmoove=true;
             return Move.move(direction).toString();
         }
         if (!hascout) {
             decision++;
             card++;
-            if(card==4){
-                hascout=true;
-            }
             return Scout.scout(data.getCardinaux(card - 1)).toString();
         }
         return Exit.exit().toString();
@@ -76,8 +81,11 @@ public class Explorer implements IExplorerRaid {
             while (!hascout) {
                 comport.setObj(results);
                 comport.getscout(results,data.getCardinaux(card - 1));
+                if(card>=4){
+                    hascout=true;
+                }
             }
-            if(hascout){
+            if(hascout&&!hasmoove){
                 direction=comport.takeDirection();
             }
         }

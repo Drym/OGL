@@ -41,6 +41,9 @@ Renvoie true si staut=OK
      */
     public void getscout(String str,String dir){
         int i;
+        if(resultscoot.size()==4) {
+            resultscoot.clear();
+        }
         this.setObj(str);
         ArrayList<String>result=new ArrayList<String>();
         if(this.getStatus()){
@@ -82,11 +85,17 @@ Renvoie true si staut=OK
         }
         if(!trie.keySet().iterator().hasNext()){
             liste.add("WATER");
-            trie.put("S",liste);
+            trie.put("N",liste);
         }
         if(bois.keySet().iterator().hasNext())
             return (String)bois.keySet().iterator().next().toString();
             else return trie.keySet().iterator().next().toString();
+    }
+    public boolean haswood(String direction){
+        if (resultscoot.get(direction).contains("WOOD")){
+            return true;
+        }
+        else return false;
     }
     /*
     setters
@@ -108,17 +117,21 @@ Renvoie true si staut=OK
         String r2="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
         String r3="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WATER\"],\"altitude\":-23}}";
         String r4="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WOOD\"],\"altitude\":-23}}";
+        //String r5="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WOOD\"],\"altitude\":-23}}";
         test.getscout(r1,"N");
         test.getscout(r2,"S");
         test.getscout(r3,"E");
         test.getscout(r4,"O");
+        //test.getscout(r5,"N");
         Set cles = test.resultscoot.keySet();
         Iterator it = cles.iterator();
         while (it.hasNext()){
             String clef = (String)it.next();
             System.out.println(test.resultscoot.get(clef));
         }
+        System.out.println(test.resultscoot);
         System.out.println(test.takeDirection());
+        System.out.println(test.haswood(test.takeDirection()));
     }
 }
 
