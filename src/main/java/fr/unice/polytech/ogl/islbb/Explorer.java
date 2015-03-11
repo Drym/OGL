@@ -116,7 +116,7 @@ public class Explorer implements IExplorerRaid {
             }
             */
             //Compteur de ressource exploité au total
-            if (resultExploit != comport.Exploitresult()) {
+            if (comport.Exploitresult() > 0 ) {
                 resultExploit = resultExploit + comport.Exploitresult();
             }
         }
