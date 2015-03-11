@@ -78,7 +78,7 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void acknowledgeResults(String results) {
         if (this.decision != 0) {
-            while (!hascout) {
+            if(!hascout) {
                 comport.setObj(results);
                 comport.getscout(results,data.getCardinaux(card - 1));
                 if(card>=4){
