@@ -1,7 +1,7 @@
 package fr.unice.polytech.ogl.islbb.test;
 
 
-import fr.unice.polytech.ogl.islbb.Init;
+import fr.unice.polytech.ogl.islbb.Initialization;
 import fr.unice.polytech.ogl.islbb.actions.Exit;
 import fr.unice.polytech.ogl.islbb.actions.Land;
 import fr.unice.polytech.ogl.islbb.actions.Scout;
@@ -16,11 +16,11 @@ public class JSONTestClass {
         String initializationTest = " { \"creek\": \"creek_id\", \"budget\": 600, \"men\": 50, \"objective\": [ { \"resource\": \"WOOD\", \"amount\": 600 }, { \"resource\": \"FUCKS GIVEN\", \"amount\": 0 } ] }";
 
 
-        Init initClassTest = new Init(initializationTest);
-        System.out.println(initClassTest.initDesc());
+        Initialization initializationClassTest = new Initialization(initializationTest);
+        System.out.println(initializationClassTest.initDesc());
         System.out.println(Exit.exit().toString());
         System.out.println(Scout.scout("N"));
-        System.out.println(Land.land(initClassTest.getCreek(), 1));
+        System.out.println(Land.land(initializationClassTest.getCreek(), 1));
 
     }
 }

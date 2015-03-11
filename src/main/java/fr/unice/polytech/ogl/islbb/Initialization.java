@@ -7,23 +7,23 @@ import java.util.ArrayList;
 
 /**
  * Created by Ulysse RICCIO on 02/03/15.
- * Classe permetant d'initaliser les informations envoyées par le serveur : budget, men, creek, ressource ...
+ * Classe permetant d'initaliser les informations envoyées par le serveur : budget, men, creek, resource ...
  */
-public class Init {
+public class Initialization {
 
     private int budget , men;
     private String creek;
-    private ArrayList<String> ressource = new ArrayList<String>();
+    private ArrayList<String> resource = new ArrayList<String>();
     private ArrayList<Integer> amount = new ArrayList<Integer>();
 
-    public Init(String str) {
+    public Initialization(String str) {
         JSONObject obj = new JSONObject(str);
         creek = obj.getString("creek");
         budget = obj.getInt("budget");
         men = obj.getInt("men");
         JSONArray arr = obj.getJSONArray("objective");
         for (int i = 0; i < arr.length(); i++) {
-            ressource.add(arr.getJSONObject(i).getString("resource"));
+            resource.add(arr.getJSONObject(i).getString("resource"));
             amount.add(arr.getJSONObject(i).getInt("amount"));
         }
     }
@@ -53,9 +53,9 @@ public class Init {
         return creek;
     }
 
-    public ArrayList<String> getRessource()
+    public ArrayList<String> getResource()
     {
-        return ressource;
+        return resource;
     }
 
     public void setBudget(int m)
@@ -75,9 +75,9 @@ public class Init {
         creek = m;
     }
 
-    public void setRessource( ArrayList<String> m)
+    public void setResource(ArrayList<String> m)
     {
-        ressource = m;
+        resource = m;
     }
 
     /**
@@ -86,8 +86,8 @@ public class Init {
      */
     public String initDesc() {
         String desc = "Creek ID: " + this.creek + "\nAction points: " + this.budget + "\nMens available: " + this.men + "\nObjectives:";
-        for (int i = 0 ; i < this.ressource.size() ; i++) {
-            desc += "\n" + this.ressource.get(i) + ": " + this.amount.get(i);
+        for (int i = 0 ; i < this.resource.size() ; i++) {
+            desc += "\n" + this.resource.get(i) + ": " + this.amount.get(i);
         }
         desc += "\n";
 

@@ -17,17 +17,25 @@ public class IslandMap {
         this.islandMap = new HashMap<String, IslandTile>();
     }
 
+    public void addTile(String coordinates, IslandTile newTile) {
+        this.islandMap.put(coordinates, newTile);
+    }
+
     public void addTile(int newX, int newY, IslandTile newTile) {
         String coordinates = newX + "-" + newY;
         this.islandMap.put(coordinates, newTile);
     }
 
     public IslandTile getInformation(String coordinates) {
-        return this.islandMap.get("coordinates");
+        return this.islandMap.get(coordinates);
     }
 
     public IslandTile getInformation(int x, int y) {
         return this.islandMap.get(x + "-" + y);
+    }
+
+    public boolean isRegistered(int x, int y) {
+        return this.islandMap.containsKey(x + "-" + y);
     }
 
 }

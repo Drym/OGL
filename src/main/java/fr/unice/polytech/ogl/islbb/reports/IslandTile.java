@@ -36,8 +36,31 @@ public class IslandTile {
         this.pois = exploredPOIs;
     }
 
+
+    /**
+     * Méthode pour mettre à jour une case déjà Scout.
+     */
     public void exploreTile(List<Resource> exploredResources, List<POI> exploredPOIs) {
         this.resources = exploredResources;
         this.pois = exploredPOIs;
+    }
+
+    /**
+     * Méthode pour savoir si une ressource est présente sur la case.
+     */
+    public Resource hasResource(String aResource) {
+        for (Resource currentResource : this.resources) {
+            if (currentResource.getType().equals(aResource)) {
+                return currentResource;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * On supprime la ressource de la case (après une exploitation)
+     */
+    public void removeResource(String aResource) {
+        this.resources.remove(this.resources.indexOf(aResource));
     }
 }
