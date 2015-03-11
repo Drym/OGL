@@ -15,6 +15,12 @@ public class Explorer implements IExplorerRaid {
     public int card;
     public Comportement comport;
     String direction;
+    static public int NB_MOVE_MAX = 20;
+    public String lastDirection;
+    public int resultExploit = 0;
+    public Init init;
+    //Montant de la première ressource a exploiter pour finir la mission
+    public int exploitMission1 =  init.getAmount().get(1);
 
     /**
      * Initialize the explorer with the given objectives.
@@ -41,6 +47,10 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
     public String takeDecision() {
+        //Si nous avons récolté toutes les ressources demandées
+        if(resultExploit == exploitMission1) {
+            return Exit.exit().toString();
+        }
         if (this.decision == 0) {
             this.decision++;
             return Land.land(this.explorerInitialization.getCreek(), 1).toString();
@@ -54,18 +64,25 @@ public class Explorer implements IExplorerRaid {
         if(card<4){
             hascout=false;
         }
-        if (this.decision == 20) {
+        if (this.decision == NB_MOVE_MAX) {
             return Exit.exit().toString();
         }
         if (hascout) {
             decision++;
             card = 0;
             hasmoove=true;
+            //On stock la dernière direction
+            lastDirection = direction;
             return Move.move(direction).toString();
         }
         if (!hascout) {
             decision++;
             card++;
+            /*
+            if(lastDirection.equals((data.getCardinaux(card)))) {
+                return null;
+            }
+            */
             return Scout.scout(data.getCardinaux(card - 1)).toString();
         }
         return Exit.exit().toString();
@@ -78,7 +95,7 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
     public void acknowledgeResults(String results) {
-        if (this.decision != 0) {
+        if (this.decision != 1) {
             if(!hascout) {
                 comport.setObj(results);
                 comport.getscout(results,data.getCardinaux(card - 1));
@@ -89,7 +106,34 @@ public class Explorer implements IExplorerRaid {
             if(hascout&&!hasmoove){
                 direction=comport.takeDirection();
             }
+            /*
+            if(hasmoove) {
+                comport.setObj(results);
+                //Vrai, c'est bien déplacé
+                if(comport.getStatus()) {
+                    setClassDirection(direction);
+                }
+            }
+            */
+            //Compteur de ressource exploité au total
+            if (resultExploit != comport.Exploitresult()) {
+                resultExploit = resultExploit + comport.Exploitresult();
+            }
         }
+
+    }
+
+    /**
+     * @Author Lucas
+     */
+    public void setClassDirection(String direction) {
+
+    }
+
+    /**
+     * @Author Lucas
+     */
+    public void getClassDirection() {
 
     }
 }

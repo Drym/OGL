@@ -17,6 +17,7 @@ public class Comportement {
     HashMap<String,ArrayList<String>>resultscoot;//résultat des scoots ex{"N",{"WOOD","FLOWER"};...}
     String action; //dernière action réalise
     JSONObject obj;//résultat envoyé par Acknoledgeresult
+    String lastDirection; //dernière direction prise
 
     public Comportement(){
         resultscoot=new HashMap<String,ArrayList<String>>();
@@ -42,7 +43,7 @@ Renvoie true si staut=OK
      */
     public void getscout(String str,String dir){
         int i;
-        if(resultscoot.size()==4) {
+        if(resultscoot.size() == 4) {
             resultscoot.clear();
         }
         this.setObj(str);
@@ -57,7 +58,7 @@ Renvoie true si staut=OK
     }
 
     /*
-    renvoie la quentité de ressource
+    renvoie la quantité de ressource
      */
     public int Exploitresult(){
         int result;
