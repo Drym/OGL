@@ -1,4 +1,5 @@
-package fr.unice.polytech.ogl.islbb;
+package fr.unice.polytech.ogl.islbb.actions;
+import fr.unice.polytech.ogl.islbb.Command;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;

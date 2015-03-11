@@ -12,6 +12,7 @@ import java.util.Set;
  * Created by user on 07/03/2015.
  * Retour des actions réalisées par le robot
  */
+
 public class Comportement {
     HashMap<String,ArrayList<String>>resultscoot;//résultat des scoots ex{"N",{"WOOD","FLOWER"};...}
     String action; //dernière action réalise

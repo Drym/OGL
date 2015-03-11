@@ -1,7 +1,8 @@
 package fr.unice.polytech.ogl.islbb;
 
-        import org.junit.Test;
-        import static org.junit.Assert.*;
+import fr.unice.polytech.ogl.islbb.actions.Scout;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Created by Lucas on 09/03/2015.

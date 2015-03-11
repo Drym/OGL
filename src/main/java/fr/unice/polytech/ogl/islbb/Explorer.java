@@ -1,6 +1,7 @@
 package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
+import fr.unice.polytech.ogl.islbb.actions.*;
 
 /**
  * Classe qui implemente les différentes actions du robot

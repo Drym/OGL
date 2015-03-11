@@ -1,5 +1,6 @@
 package fr.unice.polytech.ogl.islbb;
 
+import fr.unice.polytech.ogl.islbb.actions.Land;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
