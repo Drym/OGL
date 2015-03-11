@@ -20,7 +20,7 @@ public class Explorer implements IExplorerRaid {
     public int resultExploit = 0;
     public Init init;
     //Montant de la première ressource a exploiter pour finir la mission
-    public int exploitMission1 =  init.getAmount().get(1);
+    public int exploitMission1 =  init.getAmount().get(0);
 
     /**
      * Initialize the explorer with the given objectives.
