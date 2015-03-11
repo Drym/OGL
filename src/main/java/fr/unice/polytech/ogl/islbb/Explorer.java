@@ -103,6 +103,12 @@ public class Explorer implements IExplorerRaid {
             return Land.land(this.startInformation.getCreek(), 1);
         }
 
+        // Si les objectifs ont étés remplis (lol) on peut rentrer.
+        if ((this.currentAmount >= this.startInformation.getAmount().get(0))) {
+            this.lastDecision = "exit";
+            return Exit.exit();
+        }
+
         // Plus assez de point de mouvement, pour un groupe
         if ((this.budget < 175) && (this.landedMen > 1)) {
             this.lastDecision = "exit";
