@@ -38,4 +38,13 @@ public class IslandMap {
         return this.islandMap.containsKey(x + "-" + y);
     }
 
+    public boolean alreadyExplored(int x, int y) {
+        //deja explorer = true
+        if (this.islandMap.containsKey(x + "-" + y)) {
+            return true;
+        }
+        //sinon pas explorer
+        else return false;
+    }
+
 }

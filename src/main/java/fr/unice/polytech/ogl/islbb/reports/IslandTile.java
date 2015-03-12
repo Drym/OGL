@@ -16,6 +16,9 @@ public class IslandTile {
     private List<Resource> resources;
     private List<POI> pois;
 
+    private boolean alreadyScouted = false;
+    private boolean alreadyExplored = false;
+
     /**
      * Méthode d'instanciation lors d'un Scout.
      */
@@ -62,5 +65,54 @@ public class IslandTile {
      */
     public void removeResource(String aResource) {
         this.resources.remove(this.resources.indexOf(aResource));
+    }
+
+    /**
+     * Doit être scouter ?
+     * @return true/false
+     */
+    public boolean hasToScout () {
+        //Pas scouté
+        if(this.alreadyScouted == false) {
+            return true;
+        }
+        //deja scouté
+        else return false;
+    }
+
+    //TODO Passer de true a false quand on scout !
+    /**
+     * Doit etre explorer ?
+     * @return true/false
+     */
+    public boolean hasToExplore () {
+        //Pas exploré
+        if (this.alreadyExplored == false) {
+            return true;
+        }
+        //deja exploré
+        else return false;
+    }
+
+    /*
+        Getters
+     */
+    public boolean isAlreadyScouted() {
+        return alreadyScouted;
+    }
+
+    public boolean isAlreadyExplored() {
+        return alreadyExplored;
+    }
+
+    /*
+        Setters
+     */
+    public void setAlreadyScouted(boolean alreadyScouted) {
+        this.alreadyScouted = alreadyScouted;
+    }
+
+    public void setAlreadyExplored(boolean alreadyExplored) {
+        this.alreadyExplored = alreadyExplored;
     }
 }
