@@ -27,6 +27,7 @@ public class IslandTile {
         this.altitude = scoutedAltitude;
         this.resources = scoutedResources;
         this.pois = new ArrayList<POI>();
+        this.alreadyScouted = true;
     }
 
     /**
@@ -37,6 +38,7 @@ public class IslandTile {
         this.altitude = 0;
         this.resources = exploredResources;
         this.pois = exploredPOIs;
+        this.alreadyExplored = true;
     }
 
 
@@ -46,6 +48,7 @@ public class IslandTile {
     public void exploreTile(List<Resource> exploredResources, List<POI> exploredPOIs) {
         this.resources = exploredResources;
         this.pois = exploredPOIs;
+        this.alreadyExplored = true;
     }
 
     /**
@@ -71,7 +74,7 @@ public class IslandTile {
      * Doit être scouter ?
      * @return true/false
      */
-    public boolean hasToScout () {
+    public boolean hasToScout() {
         //Pas scouté
         if(this.alreadyScouted == false) {
             return true;
@@ -85,7 +88,7 @@ public class IslandTile {
      * Doit etre explorer ?
      * @return true/false
      */
-    public boolean hasToExplore () {
+    public boolean hasToExplore() {
         //Pas exploré
         if (this.alreadyExplored == false) {
             return true;
@@ -98,11 +101,11 @@ public class IslandTile {
         Getters
      */
     public boolean isAlreadyScouted() {
-        return alreadyScouted;
+        return this.alreadyScouted;
     }
 
     public boolean isAlreadyExplored() {
-        return alreadyExplored;
+        return this.alreadyExplored;
     }
 
     /*

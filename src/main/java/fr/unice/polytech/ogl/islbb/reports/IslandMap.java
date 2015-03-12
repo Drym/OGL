@@ -38,13 +38,27 @@ public class IslandMap {
         return this.islandMap.containsKey(x + "-" + y);
     }
 
-    public boolean alreadyExplored(int x, int y) {
-        //deja explorer = true
-        if (this.islandMap.containsKey(x + "-" + y)) {
-            return true;
+    /**
+     * La case a déjà été explorée
+     */
+    public boolean alreadyScouted(int x, int y) {
+        if (this.isRegistered(x, y) == true) {
+            return this.getInformation(x, y).isAlreadyScouted();
         }
-        //sinon pas explorer
-        else return false;
+        else {
+            return false;
+        }
+    }
+    /**
+     * La case x y est-elle déjà explorée ?
+     */
+    public boolean alreadyExplored(int x, int y) {
+        if (this.isRegistered(x, y) == true) {
+            return this.getInformation(x, y).isAlreadyExplored();
+        }
+        else {
+            return false;
+        }
     }
 
 }
