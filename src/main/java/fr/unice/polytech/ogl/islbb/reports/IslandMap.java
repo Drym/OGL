@@ -39,9 +39,21 @@ public class IslandMap {
     }
 
     /**
-     * La case a déjà été explorée
+     * La case semble-t-elle être de l'océan ?
      */
-    public boolean alreadyScouted(int x, int y) {
+    public boolean isWater(int x, int y) {
+        if (this.isRegistered(x, y) == true) {
+            return this.getInformation(x, y).isWater();
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * La case a-t-elle déjà été explorée
+     */
+    public boolean isAlreadyScouted(int x, int y) {
         if (this.isRegistered(x, y) == true) {
             return this.getInformation(x, y).isAlreadyScouted();
         }
@@ -49,10 +61,11 @@ public class IslandMap {
             return false;
         }
     }
+
     /**
      * La case x y est-elle déjà explorée ?
      */
-    public boolean alreadyExplored(int x, int y) {
+    public boolean isAlreadyExplored(int x, int y) {
         if (this.isRegistered(x, y) == true) {
             return this.getInformation(x, y).isAlreadyExplored();
         }

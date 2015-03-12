@@ -71,6 +71,23 @@ public class IslandTile {
     }
 
     /**
+     * Est-ce que la case semble marquer le rivage de l'océan ?
+     */
+    public boolean isWater() {
+        if (this.altitude < 0) {
+            if (this.hasResource("FISH") != null) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
      * Doit être scouter ?
      * @return true/false
      */
@@ -108,6 +125,10 @@ public class IslandTile {
         return this.alreadyExplored;
     }
 
+    public int getAltitude() {
+        return altitude;
+    }
+
     /*
         Setters
      */
@@ -117,5 +138,9 @@ public class IslandTile {
 
     public void setAlreadyExplored(boolean alreadyExplored) {
         this.alreadyExplored = alreadyExplored;
+    }
+
+    public void setAltitude(int altitude) {
+        this.altitude = altitude;
     }
 }

@@ -37,6 +37,7 @@ public class Explorer implements IExplorerRaid {
 
     private IslandMap arenaMap;
     private int currentX, currentY;
+    private int currentAltitude;
     private int scoutedX, scoutedY;
 
     private String lastDecision;
@@ -49,10 +50,8 @@ public class Explorer implements IExplorerRaid {
     private boolean movedToSearch;
 
     private int landedMen;
-
-    private boolean reachingLastObjective;
-
     private int currentAmount;
+    private boolean reachingLastObjective;
 
 
     /**
@@ -76,6 +75,7 @@ public class Explorer implements IExplorerRaid {
         this.landedMen = 0;
         this.reachingLastObjective = false;
         this.currentAmount = 0;
+        this.currentAltitude = 0;
 
 /*        data = new Data();
         hasMoved=false;
@@ -98,88 +98,103 @@ public class Explorer implements IExplorerRaid {
 
         // Première décision (aucune dernière décision) on débarque avec une personne.
         if (this.lastDecision == null) {
-            this.lastDecision = "land";
             this.landedMen = 1;
+            this.lastDecision = "land";
             return Land.land(this.startInformation.getCreek(), 1);
         }
 
+        // TODO Définir les seuils dans le pourcentage du budget à partir desquels il faut décider de rentrer.
         // Si les objectifs ont étés remplis (lol) on peut rentrer.
-        if ((this.currentAmount >= this.startInformation.getAmount().get(0))) {
+        if ((this.currentAmount >= this.startInformation.getAmount().get(0)) || ((this.budget < 150) && (this.landedMen > 1)) || ((this.budget < 50) && (this.landedMen == 1))) {
             this.lastDecision = "exit";
             return Exit.exit();
         }
 
-        // Plus assez de point de mouvement, pour un groupe
-        if ((this.budget < 175) && (this.landedMen > 1)) {
-            this.lastDecision = "exit";
-            return Exit.exit();
-        }
+        // On Scout dans toutes les directions au lancement
+        if (((this.lastDecision == "land") && (this.hasObjective == false) && (this.reachingLastObjective == false)) || ((this.lastDecision == "scout") && (this.lastScoutDirection < 4))) {
 
-        //Plus assez de point de mouvement, pour un explorateur
-        if ((this.budget < 50) && (this.landedMen == 1)) {
-            this.lastDecision = "exit";
-            return Exit.exit();
-        }
-
-        // On Scout dans toutes les directions au lancement et quand on arrive sur une case
-        if (((this.lastDecision == "land") && (this.hasObjective == false) && (this.reachingLastObjective == false)) || ((this.lastDecision == "scout") && (this.lastScoutDirection < 4)) || (this.movedToSearch == true)) {
-            this.movedToSearch = false;
-
-            // On définit les coordonnées de la case qu'on va Scout en fonction de l'orientation, pour ensuite enregistrer les informations dans la carte.
-            this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
-            this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
-
-            this.lastDecision = "scout";
-            return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection++));
-        }
-        // Après avoir Scout dans les 4 directions, on choisit la première case adapté à nos besoins.
-        else if ((this.lastDecision == "scout") && (this.lastScoutDirection == 4)) {
-            lastScoutDirection = 0;
-            while (lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
-
-                // Une case avec la ressource adapté a été trouvée, on débarque avec 20 personnes dans le but de l'exploiter.
-                if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResource(this.startInformation.getResource().get(0)) != null) {
-                    this.objectiveX = scoutedX;
-                    this.objectiveY = scoutedY;
-                    this.hasObjective = true;
-                    this.lastDecision = "land";
-                    this.currentX = 0;
-                    this.currentY = 0;
-                    this.lastScoutDirection = 0;
-                    this.landedMen = 20;
-                    return Land.land(this.startInformation.getCreek(), 20);
+            // On essaye de trouver une direction dans laquelle Scout.
+            // Tant que la direction a déjà été Scout on regarde la prochaine.
+            // Si la direction n'a pas été Scout, on interrompt la boucle pour la choisir.
+            while (this.lastScoutDirection < 4) {
+                if (this.arenaMap.isAlreadyScouted(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
+                    this.lastScoutDirection++;
+                }
+                else {
+                    break;
                 }
             }
 
-            // Aucune case aux alentours contient la ressource appropriée ? On avance arbitrairement vers le Nord, dans le but de recommencer à Scout.
-            this.currentY++;
-            this.movedToSearch = true;
+            // On Scout la première direction disponible (sens horaire)
+            // Si toutes les directions ont été Scout, rien ne se passe dans cette condition et on passe à la suivante.
+            // Sinon on Scout celle trouvée dans la boucle précédente.
+            if (this.lastScoutDirection < 4) {
+                // On définit les coordonnées de la case qu'on va Scout en fonction de l'orientation, pour ensuite enregistrer les informations dans la carte.
+                this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
+                this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
+                this.lastDecision = "scout";
+                return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
+            }
+        }
+
+        // Après avoir Scout dans les 4 directions, on choisit la première case adapté à nos besoins, s'il y en a une.
+        if ((this.lastDecision == "scout") && (this.lastScoutDirection >= 4)) {
             this.lastScoutDirection = 0;
-            this.lastDecision = "move";
-            return Move.move("N");
+            while (this.lastScoutDirection < 4) {
+                this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
+                this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
+
+                // Une case avec la ressource adapté a été trouvée, on débarque avec 10 personnes dans le but de l'exploiter.
+                if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResource(this.startInformation.getResource().get(0)) != null) {
+                    this.objectiveX = this.scoutedX;
+                    this.objectiveY = this.scoutedY;
+                    this.hasObjective = true;
+
+                    // TODO Attention à la position du débarquement lors de la gestion de multiples criques.
+                    this.currentX = 0;
+                    this.currentY = 0;
+
+                    this.lastScoutDirection = 0;
+                    this.landedMen = 10;
+                    this.lastDecision = "land";
+                    return Land.land(this.startInformation.getCreek(), 10);
+                }
+
+                this.lastScoutDirection++;
+            }
+
+            // Aucune case aux alentours contient la ressource appropriée ? On avance vers la première case qui n'est pas de l'eau (sens horaire).
+            this.lastScoutDirection = 0;
+            while (this.lastScoutDirection < 4) {
+                if (!this.arenaMap.isWater(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
+                    this.currentY++;
+                    this.movedToSearch = true;
+                    this.lastScoutDirection = 0;
+                    this.lastDecision = "move";
+                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
+                }
+            }
         }
 
         // Quand on a choisi une case on avance jusqu'à celle-ci.
-        else if (((this.lastDecision == "land") || (this.lastDecision == "move")) && (this.hasObjective == true)) {
+        if (((this.lastDecision == "land") || (this.lastDecision == "move")) && (this.hasObjective == true)) {
             // On avance jusqu'à être aux bonnes coordonnées.
-            while ((currentX != objectiveX) && (currentY != objectiveY)) {
+            while ((this.currentX != this.objectiveX) && (this.currentY != this.objectiveY)) {
                 this.lastDecision = "move";
-                if (currentY < objectiveY) {
-                    currentY++;
+                if (this.currentY < this.objectiveY) {
+                    this.currentY++;
                     return Move.move("N");
                 }
-                if (currentY > objectiveY) {
-                    currentY--;
+                if (this.currentY > this.objectiveY) {
+                    this.currentY--;
                     return Move.move("S");
                 }
-                if (currentX < objectiveX) {
-                    currentX++;
+                if (this.currentX < this.objectiveX) {
+                    this.currentX++;
                     return Move.move("E");
                 }
-                if (currentX > objectiveX) {
-                    currentX--;
+                if (this.currentX > this.objectiveX) {
+                    this.currentX--;
                     return Move.move("W");
                 }
             }
@@ -190,7 +205,7 @@ public class Explorer implements IExplorerRaid {
         }
 
         // Après une exploitation, on redébarque avec un explorateur.
-        else if (this.lastDecision == "exploit") {
+        if (this.lastDecision == "exploit") {
             this.currentX = 0;
             this.currentY = 0;
             this.reachingLastObjective = true;
@@ -199,31 +214,62 @@ public class Explorer implements IExplorerRaid {
             return Land.land(this.startInformation.getCreek(), 1);
         }
 
-        // Après avoir débarqué l'explorateur post-exploitation, on le fait revenir au lieu d'exploitation comme départ pour son exploration.
+        // Après avoir débarqué l'explorateur post-exploitation, on le fait revenir au lieu d'exploitation comme point de départ pour son exploration.
         if (this.reachingLastObjective == true) {
-            while ((currentX != objectiveX) && (currentY != objectiveY)) {
+            while ((this.currentX != this.objectiveX) && (this.currentY != this.objectiveY)) {
                 this.lastDecision = "move";
-                if (currentY < objectiveY) {
-                    currentY++;
+                if (this.currentY < this.objectiveY) {
+                    this.currentY++;
                     return Move.move("N");
                 }
-                if (currentY > objectiveY) {
-                    currentY--;
+                if (this.currentY > this.objectiveY) {
+                    this.currentY--;
                     return Move.move("S");
                 }
-                if (currentX < objectiveX) {
-                    currentX++;
+                if (this.currentX < this.objectiveX) {
+                    this.currentX++;
                     return Move.move("E");
                 }
-                if (currentX > objectiveX) {
-                    currentX--;
+                if (this.currentX > this.objectiveX) {
+                    this.currentX--;
                     return Move.move("W");
                 }
             }
-            // L'explorateur est arrivé à l'ancien lieu d'exploitation et avancé pour arrivé là, il est prêt à explorer.
+            // L'explorateur est arrivé à l'ancien lieu d'exploitation et a avancé pour arrivé là (movedToSearch), il est en position pour recommencer à explorer.
             this.reachingLastObjective = false;
             this.movedToSearch = true;
+            this.lastScoutDirection = 0;
         }
+
+        // Quand on arrive sur une case dans le but d'explorer.
+        if (this.movedToSearch == true) {
+            this.movedToSearch = false;
+
+            // On essaye de trouver une direction dans laquelle Scout.
+            // Tant que la direction a déjà été Scout on regarde la prochaine.
+            // Si la direction n'a pas été Scout, on interrompt la boucle pour la choisir.
+            while (this.lastScoutDirection < 4) {
+                if (this.arenaMap.isAlreadyScouted(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
+                    this.lastScoutDirection++;
+                }
+                else {
+                    break;
+                }
+            }
+
+            // On Scout la première direction disponible (sens horaire)
+            // Si toutes les directions ont été Scout, rien ne se passe dans cette condition et on passe à la suivante.
+            // Sinon on Scout celle trouvée dans la boucle précédente.
+            if (this.lastScoutDirection < 4) {
+                // On définit les coordonnées de la case qu'on va Scout en fonction de l'orientation, pour ensuite enregistrer les informations dans la carte.
+                this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
+                this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
+                this.lastDecision = "scout";
+                return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
+            }
+        }
+
+
 
         // Dans le cas où aucune décision n'est prise, on arrête.
         this.lastDecision = "exit";
@@ -289,7 +335,7 @@ public class Explorer implements IExplorerRaid {
                 tileResources.add(new Resource(resourcesArray.getString(i)));
             }
 
-            IslandTile newTile = new IslandTile(JSONResult.getInt("altitude"), tileResources);
+            IslandTile newTile = new IslandTile(JSONResult.getInt("altitude") + this.currentAltitude, tileResources);
             this.arenaMap.addTile(this.scoutedX, this.scoutedY, newTile);
         }
 
@@ -329,6 +375,13 @@ public class Explorer implements IExplorerRaid {
             IslandTile updatedTile = this.arenaMap.getInformation(this.currentX, this.currentY);
             updatedTile.removeResource(this.startInformation.getResource().get(0));
             this.currentAmount += JSONResult.getJSONObject("extras").getInt("amount");
+        }
+
+        // Après un déplacement, on met à jour l'altitude, si on la connaît.
+        else if ((this.lastDecision.equals("move")) && (ResultsComputing.getStatus(results))) {
+            if (this.arenaMap.isAlreadyScouted(this.currentX, this.currentY)) {
+                this.currentAltitude += this.arenaMap.getInformation(this.currentX, this.currentY).getAltitude();
+            }
         }
 
         // On enlève le coût de l'action au budget.
