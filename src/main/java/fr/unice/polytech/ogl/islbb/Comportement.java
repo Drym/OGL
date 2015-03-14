@@ -65,23 +65,23 @@ Renvoie true si staut=OK
         int result;
         //try
         String num = obj.getJSONObject("extras").getString("amount");
-        result=Integer.valueOf(num);
-        return result;
-    }
+                    result=Integer.valueOf(num);
+                    return result;
+                }
 
-    public String takeDirection(){
-        String cle;
-        ArrayList<String>liste = new ArrayList<String>();
-        HashMap<String,ArrayList<String>>trie = new HashMap<String,ArrayList<String>>();
-        HashMap<String,ArrayList<String>>bois = new HashMap<String,ArrayList<String>>();
-        Set cles = scoutResults.keySet();
-        Iterator it = cles.iterator();
-        while (it.hasNext()){
-            cle=(String)it.next();
-            liste= scoutResults.get(cle);
-            if(!liste.contains("WATER")&&liste.contains("WOOD")) {
-                bois.put(cle, liste);
-            }
+        public String takeDirection(){
+            String cle;
+            ArrayList<String>liste = new ArrayList<String>();
+            HashMap<String,ArrayList<String>>trie = new HashMap<String,ArrayList<String>>();
+            HashMap<String,ArrayList<String>>bois = new HashMap<String,ArrayList<String>>();
+            Set cles = scoutResults.keySet();
+            Iterator it = cles.iterator();
+            while (it.hasNext()){
+                cle=(String)it.next();
+                liste= scoutResults.get(cle);
+                if(!liste.contains("WATER")&&liste.contains("WOOD")) {
+                    bois.put(cle, liste);
+                }
                 if (!liste.contains("WATER")) {
                     trie.put(cle, liste);
                 }
@@ -113,28 +113,5 @@ Renvoie true si staut=OK
         obj=new JSONObject(str);
     }
 
-    public static void main(String[] args)
-    {
-        Comportement test=new Comportement();
-        String r1="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
-        String r2="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
-        String r3="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WATER\"],\"altitude\":-23}}";
-        String r4="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WOOD\"],\"altitude\":-23}}";
-        //String r5="{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"WOOD\"],\"altitude\":-23}}";
-        test.getScout(r1, "N");
-        test.getScout(r2, "S");
-        test.getScout(r3, "E");
-        test.getScout(r4, "O");
-        //test.getscout(r5,"N");
-        Set cles = test.scoutResults.keySet();
-        Iterator it = cles.iterator();
-        while (it.hasNext()){
-            String clef = (String)it.next();
-            System.out.println(test.scoutResults.get(clef));
-        }
-        System.out.println(test.scoutResults);
-        System.out.println(test.takeDirection());
-        System.out.println(test.hasWood(test.takeDirection()));
-    }
 }
 
