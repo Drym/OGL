@@ -103,7 +103,7 @@ public class Explorer implements IExplorerRaid {
             return Land.land(this.startInformation.getCreek(), 1);
         }
 
-        // TODO Définir les seuils dans le pourcentage du budget à partir desquels il faut décider de rentrer.
+        // TODO 3 OPT : Définir les seuils dans le pourcentage du budget à partir desquels il faut décider de rentrer.
         // Si les objectifs ont étés remplis (lol) on peut rentrer.
         if ((this.currentAmount >= this.startInformation.getAmount().get(0)) || ((this.budget < 150) && (this.landedMen > 1)) || ((this.budget < 50) && (this.landedMen == 1))) {
             this.lastDecision = "exit";
@@ -116,6 +116,7 @@ public class Explorer implements IExplorerRaid {
             // On essaye de trouver une direction dans laquelle Scout.
             // Tant que la direction a déjà été Scout on regarde la prochaine.
             // Si la direction n'a pas été Scout, on interrompt la boucle pour la choisir.
+            // TODO 2 DUP : Il faut une méthode qui sorte la prochaine direction à Scout en fonction de la case (x, y) donnée.
             while (this.lastScoutDirection < 4) {
                 if (this.arenaMap.isAlreadyScouted(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
                     this.lastScoutDirection++;
@@ -150,7 +151,7 @@ public class Explorer implements IExplorerRaid {
                     this.objectiveY = this.scoutedY;
                     this.hasObjective = true;
 
-                    // TODO Attention à la position du débarquement lors de la gestion de multiples criques.
+                    // TODO 4 IMP : Attention à la position du débarquement lors de la gestion de multiples criques.
                     this.currentX = 0;
                     this.currentY = 0;
 
@@ -163,22 +164,26 @@ public class Explorer implements IExplorerRaid {
                 this.lastScoutDirection++;
             }
 
-            // Aucune case aux alentours contient la ressource appropriée ? On avance vers la première case qui n'est pas de l'eau (sens horaire).
+            // Aucune des cases aux alentours contient la ressource appropriée ? On avance vers la première case qui n'est pas de l'eau (sens horaire).
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 if (!this.arenaMap.isWater(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
-                    this.currentY++;
+                    this.currentX += ResultsComputing.xOffset(this.lastScoutDirection);
+                    this.currentY += ResultsComputing.yOffset(this.lastScoutDirection);
                     this.movedToSearch = true;
                     this.lastScoutDirection = 0;
                     this.lastDecision = "move";
                     return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
                 }
+                this.lastScoutDirection++;
             }
+
         }
 
         // Quand on a choisi une case on avance jusqu'à celle-ci.
         if (((this.lastDecision == "land") || (this.lastDecision == "move")) && (this.hasObjective == true)) {
             // On avance jusqu'à être aux bonnes coordonnées.
+            // TODO 1 DUP : Il faut une méthode qui renvoie les Move (un par un) à faire pour se déplacer d'une case (x1, y1) à une autre case (x2, y2).
             while ((this.currentX != this.objectiveX) && (this.currentY != this.objectiveY)) {
                 this.lastDecision = "move";
                 if (this.currentY < this.objectiveY) {
@@ -216,6 +221,7 @@ public class Explorer implements IExplorerRaid {
 
         // Après avoir débarqué l'explorateur post-exploitation, on le fait revenir au lieu d'exploitation comme point de départ pour son exploration.
         if (this.reachingLastObjective == true) {
+            // TODO 1 DUP : Il faut une méthode qui renvoie les Move (un par un) à faire pour se déplacer d'une case (x1, y1) à une autre case (x2, y2).
             while ((this.currentX != this.objectiveX) && (this.currentY != this.objectiveY)) {
                 this.lastDecision = "move";
                 if (this.currentY < this.objectiveY) {
@@ -248,6 +254,7 @@ public class Explorer implements IExplorerRaid {
             // On essaye de trouver une direction dans laquelle Scout.
             // Tant que la direction a déjà été Scout on regarde la prochaine.
             // Si la direction n'a pas été Scout, on interrompt la boucle pour la choisir.
+            // TODO 2 DUP : Il faut une méthode qui sorte la prochaine direction à Scout en fonction de la case (x, y) donnée.
             while (this.lastScoutDirection < 4) {
                 if (this.arenaMap.isAlreadyScouted(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
                     this.lastScoutDirection++;
