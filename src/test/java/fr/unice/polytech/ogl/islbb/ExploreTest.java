@@ -21,10 +21,5 @@ public class ExploreTest   {
             assertEquals("Les deux objects sont identique", test, equal);
             }
 
-    public void testRetrive()
-    {
-
-    }
-
 }
 
