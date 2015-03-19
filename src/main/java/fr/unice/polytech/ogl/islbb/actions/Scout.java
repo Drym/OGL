@@ -13,7 +13,7 @@ public final class Scout {
         JSONObject obj = new JSONObject();
         LinkedHashMap par = new LinkedHashMap();
         par.put("direction",dir);
-        obj.put("action", "scoot");
+        obj.put("action", "scout");
         obj.put("parameters",par);
         return obj.toString();
     }
