@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Classe qui implemente les différentes actions du robot
@@ -135,7 +136,7 @@ public class Explorer implements IExplorerRaid {
         }
 
         // On Scout dans toutes les directions au lancement
-        if (((this.lastDecision == "land") && (this.hasObjective == false) && (this.reachingLastObjective == false)) || ((this.lastDecision == "scout") && (this.lastScoutDirection < 4))) {
+        if (((Objects.equals(this.lastDecision, "land")) && (this.hasObjective == false) && (this.reachingLastObjective == false)) || ((Objects.equals(this.lastDecision, "scout")) && (this.lastScoutDirection < 4))) {
 
             // On essaye de trouver une direction dans laquelle Scout.
             // Tant que la direction a déjà été Scout on regarde la prochaine.
@@ -163,7 +164,7 @@ public class Explorer implements IExplorerRaid {
         }
 
         // Après avoir Scout dans les 4 directions, on choisit la première case adapté à nos besoins, s'il y en a une.
-        if ((this.lastDecision == "scout") && (this.lastScoutDirection >= 4)) {
+        if ((Objects.equals(this.lastDecision, "scout")) && (this.lastScoutDirection >= 4)) {
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
@@ -205,7 +206,7 @@ public class Explorer implements IExplorerRaid {
         }
 
         // Quand on a choisi une case on avance jusqu'à celle-ci.
-        if (((this.lastDecision == "land") || (this.lastDecision == "move")) && (this.hasObjective == true)) {
+        if (((Objects.equals(this.lastDecision, "land")) || (Objects.equals(this.lastDecision, "move"))) && (this.hasObjective == true)) {
             // On avance jusqu'à être aux bonnes coordonnées.
             // TODO 1 DUP : Il faut une méthode qui renvoie les Move (un par un) à faire pour se déplacer d'une case (x1, y1) à une autre case (x2, y2).
             while ((this.currentX != this.objectiveX) || (this.currentY != this.objectiveY)) {
@@ -234,7 +235,7 @@ public class Explorer implements IExplorerRaid {
         }
 
         // Après une exploitation, on redébarque avec un explorateur.
-        if (this.lastDecision == "exploit") {
+        if (Objects.equals(this.lastDecision, "exploit")) {
             this.currentX = 0;
             this.currentY = 0;
             this.reachingLastObjective = true;
@@ -330,7 +331,6 @@ public class Explorer implements IExplorerRaid {
         // Si la dernière action a été un Explore.
         else if ((this.lastDecision.equals("explore")) && (ResultsComputing.getStatus(results))) {
             JSONResult = new JSONObject(results);
-            IslandTile scoutedTile;
 
             // On récupère la liste des ressources et leurs conditions.
             List<Resource> tileResources = new ArrayList<Resource>();

@@ -2,10 +2,8 @@ package fr.unice.polytech.ogl.islbb;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
 /**
- * Created by user on 14/03/2015.
+ * Created by Thibault OBER on 14/03/2015.
  */
 public class ComportementTest extends TestCase {
     public void testComportement() {

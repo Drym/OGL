@@ -1,10 +1,9 @@
 package fr.unice.polytech.ogl.islbb.actions;
 
 import org.json.JSONObject;
-import java.util.LinkedHashMap;
 
 /**
- * Created by Lucas on 19/03/2015.
+ * Created by Lucas SAUVAGE on 19/03/2015.
  * Classe permetant d'automatiser l'action glimpse pour l'explorer.
  */
 public class Glimpse {

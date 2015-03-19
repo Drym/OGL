@@ -1,7 +1,7 @@
 package fr.unice.polytech.ogl.islbb.reports;
 
 /**
- * Created by QWPHR on 19/03/2015.
+ * Created by Quentin WEPHRE on 19/03/2015.
  */
 public class Biome {
 

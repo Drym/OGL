@@ -1,6 +1,5 @@
 package fr.unice.polytech.ogl.islbb.reports;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,7 +106,8 @@ public class IslandTile {
      * On supprime la ressource de la case (après une exploitation)
      */
     public void removeResource(String aResource) {
-        this.resources.remove(this.resources.indexOf(aResource));
+        if (!this.resources.isEmpty())
+            this.resources.remove(this.resources.indexOf(aResource));
     }
 
     /**
