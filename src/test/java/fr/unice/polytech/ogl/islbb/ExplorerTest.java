@@ -1,6 +1,7 @@
 package fr.unice.polytech.ogl.islbb;
 
 import fr.unice.polytech.ogl.islbb.actions.Land;
+import fr.unice.polytech.ogl.islbb.actions.Move;
 import fr.unice.polytech.ogl.islbb.actions.Scout;
 import org.junit.Test;
 
@@ -13,7 +14,6 @@ import static org.junit.Assert.assertEquals;
  * Created by user on 14/03/2015.
  */
 public class ExplorerTest {
-    String memo="NOSE";
     String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}]}";
     String resultland="{\"status\":\"OK\",\"cost\":12}";
     String testN = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
@@ -57,5 +57,9 @@ public class ExplorerTest {
             assertEquals(Scout.scout(cardinaux.getCardinaux(i+1)),scoutdecision.get(i));
             i++;
         }
+        test.acknowledgeResults(resultscout.get(3));//scout ouest
+        assertEquals(Land.land("creek_id",10),test.takeDecision());//trouve du bois land 10
+        test.acknowledgeResults(resultland);
+
         }
 }

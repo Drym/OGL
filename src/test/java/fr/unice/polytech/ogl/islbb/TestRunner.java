@@ -1,6 +1,7 @@
 package fr.unice.polytech.ogl.islbb;
 
 import fr.unice.polytech.ogl.islbb.actions.Land;
+import fr.unice.polytech.ogl.islbb.actions.Move;
 import fr.unice.polytech.ogl.islbb.actions.Scout;
 import junit.framework.TestSuite;
 import org.junit.internal.TextListener;
@@ -52,10 +53,14 @@ public class TestRunner {
             i=0;
             while(i<3){
                 System.out.println(scoutdecision.get(i));
-                System.out.println(Scout.scout(cardinaux.getCardinaux(i+1)));
+                System.out.println(Scout.scout(cardinaux.getCardinaux(i + 1)));
                // assertEquals(Scout.scout(cardinaux.getCardinaux(i)),scoutdecision.get(i-1));
                 i++;
             }
+            test.acknowledgeResults(resultscout.get(3));//scout ouest
+            System.out.println(test.takeDecision());
+            test.acknowledgeResults(resultland);
+            System.out.println(test.takeDecision());
 
 //        JUnitCore runner = new JUnitCore();
 //        runner.addListener(new TextListener(System.out));

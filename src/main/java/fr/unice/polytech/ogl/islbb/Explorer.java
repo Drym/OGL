@@ -184,7 +184,7 @@ public class Explorer implements IExplorerRaid {
         if (((this.lastDecision == "land") || (this.lastDecision == "move")) && (this.hasObjective == true)) {
             // On avance jusqu'à être aux bonnes coordonnées.
             // TODO 1 DUP : Il faut une méthode qui renvoie les Move (un par un) à faire pour se déplacer d'une case (x1, y1) à une autre case (x2, y2).
-            while ((this.currentX != this.objectiveX) && (this.currentY != this.objectiveY)) {
+            while ((this.currentX != this.objectiveX) || (this.currentY != this.objectiveY)) {
                 this.lastDecision = "move";
                 if (this.currentY < this.objectiveY) {
                     this.currentY++;
