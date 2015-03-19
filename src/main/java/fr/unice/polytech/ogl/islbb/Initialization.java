@@ -24,8 +24,8 @@ public class Initialization {
         men = obj.getInt("men");
         JSONArray arr = obj.getJSONArray("objective");
         for (int i = 0; i < arr.length(); i++) {
-            resources.add(arr.getJSONObject(i).getString("resources"));
-            amounts.add(arr.getJSONObject(i).getInt("amounts"));
+            resources.add(arr.getJSONObject(i).getString("resource"));
+            amounts.add(arr.getJSONObject(i).getInt("amount"));
         }
     }
 
