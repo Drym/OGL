@@ -11,22 +11,23 @@ import java.util.List;
  */
 public class IslandTile {
 
-    private String type;
     private int altitude;
     private List<Resource> resources;
     private List<POI> pois;
+    private List<Biome> biomes;
+    private int glimpseRange;
 
     private boolean alreadyScouted = false;
     private boolean alreadyExplored = false;
+    private boolean alreadyGlimpsed = false;
 
     /**
      * Méthode d'instanciation lors d'un Scout.
      */
     public IslandTile(int scoutedAltitude, List<Resource> scoutedResources) {
-        this.type = null;
         this.altitude = scoutedAltitude;
         this.resources = scoutedResources;
-        this.pois = new ArrayList<POI>();
+        //this.pois = new ArrayList<POI>();
         this.alreadyScouted = true;
     }
 
@@ -34,16 +35,25 @@ public class IslandTile {
      * Méthode d'instanciation lors d'un Explore.
      */
     public IslandTile(List<Resource> exploredResources, List<POI> exploredPOIs) {
-        this.type = null;
         this.altitude = 0;
         this.resources = exploredResources;
         this.pois = exploredPOIs;
         this.alreadyExplored = true;
     }
 
+    /**
+     * Méthode d'instanciation lors d'un Glimpse.
+     */
+    public IslandTile(List<Biome> biomeList, int range) {
+        this.altitude = 0;
+        this.biomes = biomeList;
+        this.glimpseRange = range;
+        this.alreadyGlimpsed = true;
+    }
+
 
     /**
-     * Méthode pour mettre à jour une case déjà Scout.
+     * Méthode pour explorer une case (rajouter les conditions des ressources).
      */
     public void exploreTile(List<Resource> exploredResources, List<POI> exploredPOIs) {
         this.resources = exploredResources;
@@ -52,12 +62,42 @@ public class IslandTile {
     }
 
     /**
+     * Méthode pour Glimpse une case (rajouter les biomes).
+     */
+    public void glimpseTile(List<Biome> glimpsedBiome, int range) {
+        if (this.alreadyGlimpsed != true) {
+            this.biomes = glimpsedBiome;
+            this.alreadyGlimpsed = true;
+        }
+        else {
+            if (this.glimpseRange < range) {
+                this.biomes = glimpsedBiome;
+            }
+        }
+    }
+
+    /**
      * Méthode pour savoir si une ressource est présente sur la case.
      */
     public Resource hasResource(String aResource) {
-        for (Resource currentResource : this.resources) {
-            if (currentResource.getType().equals(aResource)) {
-                return currentResource;
+        if (this.alreadyExplored || this.alreadyScouted) {
+            for (Resource currentResource : this.resources) {
+                if (currentResource.getType().equals(aResource)) {
+                    return currentResource;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Méthode pour savoir si le biome est présent sur la case.
+     */
+    public Biome containBiome(String aBiome) {
+        if (this.alreadyGlimpsed) {
+            for (Biome currentBiome : this.biomes) {
+                if (currentBiome.getBiome().equals(aBiome))
+                    return currentBiome;
             }
         }
         return null;
@@ -82,41 +122,32 @@ public class IslandTile {
                 return false;
             }
         }
-        else {
-            return false;
+        if (this.containBiome("OCEAN") != null) {
+            return true;
         }
+        return false;
     }
 
     /**
-     * Doit être scouter ?
+     * La case a besoin d'être Scout ?
      * @return true/false
      */
     public boolean hasToScout() {
-        //Pas scouté
-        if(this.alreadyScouted == false) {
-            return true;
-        }
-        //deja scouté
-        else return false;
+        return !this.alreadyScouted;
     }
 
-    //TODO Passer de true a false quand on scout !
     /**
-     * Doit etre explorer ?
+     * La case a besoin d'être Explore ?
      * @return true/false
      */
     public boolean hasToExplore() {
-        //Pas exploré
-        if (this.alreadyExplored == false) {
-            return true;
-        }
-        //deja exploré
-        else return false;
+        return !this.alreadyExplored;
     }
 
-    /*
-        Getters
-     */
+    public boolean hasToGlimpse() {
+        return !this.alreadyScouted;
+    }
+
     public boolean isAlreadyScouted() {
         return this.alreadyScouted;
     }
@@ -129,9 +160,6 @@ public class IslandTile {
         return altitude;
     }
 
-    /*
-        Setters
-     */
     public void setAlreadyScouted(boolean alreadyScouted) {
         this.alreadyScouted = alreadyScouted;
     }

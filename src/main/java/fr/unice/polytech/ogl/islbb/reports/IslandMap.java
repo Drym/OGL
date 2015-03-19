@@ -51,7 +51,7 @@ public class IslandMap {
     }
 
     /**
-     * La case a-t-elle déjà été explorée
+     * La case a-t-elle déjà été Scout ?
      */
     public boolean isAlreadyScouted(int x, int y) {
         if (this.isRegistered(x, y) == true) {
@@ -63,11 +63,23 @@ public class IslandMap {
     }
 
     /**
-     * La case x y est-elle déjà explorée ?
+     * La case x y a-t-elle déjà été Explore ?
      */
     public boolean isAlreadyExplored(int x, int y) {
         if (this.isRegistered(x, y) == true) {
             return this.getInformation(x, y).isAlreadyExplored();
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * La case x y est-elle déjà été Glimpse ?
+     */
+    public boolean isAlreadyGlimpsed(int x, int y) {
+        if (this.isRegistered(x, y) == true) {
+            return this.getInformation(x, y).isAlreadyScouted();
         }
         else {
             return false;
