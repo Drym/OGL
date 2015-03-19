@@ -1,11 +1,10 @@
 package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
+
 import fr.unice.polytech.ogl.islbb.actions.*;
-import fr.unice.polytech.ogl.islbb.reports.IslandMap;
-import fr.unice.polytech.ogl.islbb.reports.IslandTile;
-import fr.unice.polytech.ogl.islbb.reports.POI;
-import fr.unice.polytech.ogl.islbb.reports.Resource;
+import fr.unice.polytech.ogl.islbb.reports.*;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -247,7 +246,7 @@ public class Explorer implements IExplorerRaid {
         // Après avoir débarqué l'explorateur post-exploitation, on le fait revenir au lieu d'exploitation comme point de départ pour son exploration.
         if (this.reachingLastObjective == true) {
             // TODO 1 DUP : Il faut une méthode qui renvoie les Move (un par un) à faire pour se déplacer d'une case (x1, y1) à une autre case (x2, y2).
-            while ((this.currentX != this.objectiveX) && (this.currentY != this.objectiveY)) {
+            while ((this.currentX != this.objectiveX) || (this.currentY != this.objectiveY)) {
                 this.lastDecision = "move";
                 if (this.currentY < this.objectiveY) {
                     this.currentY++;
@@ -269,12 +268,12 @@ public class Explorer implements IExplorerRaid {
             // L'explorateur est arrivé à l'ancien lieu d'exploitation et a avancé pour arrivé là (movedToSearch), il est en position pour recommencer à explorer.
             this.reachingLastObjective = false;
             this.movedToSearch = true;
-            this.lastScoutDirection = 0;
         }
 
         // Quand on arrive sur une case dans le but d'explorer.
         if (this.movedToSearch == true) {
             this.movedToSearch = false;
+            this.lastScoutDirection = 0;
 
             // On essaye de trouver une direction dans laquelle Scout.
             // Tant que la direction a déjà été Scout on regarde la prochaine.
@@ -300,8 +299,6 @@ public class Explorer implements IExplorerRaid {
                 return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
             }
         }
-
-
 
         // Dans le cas où aucune décision n'est prise, on arrête.
         this.lastDecision = "exit";
