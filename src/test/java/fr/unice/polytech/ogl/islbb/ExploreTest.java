@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class ExploreTest   {
 
     @Test public void ExploreTest(){
-        assertEquals(Explore.explore(), "{\"action\": \"explore\"}");
+        assertEquals(Explore.explore(), "{\"action\":\"explore\"}");
 
     }
 }
