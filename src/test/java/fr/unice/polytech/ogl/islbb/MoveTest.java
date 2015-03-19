@@ -1,5 +1,6 @@
 package fr.unice.polytech.ogl.islbb;
 
+import fr.unice.polytech.ogl.islbb.actions.Land;
 import fr.unice.polytech.ogl.islbb.actions.Move;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,10 +13,8 @@ public class MoveTest {
 
 
     @Test public void testLand() {
-        Move test = new Move();
-        Move test2 = new Move();
-        assertTrue(!test.equals(null));
-        assertEquals(test.move("N"), test2.move("N"));
+
+        assertEquals(Move.move("N"), "{\"action\":\"move_to\",\"parameters\":{\"direction\":\"N\"}}" );
 
     }
 
