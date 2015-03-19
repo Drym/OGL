@@ -17,23 +17,15 @@ import java.util.List;
  */
 public class Explorer implements IExplorerRaid {
 
-/*    public Boolean hasMoved;
-    public Initialization explorerInitialization;
-    public int decision;
-    public Data data;
-    public Boolean hasScouted;
-    public int card;
-    public Comportement comport;
-    String direction;
-    static public int NB_MOVE_MAX = 20;
-    public String lastDirection;
-    public int resultExploit = 0;
-    public Initialization init;
-    //Montant de la première ressource a exploiter pour finir la mission*/
-
     private Initialization startInformation;
 
     private int budget;
+
+    private String objectiveResource;
+    private int objectiveAmount;
+    private int objectiveRank;
+
+    private int moveBudget;
 
     private IslandMap arenaMap;
     private int currentX, currentY;
@@ -76,16 +68,20 @@ public class Explorer implements IExplorerRaid {
         this.reachingLastObjective = false;
         this.currentAmount = 0;
         this.currentAltitude = 0;
+        this.moveBudget = 0;
 
-/*        data = new Data();
-        hasMoved=false;
-        decision = 0;
-        hasScouted = false;
-        comport = new Comportement();
-        card = 0;
-        this.explorerInitialization = new Initialization(context);
-        this.decision = 0;
-        direction="N";*/
+        // TODO 4 DUP : Duplication de la boucle pour déterminer la ressource à ramener.
+        int min = this.startInformation.getAmount(0);
+
+        for (int i = 0 ; i < this.startInformation.getAmounts().size() ; i++) {
+            if (this.startInformation.getAmount(i) < min) {
+                this.objectiveResource = this.startInformation.getResource(i);
+                this.objectiveAmount = this.startInformation.getAmount(i);
+                this.objectiveRank = i;
+                min = this.objectiveAmount;
+            }
+        }
+
     }
 
     /**
@@ -103,9 +99,34 @@ public class Explorer implements IExplorerRaid {
             return Land.land(this.startInformation.getCreek(), 1);
         }
 
+        if (this.currentAmount >= this.objectiveAmount) {
+            List<String> newResources = this.startInformation.getResources();
+            List<Integer> newAmounts = this.startInformation.getAmounts();
+
+            newResources.remove(this.objectiveRank);
+            newResources.remove(this.objectiveRank);
+
+            this.startInformation.setResources(newResources);
+            this.startInformation.setAmounts(newAmounts);
+
+            this.currentAmount = 0;
+
+            // TODO 4 DUP : Duplication de la boucle pour déterminer la ressource à ramener.
+            int min = this.startInformation.getAmount(0);
+
+            for (int i = 0 ; i < this.startInformation.getAmounts().size() ; i++) {
+                if (this.startInformation.getAmount(i) < min) {
+                    this.objectiveResource = this.startInformation.getResource(i);
+                    this.objectiveAmount = this.startInformation.getAmount(i);
+                    this.objectiveRank = i;
+                    min = this.objectiveAmount;
+                }
+            }
+        }
+
         // TODO 3 OPT : Définir les seuils dans le pourcentage du budget à partir desquels il faut décider de rentrer.
         // Si les objectifs ont étés remplis (lol) on peut rentrer.
-        if ((this.currentAmount >= this.startInformation.getAmount().get(0)) || ((this.budget < 150) && (this.landedMen > 1)) || ((this.budget < 50) && (this.landedMen == 1))) {
+        if (this.moveBudget >= this.budget) {
             this.lastDecision = "exit";
             return Exit.exit();
         }
@@ -146,7 +167,7 @@ public class Explorer implements IExplorerRaid {
                 this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
 
                 // Une case avec la ressource adapté a été trouvée, on débarque avec 10 personnes dans le but de l'exploiter.
-                if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResource(this.startInformation.getResource().get(0)) != null) {
+                if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResource(this.objectiveResource) != null) {
                     this.objectiveX = this.scoutedX;
                     this.objectiveY = this.scoutedY;
                     this.hasObjective = true;
@@ -206,7 +227,7 @@ public class Explorer implements IExplorerRaid {
             // Une fois aux bonnes coordonnées, on exploite.
             this.hasObjective = false;
             this.lastDecision = "exploit";
-            return Exploit.exploit(this.startInformation.getResource().get(0));
+            return Exploit.exploit(this.startInformation.getResources().get(0));
         }
 
         // Après une exploitation, on redébarque avec un explorateur.
@@ -282,47 +303,6 @@ public class Explorer implements IExplorerRaid {
         this.lastDecision = "exit";
         return Exit.exit();
 
-/*        //Si nous avons récolté toutes les ressources demandées
-        if(resultExploit == exploitMission1) {
-            return Exit.exit().toString();
-        }
-        if (this.decision == 0) {
-            this.decision++;
-            return Land.land(this.explorerInitialization.getCreek(), 1).toString();
-        }
-        if(hasMoved&&comport.hasWood(direction)){
-            hasMoved=false;
-            decision++;
-            return Exploit.exploit("WOOD").toString();
-        }
-        hasMoved=false;
-        if(card<4){
-            hasScouted =false;
-        }
-        if (this.decision == NB_MOVE_MAX) {
-            return Exit.exit().toString();
-        }
-        if (hasScouted) {
-            decision++;
-            card = 0;
-            hasMoved=true;
-            //On stock la dernière direction
-            lastDirection = direction;
-            return Move.move(direction).toString();
-        }
-        if (!hasScouted) {
-            decision++;
-            card++;
-            *//*
-            if(lastDirection.equals((data.getCardinaux(card)))) {
-                return null;
-            }
-            *//*
-            return Scout.scout(data.getCardinaux(card - 1));
-        }
-        return Exit.exit().toString();*/
-
-
     }
 
     /**
@@ -353,7 +333,7 @@ public class Explorer implements IExplorerRaid {
 
             // On récupère la liste des ressources et leurs conditions.
             List<Resource> tileResources = new ArrayList<Resource>();
-            JSONArray resourcesArray = JSONResult.getJSONArray("resources");
+            JSONArray resourcesArray = JSONResult.getJSONObject("extras").getJSONArray("resources");
             for (int i = 0 ; i < resourcesArray.length() ; i++) {
                 JSONObject resourceCondition = resourcesArray.getJSONObject(i);
                 tileResources.add(new Resource(resourceCondition.getString("resource"), resourceCondition.getString("amount"), resourceCondition.getString("cond")));
@@ -361,7 +341,7 @@ public class Explorer implements IExplorerRaid {
 
             // On récupère la liste des POI.
             List<POI> tilePOIs = new ArrayList<POI>();
-            JSONArray poisArray = JSONResult.getJSONArray("pois");
+            JSONArray poisArray = JSONResult.getJSONObject("extras").getJSONArray("pois");
             for (int i = 0 ; i < resourcesArray.length() ; i++) {
                 JSONObject poiInformation = poisArray.getJSONObject(i);
                 tilePOIs.add(new POI(poiInformation.getString("kind"), poiInformation.getString("id")));
@@ -380,7 +360,7 @@ public class Explorer implements IExplorerRaid {
         // Après une exploitation, on enlève la ressource de la case.
         else if ((this.lastDecision.equals("exploit")) && (ResultsComputing.getStatus(results))) {
             IslandTile updatedTile = this.arenaMap.getInformation(this.currentX, this.currentY);
-            updatedTile.removeResource(this.startInformation.getResource().get(0));
+            updatedTile.removeResource(this.objectiveResource);
             this.currentAmount += JSONResult.getJSONObject("extras").getInt("amount");
         }
 
@@ -389,40 +369,15 @@ public class Explorer implements IExplorerRaid {
             if (this.arenaMap.isAlreadyScouted(this.currentX, this.currentY)) {
                 this.currentAltitude += this.arenaMap.getInformation(this.currentX, this.currentY).getAltitude();
             }
+            this.moveBudget += JSONResult.getInt("cost");
+        }
+
+        else if ((this.lastDecision.equals("land")) && (ResultsComputing.getStatus(results))) {
+            this.moveBudget = 0;
         }
 
         // On enlève le coût de l'action au budget.
         this.budget -= JSONResult.getInt("cost");
-/*
-        if (this.decision != 1) {
-            if(!hasScouted) {
-                comport.setObj(results);
-                comport.getScout(results,data.getCardinaux(card - 1));
-                if(card>=4){
-                    hasScouted =true;
-                }
-            }
-            if(hasScouted &&!hasMoved){
-                direction=comport.takeDirection();
-            }
-            */
-/*
-            if(hasmoove) {
-                comport.setObj(results);
-                //Vrai, c'est bien déplacé
-                if(comport.getStatus()) {
-                    setClassDirection(direction);
-                }
-            }
-            *//*
-
-            //Compteur de ressource exploité au total
-            if (comport.getExploitAmount() > 0 ) {
-                resultExploit = resultExploit + comport.getExploitAmount();
-            }
-        }
-*/
-
 
     }
 

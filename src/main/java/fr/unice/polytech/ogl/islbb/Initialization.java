@@ -4,17 +4,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ulysse RICCIO on 02/03/15.
- * Classe permetant d'initaliser les informations envoyées par le serveur : budget, men, creek, resource ...
+ * Classe permetant d'initaliser les informations envoyées par le serveur : budget, men, creek, resources ...
  */
 public class Initialization {
 
     private int budget , men;
     private String creek;
-    private ArrayList<String> resource = new ArrayList<String>();
-    private ArrayList<Integer> amount = new ArrayList<Integer>();
+    private List<String> resources = new ArrayList<String>();
+    private List<Integer> amounts = new ArrayList<Integer>();
 
     public Initialization(String str) {
         JSONObject obj = new JSONObject(str);
@@ -23,8 +24,8 @@ public class Initialization {
         men = obj.getInt("men");
         JSONArray arr = obj.getJSONArray("objective");
         for (int i = 0; i < arr.length(); i++) {
-            resource.add(arr.getJSONObject(i).getString("resource"));
-            amount.add(arr.getJSONObject(i).getInt("amount"));
+            resources.add(arr.getJSONObject(i).getString("resources"));
+            amounts.add(arr.getJSONObject(i).getInt("amounts"));
         }
     }
 
@@ -43,9 +44,9 @@ public class Initialization {
         return men;
     }
 
-    public ArrayList<Integer> getAmount()
+    public List<Integer> getAmounts()
     {
-        return amount;
+        return amounts;
     }
 
     public String getCreek()
@@ -53,9 +54,17 @@ public class Initialization {
         return creek;
     }
 
-    public ArrayList<String> getResource()
+    public List<String> getResources()
     {
-        return resource;
+        return resources;
+    }
+
+    public String getResource(int i) {
+        return this.resources.get(i);
+    }
+
+    public int getAmount(int i) {
+        return this.amounts.get(i);
     }
 
     public void setBudget(int m)
@@ -68,16 +77,16 @@ public class Initialization {
         men = m;
     }
 
-    public void setAmount(ArrayList<Integer> m ) { amount = m; }
+    public void setAmounts(List<Integer> m) { amounts = m; }
 
     public void setCreek( String m)
     {
         creek = m;
     }
 
-    public void setResource(ArrayList<String> m)
+    public void setResources(List<String> m)
     {
-        resource = m;
+        resources = m;
     }
 
     /**
@@ -86,8 +95,8 @@ public class Initialization {
      */
     public String initDesc() {
         String desc = "Creek ID: " + this.creek + "\nAction points: " + this.budget + "\nMens available: " + this.men + "\nObjectives:";
-        for (int i = 0 ; i < this.resource.size() ; i++) {
-            desc += "\n" + this.resource.get(i) + ": " + this.amount.get(i);
+        for (int i = 0 ; i < this.resources.size() ; i++) {
+            desc += "\n" + this.resources.get(i) + ": " + this.amounts.get(i);
         }
         desc += "\n";
 
