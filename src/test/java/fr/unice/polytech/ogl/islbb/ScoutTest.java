@@ -1,7 +1,5 @@
 package fr.unice.polytech.ogl.islbb;
 
-import fr.unice.polytech.ogl.islbb.actions.Land;
-import fr.unice.polytech.ogl.islbb.actions.Move;
 import fr.unice.polytech.ogl.islbb.actions.Scout;
 import org.junit.Test;
 import static org.junit.Assert.*;
