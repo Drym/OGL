@@ -14,12 +14,5 @@ import static org.junit.Assert.assertTrue;
  */
 public class ExploreTest   {
 
-    @Test public void testExplore() {
-            Explore test = new Explore();
-            JSONObject equal = new JSONObject("action , explore");
-            assertTrue(!test.equals(null));
-            assertEquals("Les deux objects sont identique", test, equal);
-            }
-
 }
 
