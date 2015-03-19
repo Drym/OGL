@@ -9,7 +9,6 @@ import org.junit.Test;
 public class ExplorerTest {
 
     @Test public void testExplorer(){
-        Explorer test=new Explorer();
-        ///assertEquals(test.takeDecision(),"rien");
+
     }
 }
