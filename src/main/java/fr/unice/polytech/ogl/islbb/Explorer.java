@@ -74,7 +74,7 @@ public class Explorer implements IExplorerRaid {
         int min = this.startInformation.getAmount(0);
 
         for (int i = 0 ; i < this.startInformation.getAmounts().size() ; i++) {
-            if (this.startInformation.getAmount(i) < min) {
+            if (this.startInformation.getAmount(i) <= min) {
                 this.objectiveResource = this.startInformation.getResource(i);
                 this.objectiveAmount = this.startInformation.getAmount(i);
                 this.objectiveRank = i;
@@ -102,14 +102,18 @@ public class Explorer implements IExplorerRaid {
         if (this.currentAmount >= this.objectiveAmount) {
             List<String> newResources = this.startInformation.getResources();
             List<Integer> newAmounts = this.startInformation.getAmounts();
-
             newResources.remove(this.objectiveRank);
-            newResources.remove(this.objectiveRank);
+            newAmounts.remove(this.objectiveRank);
 
             this.startInformation.setResources(newResources);
             this.startInformation.setAmounts(newAmounts);
 
             this.currentAmount = 0;
+
+            if (this.startInformation.getResources().isEmpty()) {
+                this.lastDecision = "exit";
+                return Exit.exit();
+            }
 
             // TODO 4 DUP : Duplication de la boucle pour déterminer la ressource à ramener.
             int min = this.startInformation.getAmount(0);

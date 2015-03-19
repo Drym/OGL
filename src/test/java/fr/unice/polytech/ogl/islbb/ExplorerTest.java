@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
  * Created by user on 14/03/2015.
  */
 public class ExplorerTest {
-    String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}]}";
+    String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 1000}]}";
     String resultland="{\"status\":\"OK\",\"cost\":12}";
     String testN = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
     String testW = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
@@ -46,7 +46,8 @@ public class ExplorerTest {
             //première décision
             test.acknowledgeResults(resultland);
             //regarde si la 2 eme est un scout
-            assertEquals(Scout.scout("N"),test.takeDecision());
+            assertEquals(Scout.scout("N"), test.takeDecision());
+
             while(i<3){
                 test.acknowledgeResults(resultscout.get(i));
                 scoutdecision.add(test.takeDecision());
