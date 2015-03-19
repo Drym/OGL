@@ -1,18 +1,16 @@
 package fr.unice.polytech.ogl.islbb;
 
-import fr.unice.polytech.ogl.islbb.actions.Land;
-import fr.unice.polytech.ogl.islbb.actions.Move;
-import fr.unice.polytech.ogl.islbb.actions.Scout;
+import fr.unice.polytech.ogl.islbb.actions.*;
+
 import junit.framework.TestSuite;
-import org.junit.internal.TextListener;
-import org.junit.runner.JUnitCore;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+
 
 /**
- * Created by user on 14/03/2015.
+ * Created by Thibault OBER on 14/03/2015.
  */
 public class TestRunner {
 

@@ -91,7 +91,6 @@ public class Initialization {
 
     /**
      * Retourne le résultat de la déserialisation du JSON d'initialisation donné par l'arène au lancement, dans une forme plus lisible.
-     * @return
      */
     public String initDesc() {
         String desc = "Creek ID: " + this.creek + "\nAction points: " + this.budget + "\nMens available: " + this.men + "\nObjectives:";

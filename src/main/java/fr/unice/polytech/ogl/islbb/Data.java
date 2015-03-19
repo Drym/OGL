@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by user on 09/03/2015.
+ * Created by Thibault OBER on 09/03/2015.
  */
 public class Data {
 
