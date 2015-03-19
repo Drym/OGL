@@ -1,5 +1,7 @@
 package fr.unice.polytech.ogl.islbb;
 
+import fr.unice.polytech.ogl.islbb.actions.Land;
+import fr.unice.polytech.ogl.islbb.actions.Move;
 import fr.unice.polytech.ogl.islbb.actions.Scout;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,10 +14,8 @@ public class ScoutTest {
 
 
     @Test public void testScout() {
-        Scout test = new Scout();
-        Scout test2 = new Scout();
-        assertTrue(!test.equals(null));
-        assertEquals(test.scout("N"), test2.scout("N"));
+
+        assertEquals(Scout.scout("N"), "{\"action\":\"scout\",\"parameters\":{\"direction\":\"N\"}}" );
 
     }
 
