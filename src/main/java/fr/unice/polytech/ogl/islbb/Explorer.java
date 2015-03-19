@@ -337,12 +337,12 @@ public class Explorer implements IExplorerRaid {
         if ((this.lastDecision.equals("scout")) && (ResultsComputing.getStatus(results))) {
 
             List<Resource> tileResources = new ArrayList<Resource>();
-            JSONArray resourcesArray = JSONResult.getJSONArray("resources");
+            JSONArray resourcesArray = JSONResult.getJSONObject("extras").getJSONArray("resources");
             for (int i = 0 ; i < resourcesArray.length() ; i++) {
                 tileResources.add(new Resource(resourcesArray.getString(i)));
             }
 
-            IslandTile newTile = new IslandTile(JSONResult.getInt("altitude") + this.currentAltitude, tileResources);
+            IslandTile newTile = new IslandTile(JSONResult.getJSONObject("extras").getInt("altitude") + this.currentAltitude, tileResources);
             this.arenaMap.addTile(this.scoutedX, this.scoutedY, newTile);
         }
 
