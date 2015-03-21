@@ -20,6 +20,12 @@ public class IslandTile {
     private boolean alreadyExplored = false;
     private boolean alreadyGlimpsed = false;
 
+    private boolean alreadyExploited = false;
+
+    private boolean unreachable = false;
+
+
+
     /**
      * Méthode d'instanciation lors d'un Scout.
      */
@@ -90,6 +96,13 @@ public class IslandTile {
     }
 
     /**
+     * Méthode pour savoir si une ressource est la seule présente sur la case.
+     */
+    public boolean hasOnlyResource(String aResource) {
+        return ((this.hasResource(aResource) != null) && (this.resources.size() == 1));
+    }
+
+    /**
      * Méthode pour savoir si le biome est présent sur la case.
      */
     public Biome containBiome(String aBiome) {
@@ -106,16 +119,22 @@ public class IslandTile {
      * On supprime la ressource de la case (après une exploitation)
      */
     public void removeResource(String aResource) {
-        if (!this.resources.isEmpty())
-            this.resources.remove(this.resources.indexOf(aResource));
+        if (!this.resources.isEmpty()) {
+            for (Resource currentResource : this.resources) {
+                if (currentResource.getType().equals(aResource)) {
+                    //this.resources.remove(this.resources.indexOf(aResource));
+                    break;
+                }
+            }
+        }
     }
 
     /**
      * Est-ce que la case semble marquer le rivage de l'océan ?
      */
     public boolean isWater() {
-        if (this.altitude < 0) {
-            if (this.hasResource("FISH") != null) {
+        if (true) {
+            if ((this.hasResource("FISH") != null) && (this.resources.size() == 1)) {
                 return true;
             }
             else {
@@ -170,5 +189,13 @@ public class IslandTile {
 
     public void setAltitude(int altitude) {
         this.altitude = altitude;
+    }
+
+    public boolean isAlreadyExploited() {
+        return alreadyExploited;
+    }
+
+    public void setAlreadyExploited(boolean alreadyExploited) {
+        this.alreadyExploited = alreadyExploited;
     }
 }

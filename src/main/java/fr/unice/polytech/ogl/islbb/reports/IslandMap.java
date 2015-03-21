@@ -1,5 +1,9 @@
 package fr.unice.polytech.ogl.islbb.reports;
 
+import fr.unice.polytech.ogl.islbb.Data;
+import fr.unice.polytech.ogl.islbb.ResultsComputing;
+
+import javax.xml.transform.Result;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +16,11 @@ import java.util.Map;
 public class IslandMap {
 
     private Map<String, IslandTile> islandMap;
+    private Data directions;
 
     public IslandMap() {
         this.islandMap = new HashMap<String, IslandTile>();
+        this.directions = new Data();
     }
 
     public void addTile(String coordinates, IslandTile newTile) {
@@ -36,6 +42,21 @@ public class IslandMap {
 
     public boolean isRegistered(int x, int y) {
         return this.islandMap.containsKey(x + "-" + y);
+    }
+
+    public int getHighestTile(int x, int y) {
+        int resultDirection = -1;
+        int highestAltitude = -999;
+        for (int i = 0 ; i < 4 ; i++) {
+            if (this.isAlreadyScouted(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i))) {
+                if ((highestAltitude <= this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getAltitude())
+                && (!this.isWater(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)))) {
+                    resultDirection = i;
+                    highestAltitude = this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getAltitude();
+                }
+            }
+        }
+        return resultDirection;
     }
 
     /**

@@ -25,7 +25,7 @@ public class ResultsComputing {
             return 0;
         }
         else if (direction == 1) {
-           return 1;
+            return 1;
         }
         else if (direction == 2) {
             return 0;
@@ -71,6 +71,21 @@ public class ResultsComputing {
             return -1;
         }
     }
+    public static int parseCondition(String resourceCondition) {
+        if (resourceCondition.equals("HARSH")) {
+            return 0;
+        }
+        else if (resourceCondition.equals("FAIR")) {
+            return 1;
+        }
+        else if (resourceCondition.equals("EASY")) {
+            return 2;
+        }
+        else {
+            return -1;
+        }
+    }
+
 
     public static int computeDistance(int x1, int y1, int x2, int y2) {
         int x = x2 - x1;
