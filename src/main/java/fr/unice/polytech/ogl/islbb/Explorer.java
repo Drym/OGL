@@ -101,12 +101,15 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
+
+        // Première décision, on Land avec 3 hommes.
         if (this.lastDecision == null) {
             this.landedMen = 3;
             this.lastDecision = "land";
             return Land.land(this.startInformation.getCreek(), this.landedMen);
         }
 
+        // Que faut-il faire lorsque l'objectif d'une ressource a été atteint.
         if (this.currentAmount >= this.objectiveAmount) {
             this.currentAmount = 0;
             this.objectiveRank++;
@@ -121,33 +124,42 @@ public class Explorer implements IExplorerRaid {
 
         }
 
+        // Si le budget s'affaiblit, on rentre.
         if ((this.budget <= 50) || (this.budget <= this.moveBudget - 20)) {
             this.lastDecision = "exit";
             return Exit.exit();
         }
 
+        // Après un Land ou tant qu'on a pas Scout dans les 4 directions, on Scout.
         if ((this.lastDecision.equals("land"))
                 || (this.lastDecision.equals("scout") && (this.lastScoutDirection < 4))) {
+
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
                 this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
 
+                // Si la case a déjà été Scout, on la passe.
                 if (this.arenaMap.isAlreadyScouted(this.scoutedX, this.scoutedY)) {
                     this.lastScoutDirection++;
                 }
+                // Sinon, on arrête la boucle avec la bonne direction, puis on Scout.
                 else {
                     break;
                 }
             }
 
+            // Si la boucle précédente s'est arrêtée avant d'avoir balayée toutes les directions (else),
+            // on Scout dans le dernière direction traitée par la boucle.
             if (this.lastScoutDirection < 4) {
                 this.lastDecision = "scout";
                 return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
             }
         }
 
+        // Après avoir Scout dans les 4 directions, on regarde la quelle des 4 cases alentours est la plus intéressante.
         if ((this.lastDecision.equals("scout")) && (this.lastScoutDirection >= 4)) {
 
+            // Cette boucle regarde si une des cases a seulement la ressource qui nous intéresse (potentiellement plus donc).
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
@@ -166,6 +178,7 @@ public class Explorer implements IExplorerRaid {
                 this.lastScoutDirection++;
             }
 
+            // Cette boucle regarde si une des cases a la ressource recherchée (pas uniquement).
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
@@ -185,7 +198,7 @@ public class Explorer implements IExplorerRaid {
             }
 
 
-
+            // Si aucune case de contient la ressource, on essaye d'aller vers la case la plus haute.
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
@@ -202,8 +215,8 @@ public class Explorer implements IExplorerRaid {
                 this.lastScoutDirection++;
             }
 
+            // En dernier recours, on essaye d'éviter l'eau.
             this.lastScoutDirection = 0;
-
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
                 this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
@@ -220,6 +233,7 @@ public class Explorer implements IExplorerRaid {
             }
         }
 
+        // Après un déplacement vers une case sans la ressource qu'on cherche, on recommence à Scout dans les 4 directions.
         if ((this.lastDecision.equals("move")) && (this.hasObjective == false)) {
 
             this.lastScoutDirection = 0;
@@ -241,6 +255,7 @@ public class Explorer implements IExplorerRaid {
                 return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
             }
 
+            // Si après ce déplacement, toutes les cases étaient déjà connues, on continue à avancer dans la dernière direction.
             this.currentX  += ResultsComputing.xOffset(this.lastMoveDirection);
             this.currentY  += ResultsComputing.yOffset(this.lastMoveDirection);
             this.lastDecision = "move";
@@ -248,6 +263,7 @@ public class Explorer implements IExplorerRaid {
 
         }
 
+        // Dans le cas d'un déplacement vers une case contenant l'objectif, on exploite cette case.
         if ((this.lastDecision.equals("move")) && (this.hasObjective == true)) {
             this.hasObjective = false;
             this.lastDecision = "exploit";
@@ -255,6 +271,7 @@ public class Explorer implements IExplorerRaid {
         }
 
 
+        // Après une exploitation, on recommence à Scout dans les 4 directions.
         if (this.lastDecision.equals("exploit")) {
             this.lastScoutDirection = 0;
 
@@ -275,6 +292,7 @@ public class Explorer implements IExplorerRaid {
                 return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
             }
 
+            // Si toutes les cases étaient déjà Scout, on regarde si une case contient uniquement la ressource qui nous intéresse.
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
@@ -293,6 +311,7 @@ public class Explorer implements IExplorerRaid {
                 this.lastScoutDirection++;
             }
 
+            // Sinon, une case qui contient pas uniquement la ressource qui nous intéresse.
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
@@ -312,7 +331,7 @@ public class Explorer implements IExplorerRaid {
             }
 
 
-
+            // Si aucune case intéressante n'est trouvée, on essaye de monter.
             this.lastScoutDirection = 0;
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
@@ -329,8 +348,8 @@ public class Explorer implements IExplorerRaid {
                 this.lastScoutDirection++;
             }
 
+            // Et sinon, on essaye d'éviter l'eau.
             this.lastScoutDirection = 0;
-
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
                 this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
@@ -347,6 +366,7 @@ public class Explorer implements IExplorerRaid {
             }
         }
 
+        // Si aucune décision n'a été prise dans tous les tests précédent, on quitte.
         this.lastDecision = "exit";
         return Exit.exit();
 
