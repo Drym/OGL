@@ -20,7 +20,7 @@ public class Explorer implements IExplorerRaid {
     private Initialization startInformation;
 
     private int budget;
-
+    public List<Objective>objectifs;
     private String objectiveResource;
     private int objectiveAmount;
     private int objectiveRank;
@@ -86,7 +86,7 @@ public class Explorer implements IExplorerRaid {
         this.objectiveTileAmount = -1;
         this.highestAltitudeDirection = -1;
         this.objectiveAltitudeReached = false;
-
+        this.objectifs=Objective.buildobjectives(startInformation.getResources(),startInformation.getAmounts());
         this.objectiveResource = this.startInformation.getResource(0);
         this.objectiveAmount = this.startInformation.getAmount(0);
         this.objectiveRank = 0;

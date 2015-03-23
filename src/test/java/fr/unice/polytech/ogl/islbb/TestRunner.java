@@ -2,6 +2,7 @@ package fr.unice.polytech.ogl.islbb;
 
 import fr.unice.polytech.ogl.islbb.actions.*;
 
+import fr.unice.polytech.ogl.islbb.reports.Objective;
 import junit.framework.TestSuite;
 import static org.junit.Assert.assertEquals;
 
@@ -15,11 +16,11 @@ import java.util.ArrayList;
 public class TestRunner {
 
         public static void main(String args[]) {
-
             TestSuite suite;
             String memo="NOSE";
-            String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}]}";
+            String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600},{ \"resource\": \"FLOWER\", \"amount\":600}]}";
             String resultland="{\"status\":\"OK\",\"cost\":12}";
+            String resultok="{\"status\":\"OK\",\"cost\":100}";
             String testN = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
             String testE = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
             String testS = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
@@ -38,8 +39,11 @@ public class TestRunner {
 
             Explorer test=new Explorer();
             test.initialize(init);
+            for(Objective a:test.objectifs) {
+                System.out.println(a.getObjective());
+            }
             String decision1=test.takeDecision();
-            assertEquals(decision1, Land.land("creek_id", 1));
+            assertEquals(decision1, Land.land("creek_id", 3));
             test.acknowledgeResults(resultland);
             assertEquals(Scout.scout("N"), test.takeDecision());
             while(i<3){
@@ -57,14 +61,14 @@ public class TestRunner {
             }
             test.acknowledgeResults(resultscout.get(3));//scout ouest
             System.out.println(test.takeDecision());
-            test.acknowledgeResults(resultland);
+            test.acknowledgeResults(resultok);
             System.out.println(test.takeDecision());
-
 //        JUnitCore runner = new JUnitCore();
 //        runner.addListener(new TextListener(System.out));
 //        runner.run(ComportementTest.class);
 //        TestSuite suite= new TestSuite();
 //        suite.addTest(new ExploreTest());
-//        junit.textui.TestRunner.run(suite);
-//       }
-}}
+//        junit.textui.TestRunner.run(suite);*//*
+       }
+
+}
