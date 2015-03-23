@@ -1,5 +1,6 @@
 package fr.unice.polytech.ogl.islbb.reports;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -91,6 +92,21 @@ public class IslandTile {
                     return currentResource;
                 }
             }
+        }
+        return null;
+    }
+/*
+Méthode pour savoir si une des ressources d une liste est présente
+ */
+    public List<Resource> hasResources(List<String>res) {
+        List<Resource> list = new ArrayList<Resource>();
+        if (this.alreadyExplored || this.alreadyScouted) {
+            for (Resource currentResource : this.resources) {
+                if (currentResource.getType().equals(res)) {
+                    list.add(currentResource);
+                }
+            }
+        return list;
         }
         return null;
     }

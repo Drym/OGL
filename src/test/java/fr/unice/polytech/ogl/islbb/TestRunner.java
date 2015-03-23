@@ -18,7 +18,7 @@ public class TestRunner {
         public static void main(String args[]) {
             TestSuite suite;
             String memo="NOSE";
-            String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600},{ \"resource\": \"FLOWER\", \"amount\":600}]}";
+            String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600},{ \"resource\": \"FLOWER\", \"amount\":300}]}";
             String resultland="{\"status\":\"OK\",\"cost\":12}";
             String resultok="{\"status\":\"OK\",\"cost\":100}";
             String testN = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
@@ -39,9 +39,12 @@ public class TestRunner {
 
             Explorer test=new Explorer();
             test.initialize(init);
+            //regarde les objectifs
             for(Objective a:test.objectifs) {
-                System.out.println(a.getObjective());
+                System.out.println(a.getObjective()+" "+a.getAmount());
+
             }
+
             String decision1=test.takeDecision();
             assertEquals(decision1, Land.land("creek_id", 3));
             test.acknowledgeResults(resultland);
