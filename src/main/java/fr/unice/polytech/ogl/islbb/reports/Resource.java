@@ -60,4 +60,6 @@ public class Resource {
         this.condition = condition;
     }
 
+
+
 }

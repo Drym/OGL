@@ -15,7 +15,7 @@ public class IslandTile {
     private List<Resource> resources;
     private List<POI> pois;
     private List<Biome> biomes;
-    private int glimpseRange;
+    private int glimpsedRange;
 
     private boolean alreadyScouted = false;
     private boolean alreadyExplored = false;
@@ -53,10 +53,19 @@ public class IslandTile {
     public IslandTile(List<Biome> biomeList, int range) {
         this.altitude = 0;
         this.biomes = biomeList;
-        this.glimpseRange = range;
+        this.glimpsedRange = range;
         this.alreadyGlimpsed = true;
     }
 
+    /**
+     * Méthode pour Scout une case.
+     */
+    public void scoutTile(List<Resource> scoutedResources, int scoutedAltitude) {
+        if (this.alreadyExplored != true) {
+            this.resources = scoutedResources;
+        }
+        this.altitude = scoutedAltitude;
+    }
 
     /**
      * Méthode pour explorer une case (rajouter les conditions des ressources).
@@ -76,8 +85,9 @@ public class IslandTile {
             this.alreadyGlimpsed = true;
         }
         else {
-            if (this.glimpseRange < range) {
+            if (this.glimpsedRange < range) {
                 this.biomes = glimpsedBiome;
+                this.glimpsedRange = range;
             }
         }
     }
@@ -95,9 +105,17 @@ public class IslandTile {
         }
         return null;
     }
-/*
-Méthode pour savoir si une des ressources d une liste est présente
- */
+
+    /**
+     * Méthode pour savoir si une ressource est uniquement présente sur la case.
+     */
+    public boolean hasOnlyResource(String aResource) {
+        return ((this.hasResource(aResource) != null) && (this.resources.size() == 1));
+    }
+
+    /**
+     * Méthode pour savoir si une liste de ressources sont présentes sur la case.
+     */
     public List<Resource> hasResources(List<String>res) {
         List<Resource> list = new ArrayList<Resource>();
         if (this.alreadyExplored || this.alreadyScouted) {
@@ -106,16 +124,9 @@ Méthode pour savoir si une des ressources d une liste est présente
                     list.add(currentResource);
                 }
             }
-        return list;
+            return list;
         }
         return null;
-    }
-
-    /**
-     * Méthode pour savoir si une ressource est la seule présente sur la case.
-     */
-    public boolean hasOnlyResource(String aResource) {
-        return ((this.hasResource(aResource) != null) && (this.resources.size() == 1));
     }
 
     /**
