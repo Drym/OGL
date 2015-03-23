@@ -32,6 +32,15 @@ public class Objective {
         this.objective = objective;
     }
 
+    public boolean updateAmount( int exploit )
+    {
+        amount -= exploit;
+        if ( amount <= 0 )
+        {
+            return false;
+        }
+        return true;
+    }
 
     public static List<Objective> buildobjectives(List<String> res,List<Integer>amount ){
         List<Objective>list=new ArrayList<Objective>();
