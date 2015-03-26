@@ -19,6 +19,7 @@ public class ExplorerTest {
     String testS = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
     String testE = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
     String exploit="{\"status\":\"OK\",\"cost\":40,\"extras\":{\"amount\":600}}";
+    String testScout ="{\"status\":\"OK\",\"cost\":550,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
     ArrayList<String>resultscout;
     Data cardinaux;
     ArrayList<String>scoutdecision;
@@ -66,6 +67,22 @@ public class ExplorerTest {
         System.out.println(test.takeDecision());
         }
     @Test public void testAmount(){
+
+    }
+
+    /**
+     * @Creator Lucas
+     * Vérifie si le bot quitte bien l'ile quand son budget est infèrieur a 50
+     */
+    @Test public void testStopByBudget(){
+        Explorer test=new Explorer();
+        test.initialize(init);
+        String decision1=test.takeDecision();
+
+        //première décision ( coute 550 avec 600 de budget)
+        test.acknowledgeResults(testScout);
+        //regarde si le bot quiite l'ile
+        assertEquals(Exit.exit(), test.takeDecision());
 
     }
 }
