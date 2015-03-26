@@ -112,16 +112,28 @@ public class IslandTile {
     public boolean hasOnlyResource(String aResource) {
         return ((this.hasResource(aResource) != null) && (this.resources.size() == 1));
     }
-
+    /*
+    Méthode pour savoir si une ressource parmis la liste des objectifs est uniquement présente
+     */
+    public boolean hasOnlyResources(List<Objective>res) {
+        for (Objective obj:res){
+            if((this.hasResource(obj.getObjective()) != null) && (this.resources.size() == 1)){
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Méthode pour savoir si une liste de ressources sont présentes sur la case.
      */
-    public List<Resource> hasResources(List<String>res) {
+    public List<Resource> hasResources(List<Objective>res) {
         List<Resource> list = new ArrayList<Resource>();
         if (this.alreadyExplored || this.alreadyScouted) {
             for (Resource currentResource : this.resources) {
-                if (currentResource.getType().equals(res)) {
-                    list.add(currentResource);
+                for (Objective obj : res) {
+                    if (currentResource.getType().equals(obj.getObjective())) {
+                        list.add(currentResource);
+                    }
                 }
             }
             return list;

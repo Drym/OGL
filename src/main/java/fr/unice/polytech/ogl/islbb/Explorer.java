@@ -165,13 +165,17 @@ public class Explorer implements IExplorerRaid {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
                 this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
 
-                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasOnlyResource(this.objectiveResource) == true)
+                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasOnlyResources(this.objectifs) == true)
                         && (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isAlreadyExploited())) {
                     this.hasObjective = true;
                     this.currentX = this.scoutedX;
                     this.currentY = this.scoutedY;
                     this.lastMoveDirection = this.lastScoutDirection;
                     this.lastDecision = "move";
+                    System.out.println("cas1");
+
+                    this.objectiveResource=this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType();
+
                     return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
                 }
 
@@ -183,14 +187,17 @@ public class Explorer implements IExplorerRaid {
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
                 this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResource(this.objectiveResource) != null)
+                //System.out.println(this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType());
+                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).size()>0)
                         && (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isAlreadyExploited())) {
                     this.hasObjective = true;
                     this.currentX = this.scoutedX;
                     this.currentY = this.scoutedY;
+                    this.objectiveResource=this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType();
                     this.lastMoveDirection = this.lastScoutDirection;
                     this.lastDecision = "move";
+                    System.out.println("cas2"+lastScoutDirection);
+                    System.out.println("cas2"+lastScoutDirection);
                     return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
                 }
 
@@ -209,6 +216,7 @@ public class Explorer implements IExplorerRaid {
                     this.currentY = this.scoutedY;
                     this.lastMoveDirection = this.lastScoutDirection;
                     this.lastDecision = "move";
+                    System.out.println("cas3");
                     return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
                 }
 
@@ -683,7 +691,8 @@ public class Explorer implements IExplorerRaid {
             IslandTile updatedTile = this.arenaMap.getInformation(this.currentX, this.currentY);
             updatedTile.setAlreadyExploited(true);
             updatedTile.removeResource(this.objectiveResource);
-            this.currentAmount += JSONResult.getJSONObject("extras").getInt("amount");
+            objectifs=Exploit.updateAmount(objectifs,this.objectiveResource,JSONResult.getJSONObject("extras").getInt("amount"));
+            //this.currentAmount += JSONResult.getJSONObject("extras").getInt("amount"); A VOIR si exploit retourne quantité.
         }
 
         // Après un déplacement, on met à jour l'altitude, si on la connaît.
