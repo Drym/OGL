@@ -13,12 +13,12 @@ public class Data {
     HashMap<Integer,String>card;
 
     public Data() {
-        card=new HashMap<Integer,String>();
-        card.put(1,"N");
-        card.put(2,"N");
-        card.put(3,"N");
-        card.put(4,"N");
-        cardinaux = new ArrayList<String>();
+        card = new HashMap<>();
+        card.put(1, "N");
+        card.put(2, "N");
+        card.put(3, "N");
+        card.put(4, "N");
+        cardinaux = new ArrayList<>();
         cardinaux.add("N");
         cardinaux.add("E");
         cardinaux.add("S");

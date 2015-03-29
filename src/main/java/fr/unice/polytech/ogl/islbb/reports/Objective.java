@@ -11,13 +11,13 @@ public class Objective {
     private int amount;
     private String objective;
 
-    Objective(String obj , int number ) {
+    public Objective(String obj , int number) {
         amount = number;
         objective = obj;
     }
 
     public int getAmount() {
-        return amount;
+        return this.amount;
     }
 
     public void setAmount(int amount) {
@@ -25,28 +25,27 @@ public class Objective {
     }
 
     public String getObjective() {
-        return objective;
+        return this.objective;
     }
 
     public void setObjective(String objective) {
         this.objective = objective;
     }
 
-    public boolean updateAmount( int exploit )
+    public boolean updateAmount(int exploit)
     {
         amount -= exploit;
-        if ( amount <= 0 )
-        {
+        if (amount <= 0) {
             return false;
         }
         return true;
     }
 
-    public static List<Objective> buildobjectives(List<String> res,List<Integer>amount ){
+    public static List<Objective> buildObjectives(List<String> res, List<Integer> amount){
         List<Objective>list=new ArrayList<Objective>();
         int i;
         for(i=0;i<res.size();i++){
-            Objective nouv=new Objective(res.get(i),amount.get(i));
+            Objective nouv = new Objective(res.get(i),amount.get(i));
             list.add(nouv);
         }
         return list;

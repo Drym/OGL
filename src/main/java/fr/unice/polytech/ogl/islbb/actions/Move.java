@@ -1,5 +1,6 @@
 package fr.unice.polytech.ogl.islbb.actions;
 
+import fr.unice.polytech.ogl.islbb.Data;
 import org.json.JSONObject;
 
 /**
@@ -9,11 +10,23 @@ import org.json.JSONObject;
 public final class Move {
 
     public static String move(String dir) {
-        JSONObject obj=new JSONObject();
+        JSONObject obj = new JSONObject();
         JSONObject obj2 = new JSONObject();
-        obj2.put("direction",dir);
-        obj.put("action","move_to");
-        obj.put("parameters",obj2);
+        obj2.put("direction", dir);
+        obj.put("action", "move_to");
+        obj.put("parameters", obj2);
+        return obj.toString();
+    }
+
+    public static String move(int dir) {
+
+        Data directions = new Data();
+
+        JSONObject obj = new JSONObject();
+        JSONObject obj2 = new JSONObject();
+        obj2.put("direction", directions.getCardinaux(dir));
+        obj.put("action", "move_to");
+        obj.put("parameters", obj2);
         return obj.toString();
     }
 

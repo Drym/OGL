@@ -63,12 +63,25 @@ public class IslandMap {
      * La case semble-t-elle être de l'océan ?
      */
     public boolean isWater(int x, int y) {
-        if (this.isRegistered(x, y) == true) {
+        if (this.isRegistered(x, y)) {
             return this.getInformation(x, y).isWater();
         }
         else {
             return false;
         }
+    }
+
+    public int lessWaterDirection(int x, int y) {
+        int result = 0;
+        int minimumWater = 100;
+        for (int i = 0 ; i < 4 ; i++) {
+            int currentWater = this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getOceanPart();
+            if (minimumWater >= currentWater) {
+                result = i;
+                minimumWater = currentWater;
+            }
+        }
+        return result;
     }
 
     /**
@@ -100,7 +113,7 @@ public class IslandMap {
      */
     public boolean isAlreadyGlimpsed(int x, int y) {
         if (this.isRegistered(x, y) == true) {
-            return this.getInformation(x, y).isAlreadyScouted();
+            return this.getInformation(x, y).isAlreadyGlimpsed();
         }
         else {
             return false;

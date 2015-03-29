@@ -1,60 +1,58 @@
 package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
-
 import fr.unice.polytech.ogl.islbb.actions.*;
 import fr.unice.polytech.ogl.islbb.reports.*;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * Classe qui implemente les différentes actions du robot
  */
 public class Explorer implements IExplorerRaid {
 
-    private Initialization startInformation;
+    // CONSTANTS
+    private final static int MEN_USED = 3;
 
+    private Initialization contract;
+
+    private String creek;
     private int budget;
-    public List<Objective>objectifs;
-    private String objectiveResource;
-    private int objectiveAmount;
-    private int objectiveRank;
-
-    private int moveBudget;
-
-    private IslandMap arenaMap;
-    private int currentX, currentY;
-    private int currentAltitude;
-    private int scoutedX, scoutedY;
-
-    private String lastDecision;
-    private int lastScoutDirection;
-    private int lastMoveDirection;
-
-    private Data directions;
-
-    private Boolean hasObjective;
-    private int objectiveX, objectiveY;
-    private boolean movedToSearch;
+    private int men;
+    private List<Objective> objectives;
 
     private int landedMen;
-    private int currentAmount;
-    private boolean reachingLastObjective;
 
-    private boolean exploreObjective;
-    private boolean exploitObjective;
-    private int objectiveTileAmount;
-    private int objectiveTileCondition;
+    private IslandMap arenaMap;
 
-    private int highestAltitudeDirection;
-    private boolean objectiveAltitudeReached;
+    private int currentAltitude;
+    private int currentX;
+    private int currentY;
+
+    private int moveBudget;
+    private int deltaX;
+    private int deltaY;
+
+    private int lastScoutDirection;
+    private int scoutedX;
+    private int scoutedY;
 
 
+    private int lastMoveDirection;
+
+    private int lastGlimpseDirection;
+
+    private String exploitObjective;
+    private int objectiveX;
+    private int objectiveY;
+    private boolean hasObjective;
+
+    private String lastDecision;
 
 
     /**
@@ -65,31 +63,38 @@ public class Explorer implements IExplorerRaid {
     @Override
     public void initialize(String context) {
 
-        this.startInformation = new Initialization(context);
-        this.budget = this.startInformation.getBudget();
+        this.contract = new Initialization(context);
+
+        this.creek = this.contract.getCreek();
+        this.budget = this.contract.getBudget();
+        this.men = contract.getMen();
+        this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
+
+        this.landedMen = Math.min(this.men, this.MEN_USED);
+
         this.arenaMap = new IslandMap();
+
+        this.currentAltitude = 0;
         this.currentX = 0;
         this.currentY = 0;
-        this.lastDecision = null;
-        this.lastScoutDirection = 0;
-        this.lastMoveDirection = -1;
-        this.directions = new Data();
-        this.hasObjective = false;
-        this.movedToSearch = false;
-        this.landedMen = 0;
-        this.reachingLastObjective = false;
-        this.currentAmount = 0;
-        this.currentAltitude = 0;
+
         this.moveBudget = 0;
-        this.exploreObjective = false;
-        this.exploitObjective = false;
-        this.objectiveTileAmount = -1;
-        this.highestAltitudeDirection = -1;
-        this.objectiveAltitudeReached = false;
-        this.objectifs=Objective.buildobjectives(startInformation.getResources(),startInformation.getAmounts());
-        this.objectiveResource = this.startInformation.getResource(0);
-        this.objectiveAmount = this.startInformation.getAmount(0);
-        this.objectiveRank = 0;
+
+        this.lastScoutDirection = 0;
+        this.scoutedX = 0;
+        this.scoutedY = 0;
+
+
+        this.lastMoveDirection = 0;
+
+        this.lastGlimpseDirection = 0;
+
+        this.exploitObjective = null;
+        this.objectiveX = 0;
+        this.objectiveY = 0;
+        this.hasObjective = false;
+
+        this.lastDecision = null;
 
     }
 
@@ -101,526 +106,119 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
-
-        // Première décision, on Land avec 3 hommes.
         if (this.lastDecision == null) {
-            this.landedMen = 3;
             this.lastDecision = "land";
-            return Land.land(this.startInformation.getCreek(), this.landedMen);
+            return Land.land(this.creek, this.landedMen);
         }
 
-        // Que faut-il faire lorsque l'objectif d'une ressource a été atteint.
-        if (this.currentAmount >= this.objectiveAmount) {
-            this.currentAmount = 0;
-            this.objectiveRank++;
 
-            if (this.objectiveRank >= this.startInformation.getResources().size()) {
-                this.lastDecision = "exit";
-                return Exit.exit();
-            }
-
-            this.objectiveResource = this.startInformation.getResource(this.objectiveRank);
-            this.objectiveAmount = this.startInformation.getAmount(this.objectiveRank);
-
-        }
-
-        // Si le budget s'affaiblit, on rentre.
-        if ((this.budget <= 50) || (this.budget <= this.moveBudget - 20)) {
+        if (75 > this.budget) {
             this.lastDecision = "exit";
             return Exit.exit();
         }
 
-        // Après un Land ou tant qu'on a pas Scout dans les 4 directions, on Scout.
-        if ((this.lastDecision.equals("land"))
-                || (this.lastDecision.equals("scout") && (this.lastScoutDirection < 4))) {
-
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                // Si la case a déjà été Scout, on la passe.
-                if (this.arenaMap.isAlreadyScouted(this.scoutedX, this.scoutedY)) {
-                    this.lastScoutDirection++;
-                }
-                // Sinon, on arrête la boucle avec la bonne direction, puis on Scout.
-                else {
-                    break;
-                }
-            }
-
-            // Si la boucle précédente s'est arrêtée avant d'avoir balayée toutes les directions (else),
-            // on Scout dans le dernière direction traitée par la boucle.
-            if (this.lastScoutDirection < 4) {
-                this.lastDecision = "scout";
-                return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
-            }
+        if (this.objectives.isEmpty()) {
+            this.lastDecision = "exit";
+            return Exit.exit();
         }
 
-        // Après avoir Scout dans les 4 directions, on regarde la quelle des 4 cases alentours est la plus intéressante.
-        if ((this.lastDecision.equals("scout")) && (this.lastScoutDirection >= 4)) {
-
-            // Cette boucle regarde si une des cases a seulement la ressource qui nous intéresse (potentiellement plus donc).
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasOnlyResources(this.objectifs) == true)
-                        && (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isAlreadyExploited())) {
-                    this.hasObjective = true;
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    //System.out.println("cas1");
-
-                    this.objectiveResource=this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType();
-
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-
-            // Cette boucle regarde si une des cases a la ressource recherchée (pas uniquement).
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-                //System.out.println(this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType());
-                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).size()>0)
-                        && (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isAlreadyExploited())) {
-                    this.hasObjective = true;
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.objectiveResource=this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType();
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    //System.out.println("cas2"+lastScoutDirection);
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-
-
-            // Si aucune case de contient la ressource, on essaye d'aller vers la case la plus haute.
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).getAltitude() > 0) {
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    //System.out.println("cas3");
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-
-            // En dernier recours, on essaye d'éviter l'eau.
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isWater()) {
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-        }
-
-        // Après un déplacement vers une case sans la ressource qu'on cherche, on recommence à Scout dans les 4 directions.
-        if ((this.lastDecision.equals("move")) && (this.hasObjective == false)) {
-
-            this.lastScoutDirection = 0;
-
+        if (((this.lastDecision.equals("land")) || (this.lastDecision.equals("scout")) || (this.lastDecision.equals("move")) || (this.lastDecision.equals("exploit"))) && (!this.hasObjective)) {
             while (this.lastScoutDirection < 4) {
                 this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
                 this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
 
                 if (this.arenaMap.isAlreadyScouted(this.scoutedX, this.scoutedY)) {
-                    this.lastScoutDirection++;
-                }
-                else {
+                    if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(this.objectives).isEmpty()) {
+                        this.lastScoutDirection++;
+                    } else {
+                        this.objectiveX = this.scoutedX;
+                        this.objectiveY = this.scoutedY;
+                        if (!this.arenaMap.getInformation(this.objectiveX, this.objectiveY).isAlreadyExploited()) {
+                            this.hasObjective = true;
+                            this.exploitObjective = this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(this.objectives).get(0).getType();
+                            break;
+                        }
+                    }
+                } else {
                     break;
                 }
+
             }
 
-            if (this.lastScoutDirection < 4) {
-                this.lastDecision = "scout";
-                return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
+            if (!this.hasObjective) {
+                if (this.lastScoutDirection < 4) {
+                    this.lastDecision = "scout";
+                    return Scout.scout(this.lastScoutDirection);
+                }
+                else {
+                    this.lastScoutDirection = 0;
+                    this.lastGlimpseDirection = 0;
+                    this.lastDecision = "glimpse";
+                    return Glimpse.glimpse(this.lastGlimpseDirection, 2);
+                }
             }
-
-            // Si après ce déplacement, toutes les cases étaient déjà connues, on continue à avancer dans la dernière direction.
-            this.currentX  += ResultsComputing.xOffset(this.lastMoveDirection);
-            this.currentY  += ResultsComputing.yOffset(this.lastMoveDirection);
-            this.lastDecision = "move";
-            return Move.move(this.directions.getCardinaux(this.lastMoveDirection));
 
         }
 
-        // Dans le cas d'un déplacement vers une case contenant l'objectif, on exploite cette case.
-        if ((this.lastDecision.equals("move")) && (this.hasObjective == true)) {
+        if (this.lastDecision.equals("glimpse")) {
+            while (this.lastGlimpseDirection < 4) {
+                if (this.arenaMap.isAlreadyGlimpsed(this.currentX + ResultsComputing.xOffset(this.lastGlimpseDirection), this.currentY + ResultsComputing.yOffset(this.lastGlimpseDirection))) {
+                    if (this.arenaMap.isWater(this.currentX + ResultsComputing.xOffset(this.lastGlimpseDirection), this.currentY + ResultsComputing.yOffset(this.lastGlimpseDirection))) {
+                        this.lastGlimpseDirection++;
+                    }
+                    else if (!this.arenaMap.getInformation(this.currentX + ResultsComputing.xOffset(this.lastGlimpseDirection), this.currentY + ResultsComputing.yOffset(this.lastGlimpseDirection)).isAlreadyExploited()) {
+                        this.lastMoveDirection = this.lastGlimpseDirection;
+                        this.lastGlimpseDirection = 0;
+                        this.lastDecision = "move";
+                        return Move.move(this.lastMoveDirection);
+                    }
+                    else {
+                        this.lastGlimpseDirection++;
+                    }
+                }
+                else {
+                    return Glimpse.glimpse(this.lastGlimpseDirection, 2);
+                }
+
+            }
+
+            if (this.lastGlimpseDirection >= 4) {
+                this.lastMoveDirection = this.arenaMap.lessWaterDirection(this.currentX, this.currentY);
+                this.lastGlimpseDirection = 0;
+                this.lastDecision = "move";
+                return Move.move(this.lastMoveDirection);
+            }
+        }
+
+        if (this.hasObjective) {
+            this.lastScoutDirection = 0;
+            if ((this.currentX != this.objectiveX) || (this.currentY != this.objectiveY)) {
+                this.lastDecision = "move";
+                if (this.currentX < this.objectiveX) {
+                    this.lastMoveDirection = 1;
+                    return Move.move(this.lastMoveDirection);
+                }
+                if (this.currentX > this.objectiveX) {
+                    this.lastMoveDirection = 3;
+                    return Move.move(this.lastMoveDirection);
+                }
+                if (this.currentY < this.objectiveY) {
+                    this.lastMoveDirection = 0;
+                    return Move.move(this.lastMoveDirection);
+                }
+                if (this.currentY > this.objectiveY) {
+                    this.lastMoveDirection = 2;
+                    return Move.move(this.lastMoveDirection);
+                }
+            }
+
             this.hasObjective = false;
             this.lastDecision = "exploit";
-            return Exploit.exploit(this.objectiveResource);
+            return Exploit.exploit(this.exploitObjective);
         }
 
-
-        // Après une exploitation, on recommence à Scout dans les 4 directions.
-        if (this.lastDecision.equals("exploit")) {
-            this.lastScoutDirection = 0;
-
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if (this.arenaMap.isAlreadyScouted(this.scoutedX, this.scoutedY)) {
-                    this.lastScoutDirection++;
-                }
-                else {
-                    break;
-                }
-            }
-
-            if (this.lastScoutDirection < 4) {
-                this.lastDecision = "scout";
-                return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
-            }
-
-            // Si toutes les cases étaient déjà Scout, on regarde si une case contient uniquement la ressource qui nous intéresse.
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasOnlyResource(this.objectiveResource) == true)
-                        && (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isAlreadyExploited())) {
-                    this.hasObjective = true;
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-
-            // Sinon, une case qui contient pas uniquement la ressource qui nous intéresse.
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if ((this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResource(this.objectiveResource) != null)
-                        && (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isAlreadyExploited())) {
-                    this.hasObjective = true;
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-
-
-            // Si aucune case intéressante n'est trouvée, on essaye de monter.
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).getAltitude() > 0) {
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-
-            // Et sinon, on essaye d'éviter l'eau.
-            this.lastScoutDirection = 0;
-            while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if (!this.arenaMap.getInformation(this.scoutedX, this.scoutedY).isWater()) {
-                    this.currentX = this.scoutedX;
-                    this.currentY = this.scoutedY;
-                    this.lastMoveDirection = this.lastScoutDirection;
-                    this.lastDecision = "move";
-                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-                }
-
-                this.lastScoutDirection++;
-            }
-        }
-
-        // Si aucune décision n'a été prise dans tous les tests précédent, on quitte.
         this.lastDecision = "exit";
         return Exit.exit();
-
-//
-//        // Première décision (aucune dernière décision) on débarque avec une personne.
-//        if (this.lastDecision == null) {
-//            this.landedMen = 5;
-//            this.lastDecision = "land";
-//            return Land.land(this.startInformation.getCreek(), this.landedMen);
-//        }
-//
-//
-//        // TODO 3 OPT : Définir les seuils dans le pourcentage du budget à partir desquels il faut décider de rentrer.
-//        // Si les objectifs ont étés remplis (lol) on peut rentrer.
-//        if ((this.budget + 50 <= this.moveBudget) || (this.budget < 50)) {
-//            this.lastDecision = "exit";
-//            return Exit.exit();
-//        }
-//
-//        if (this.currentAmount >= this.objectiveAmount) {
-//            List<String> newResources = this.startInformation.getResources();
-//            List<Integer> newAmounts = this.startInformation.getAmounts();
-//            newResources.remove(this.objectiveRank);
-//            newAmounts.remove(this.objectiveRank);
-//
-//            this.startInformation.setResources(newResources);
-//            this.startInformation.setAmounts(newAmounts);
-//
-//            this.currentAmount = 0;
-//
-//            if (this.startInformation.getResources().isEmpty()) {
-//                this.lastDecision = "exit";
-//                return Exit.exit();
-//            }
-//
-//            // TODO 4 DUP : Duplication de la boucle pour déterminer la ressource à ramener.
-//            int min = this.startInformation.getAmount(0);
-//
-//            for (int i = 0 ; i < this.startInformation.getAmounts().size() ; i++) {
-//                if (this.startInformation.getAmount(i) < min) {
-//                    this.objectiveResource = this.startInformation.getResource(i);
-//                    this.objectiveAmount = this.startInformation.getAmount(i);
-//                    this.objectiveRank = i;
-//                    min = this.objectiveAmount;
-//                }
-//            }
-//        }
-//
-//        if (this.exploreObjective == true) {
-//            this.exploreObjective = false;
-//            this.lastDecision = "explore";
-//            return Explore.explore();
-//        }
-//
-//        if ((this.lastDecision.equals("explore")) && (this.objectiveTileAmount < 2) && (this.objectiveTileCondition < 2)) {
-//            this.hasObjective = false;
-//            this.lastScoutDirection = 0;
-//        }
-//
-//        // On Scout dans toutes les directions au lancement
-//        if (((Objects.equals(this.lastDecision, "land")) && (this.hasObjective == false) && (this.reachingLastObjective == false))
-//                || ((Objects.equals(this.lastDecision, "scout")) && (this.lastScoutDirection < 4))
-//                || ((this.lastDecision.equals("explore")) && (this.hasObjective == false))) {
-//
-//            // On essaye de trouver une direction dans laquelle Scout.
-//            // Tant que la direction a déjà été Scout on regarde la prochaine.
-//            // Si la direction n'a pas été Scout, on interrompt la boucle pour la choisir.
-//            // TODO 2 DUP : Il faut une méthode qui sorte la prochaine direction à Scout en fonction de la case (x, y) donnée.
-//            while (this.lastScoutDirection < 4) {
-//                if (this.arenaMap.isAlreadyScouted(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
-//                    this.lastScoutDirection++;
-//                }
-//                else {
-//                    break;
-//                }
-//            }
-//
-//            // On Scout la première direction disponible (sens horaire)
-//            // Si toutes les directions ont été Scout, rien ne se passe dans cette condition et on passe à la suivante.
-//            // Sinon on Scout celle trouvée dans la boucle précédente.
-//            if (this.lastScoutDirection < 4) {
-//                // On définit les coordonnées de la case qu'on va Scout en fonction de l'orientation, pour ensuite enregistrer les informations dans la carte.
-//                this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
-//                this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
-//                this.lastDecision = "scout";
-//                return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
-//            }
-//        }
-//
-//        // Après avoir Scout dans les 4 directions, on choisit la première case adapté à nos besoins, s'il y en a une.
-//        if ((Objects.equals(this.lastDecision, "scout")) && (this.lastScoutDirection >= 4)) {
-//            this.lastScoutDirection = 0;
-//            while (this.lastScoutDirection < 4) {
-//                this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
-//                this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
-//
-//                // Une case avec la ressource adapté a été trouvée, on va l'explorer.
-//                if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResource(this.objectiveResource) != null) {
-//                    this.objectiveX = this.scoutedX;
-//                    this.objectiveY = this.scoutedY;
-//                    this.hasObjective = true;
-//
-//                    this.exploreObjective = true;
-//                    this.currentX = this.scoutedX;
-//                    this.currentY = this.scoutedY;
-//                    this.lastDecision = "move";
-//                    return Move.move(this.directions.getCardinaux(lastScoutDirection));
-//
-//                    /*// TODO 4 IMP : Attention à la position du débarquement lors de la gestion de multiples criques.
-//                    this.currentX = 0;
-//                    this.currentY = 0;
-//
-//                    this.lastScoutDirection = 0;
-//                    this.landedMen = 25;
-//                    this.lastDecision = "land";
-//                    return Land.land(this.startInformation.getCreek(), this.landedMen);*/
-//                }
-//
-//                this.lastScoutDirection++;
-//            }
-//
-//            // Aucune des cases aux alentours contient la ressource appropriée ? On avance vers la première case qui n'est pas de l'eau (sens horaire).
-//            this.lastScoutDirection = 0;
-//            while (this.lastScoutDirection < 4) {
-//                if (!this.arenaMap.isWater(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
-//                    this.currentX += ResultsComputing.xOffset(this.lastScoutDirection);
-//                    this.currentY += ResultsComputing.yOffset(this.lastScoutDirection);
-//                    this.movedToSearch = true;
-//                    this.lastScoutDirection = 0;
-//                    this.lastDecision = "move";
-//                    return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
-//                }
-//                this.lastScoutDirection++;
-//            }
-//
-//        }
-//
-//        if ((this.lastDecision.equals("explore")) && (this.hasObjective = true)) {
-//            this.currentX = 0;
-//            this.currentY = 0;
-//            this.landedMen = 25;
-//            this.lastDecision = "land";
-//            return Land.land(this.startInformation.getCreek(), this.landedMen);
-//        }
-//
-//        // Quand on a choisi une case on avance jusqu'à celle-ci.
-//        if (((Objects.equals(this.lastDecision, "land")) || (Objects.equals(this.lastDecision, "move"))) && (this.hasObjective == true)) {
-//            // On avance jusqu'à être aux bonnes coordonnées.
-//            // TODO 1 DUP : Il faut une méthode qui renvoie les Move (un par un) à faire pour se déplacer d'une case (x1, y1) à une autre case (x2, y2).
-//            while ((this.currentX != this.objectiveX) || (this.currentY != this.objectiveY)) {
-//                this.lastDecision = "move";
-//                if (this.currentY < this.objectiveY) {
-//                    this.currentY++;
-//                    return Move.move("N");
-//                }
-//                if (this.currentY > this.objectiveY) {
-//                    this.currentY--;
-//                    return Move.move("S");
-//                }
-//                if (this.currentX < this.objectiveX) {
-//                    this.currentX++;
-//                    return Move.move("E");
-//                }
-//                if (this.currentX > this.objectiveX) {
-//                    this.currentX--;
-//                    return Move.move("W");
-//                }
-//            }
-//            // Une fois aux bonnes coordonnées, on exploite.
-//            this.hasObjective = false;
-//            //this.lastDecision = "exploit";
-//            //return Exploit.exploit(this.startInformation.getResources().get(0));
-//            //this.end = true;
-//            this.lastDecision = "exploit";
-//            return Exploit.exploit(this.objectiveResource);
-//        }
-//
-//        // Après une exploitation, on redébarque avec un explorateur.
-//        if (Objects.equals(this.lastDecision, "exploit")) {
-//            this.currentX = 0;
-//            this.currentY = 0;
-//            this.reachingLastObjective = true;
-//            this.landedMen = 1;
-//            this.lastDecision = "land";
-//            return Land.land(this.startInformation.getCreek(), 1);
-//        }
-//
-//        // Après avoir débarqué l'explorateur post-exploitation, on le fait revenir au lieu d'exploitation comme point de départ pour son exploration.
-//        if (this.reachingLastObjective == true) {
-//            // TODO 1 DUP : Il faut une méthode qui renvoie les Move (un par un) à faire pour se déplacer d'une case (x1, y1) à une autre case (x2, y2).
-//            while ((this.currentX != this.objectiveX) || (this.currentY != this.objectiveY)) {
-//                this.lastDecision = "move";
-//                if (this.currentY < this.objectiveY) {
-//                    this.currentY++;
-//                    return Move.move("N");
-//                }
-//                if (this.currentY > this.objectiveY) {
-//                    this.currentY--;
-//                    return Move.move("S");
-//                }
-//                if (this.currentX < this.objectiveX) {
-//                    this.currentX++;
-//                    return Move.move("E");
-//                }
-//                if (this.currentX > this.objectiveX) {
-//                    this.currentX--;
-//                    return Move.move("W");
-//                }
-//            }
-//            // L'explorateur est arrivé à l'ancien lieu d'exploitation et a avancé pour arrivé là (movedToSearch), il est en position pour recommencer à explorer.
-//            this.reachingLastObjective = false;
-//            this.movedToSearch = true;
-//        }
-//
-//        // Quand on arrive sur une case dans le but d'explorer.
-//        if (this.movedToSearch == true) {
-//            this.movedToSearch = false;
-//            this.lastScoutDirection = 0;
-//
-//            // On essaye de trouver une direction dans laquelle Scout.
-//            // Tant que la direction a déjà été Scout on regarde la prochaine.
-//            // Si la direction n'a pas été Scout, on interrompt la boucle pour la choisir.
-//            // TODO 2 DUP : Il faut une méthode qui sorte la prochaine direction à Scout en fonction de la case (x, y) donnée.
-//            while (this.lastScoutDirection < 4) {
-//                if (this.arenaMap.isAlreadyScouted(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
-//                    this.lastScoutDirection++;
-//                }
-//                else {
-//                    break;
-//                }
-//            }
-//
-//            // On Scout la première direction disponible (sens horaire)
-//            // Si toutes les directions ont été Scout, rien ne se passe dans cette condition et on passe à la suivante.
-//            // Sinon on Scout celle trouvée dans la boucle précédente.
-//            if (this.lastScoutDirection < 4) {
-//                // On définit les coordonnées de la case qu'on va Scout en fonction de l'orientation, pour ensuite enregistrer les informations dans la carte.
-//                this.scoutedX = this.currentX + ResultsComputing.xOffset(lastScoutDirection);
-//                this.scoutedY = this.currentY + ResultsComputing.yOffset(lastScoutDirection);
-//                this.lastDecision = "scout";
-//                return Scout.scout(this.directions.getCardinaux(this.lastScoutDirection));
-//            }
-//        }
-//
-//        // Dans le cas où aucune décision n'est prise, on arrête.
-//        this.lastDecision = "exit";
-//        return Exit.exit();
 
     }
 
@@ -631,85 +229,137 @@ public class Explorer implements IExplorerRaid {
      */
     @Override
     public void acknowledgeResults(String results) {
-        JSONObject JSONResult = new JSONObject(results);
-        // Si la dernière action a été un Scout.
-        if ((this.lastDecision.equals("scout")) && (ResultsComputing.getStatus(results))) {
 
-            List<Resource> tileResources = new ArrayList<Resource>();
-            JSONArray resourcesArray = JSONResult.getJSONObject("extras").getJSONArray("resources");
-            for (int i = 0 ; i < resourcesArray.length() ; i++) {
-                tileResources.add(new Resource(resourcesArray.getString(i)));
+        if (ResultsComputing.getStatus(results)) {
+            JSONObject JSONResults = new JSONObject(results);
+
+            if (this.lastDecision.equals("land")) {
             }
 
-            boolean unreachableTile = JSONResult.getJSONObject("extras").has("unreachable");
-
-
-            IslandTile newTile = new IslandTile(JSONResult.getJSONObject("extras").getInt("altitude") + this.currentAltitude, tileResources);
-            this.arenaMap.addTile(this.scoutedX, this.scoutedY, newTile);
-        }
-
-        // Si la dernière action a été un Explore.
-        else if ((this.lastDecision.equals("explore")) && (ResultsComputing.getStatus(results))) {
-            JSONResult = new JSONObject(results);
-
-            // On récupère la liste des ressources et leurs conditions.
-            List<Resource> tileResources = new ArrayList<Resource>();
-            JSONArray resourcesArray = JSONResult.getJSONObject("extras").getJSONArray("resources");
-            for (int i = 0 ; i < resourcesArray.length() ; i++) {
-                JSONObject resourceCondition = resourcesArray.getJSONObject(i);
-                tileResources.add(new Resource(resourceCondition.getString("resource"), resourceCondition.getString("amount"), resourceCondition.getString("cond")));
+            if (this.lastDecision.equals("exit")) {
             }
-            for (Resource currentResource : tileResources) {
-                if (currentResource.getType().equals(objectiveResource)) {
-                    this.objectiveTileAmount = ResultsComputing.parseAmount(currentResource.getAmount());
-                    this.objectiveTileCondition = ResultsComputing.parseCondition(currentResource.getCondition());
+
+            if (this.lastDecision.equals("scout")) {
+
+                // On créer la liste des ressources disponibles sur la case.
+                List<Resource> tileResources = new ArrayList<>();
+                JSONArray resourcesJSONArray = JSONResults.getJSONObject("extras").getJSONArray("resources");
+
+                for (int i = 0; i < resourcesJSONArray.length(); i++) {
+                    tileResources.add(new Resource(resourcesJSONArray.getString(i)));
                 }
+
+                boolean unreachableTile = JSONResults.getJSONObject("extras").has("unreachable");
+
+                if (this.arenaMap.isRegistered(this.scoutedX, this.scoutedY)) {
+                    this.arenaMap.getInformation(this.scoutedX, this.scoutedY).scoutTile(this.currentAltitude + JSONResults.getJSONObject("extras").getInt("altitude"), tileResources, unreachableTile);
+                } else {
+                    this.arenaMap.addTile(this.scoutedX, this.scoutedY, new IslandTile(this.currentAltitude + JSONResults.getJSONObject("extras").getInt("altitude"), tileResources, unreachableTile));
+                }
+
             }
 
-            // On récupère la liste des POI.
-            List<POI> tilePOIs = new ArrayList<POI>();
-            JSONArray poisArray = JSONResult.getJSONObject("extras").getJSONArray("pois");
-            /*for (int i = 0 ; i < resourcesArray.length() ; i++) {
-                JSONObject poiInformation = poisArray.getJSONObject(i);
-                tilePOIs.add(new POI(poiInformation.getString("kind"), poiInformation.getString("id")));
-            }*/
+            if (this.lastDecision.equals("move")) {
 
-            // On met à jour la case dans la Map si elle a déjà été Scout, sinon on crée une nouvelle entrée.
-            if (this.arenaMap.isRegistered(this.currentX, this.currentY)) {
-                this.arenaMap.getInformation(this.currentX, this.currentY).exploreTile(tileResources, tilePOIs);
+                this.currentX += ResultsComputing.xOffset(this.lastMoveDirection);
+                this.currentY += ResultsComputing.yOffset(this.lastMoveDirection);
+
+                if (this.arenaMap.isAlreadyScouted(this.currentX, this.currentY)) {
+                    this.currentAltitude += this.arenaMap.getInformation(this.currentX, this.currentY).getAltitude();
+                }
+
+                this.moveBudget += JSONResults.getInt("cost");
+
             }
-            else {
-                this.arenaMap.addTile(this.currentX, this.currentY, new IslandTile(tileResources, tilePOIs));
+
+
+            if (this.lastDecision.equals("explore")) {
+
+                // On créer la liste des ressources disponibles sur la case.
+                // Avec le type, la quantité et l'exploitabilité.
+                List<Resource> tileResources = new ArrayList<>();
+                JSONArray resourcesJSONArray = JSONResults.getJSONObject("extras").getJSONArray("resources");
+
+                for (int i = 0; i < resourcesJSONArray.length(); i++) {
+                    JSONObject resourceCondition = resourcesJSONArray.getJSONObject(i);
+                    tileResources.add(new Resource(resourceCondition.getString("resource"), resourceCondition.getString("amount"), resourceCondition.getString("cond")));
+                }
+
+                // On créer la liste des points d'intérêts disponibles sur la case.
+                // Avec le type, et l'ID.
+                List<POI> tilePOIs = new ArrayList<>();
+                JSONArray POIsJSONArray = JSONResults.getJSONObject("extras").getJSONArray("pois");
+
+                for (int i = 0; i < POIsJSONArray.length(); i++) {
+                    JSONObject POIInformation = POIsJSONArray.getJSONObject(i);
+                    tilePOIs.add(new POI(POIInformation.getString("kind"), POIInformation.getString("id")));
+                }
+
+                // La case est déjà dans le carte de l'île, on la met à jour.
+                if (this.arenaMap.isRegistered(this.currentX, this.currentY)) {
+                    this.arenaMap.getInformation(this.currentX, this.currentY).exploreTile(tileResources, tilePOIs);
+                }
+                // La case n'est pas encore dans la carte de l'île, on l'ajoute avec les informations retirées.
+                else {
+                    this.arenaMap.addTile(this.currentX, this.currentY, new IslandTile(tileResources, tilePOIs));
+                }
+
             }
+
+            if (this.lastDecision.equals("exploit")) {
+
+                for (int i = 0; i < this.objectives.size(); i++) {
+                    if (this.objectives.get(i).getObjective().equals(this.exploitObjective)) {
+                        this.objectives.get(i).updateAmount(JSONResults.getJSONObject("extras").getInt("amount"));
+                        break;
+                    }
+                }
+
+                this.arenaMap.getInformation(this.currentX, this.currentY).removeResource(this.exploitObjective);
+
+                this.exploitObjective = null;
+                this.hasObjective = false;
+
+            }
+
+            if (this.lastDecision.equals("glimpse")) {
+
+                JSONArray biomesJSONArray = JSONResults.getJSONObject("extras").getJSONArray("report");
+
+                for (int i = 0; i < biomesJSONArray.length(); i++) {
+                    int glimpsedX = this.currentX + (ResultsComputing.xOffset(this.lastGlimpseDirection) * i);
+                    int glimpsedY = this.currentY + (ResultsComputing.yOffset(this.lastGlimpseDirection) * i);
+
+                    List<Biome> tileBiomes = new ArrayList<>();
+                    JSONArray tileBiomesJSONArray = biomesJSONArray.getJSONArray(i);
+                    Map<String, Integer> biomesMap = new HashMap<>();
+
+                    for (int j = 0; j < tileBiomesJSONArray.length(); j++) {
+                        if (biomesMap.containsKey(tileBiomesJSONArray.getJSONArray(j).getString(0))) {
+                            biomesMap.put(tileBiomesJSONArray.getJSONArray(j).getString(0), biomesMap.get(tileBiomesJSONArray.getJSONArray(j).getString(0)) + tileBiomesJSONArray.getJSONArray(j).getInt(1));
+                        } else {
+                            biomesMap.put(tileBiomesJSONArray.getJSONArray(j).getString(0), tileBiomesJSONArray.getJSONArray(j).getInt(1));
+                        }
+                    }
+
+                    for (Map.Entry<String, Integer> entry : biomesMap.entrySet()) {
+                        tileBiomes.add(new Biome(entry.getKey(), entry.getValue()));
+                    }
+
+                    if (this.arenaMap.isRegistered(glimpsedX, glimpsedY)) {
+                        this.arenaMap.getInformation(glimpsedX, glimpsedY).glimpseTile(tileBiomes, i);
+                    } else {
+                        this.arenaMap.addTile(glimpsedX, glimpsedY, new IslandTile(tileBiomes, i));
+                    }
+                }
+
+            }
+
+            this.budget -= JSONResults.getInt("cost");
 
         }
 
-
-        // Après une exploitation, on enlève la ressource de la case.
-        else if ((this.lastDecision.equals("exploit")) && (ResultsComputing.getStatus(results))) {
-            IslandTile updatedTile = this.arenaMap.getInformation(this.currentX, this.currentY);
-            updatedTile.setAlreadyExploited(true);
-            updatedTile.removeResource(this.objectiveResource);
-            objectifs=Exploit.updateAmount(objectifs,this.objectiveResource,JSONResult.getJSONObject("extras").getInt("amount"));
-            //this.currentAmount += JSONResult.getJSONObject("extras").getInt("amount"); A VOIR si exploit retourne quantité.
-        }
-
-        // Après un déplacement, on met à jour l'altitude, si on la connaît.
-        else if ((this.lastDecision.equals("move")) && (ResultsComputing.getStatus(results))) {
-            if (this.arenaMap.isAlreadyScouted(this.currentX, this.currentY)) {
-                this.currentAltitude += this.arenaMap.getInformation(this.currentX, this.currentY).getAltitude();
-            }
-            this.moveBudget += JSONResult.getInt("cost");
-        }
-
-        else if ((this.lastDecision.equals("land")) && (ResultsComputing.getStatus(results))) {
-            this.moveBudget = 0;
-        }
-
-        // On enlève le coût de l'action au budget.
-        this.budget -= JSONResult.getInt("cost");
 
     }
-
 
 }
