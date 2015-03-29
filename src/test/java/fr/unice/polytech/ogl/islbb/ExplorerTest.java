@@ -63,8 +63,8 @@ public class ExplorerTest {
         test.acknowledgeResults(resultland);
         assertEquals(Exploit.exploit("FISH"),test.takeDecision());
         test.acknowledgeResults(exploit);
-        Objective.print(test.objectifs);
-        System.out.println(test.takeDecision());
+        //Objective.print(test.objectifs);
+        //System.out.println(test.takeDecision());
         }
     @Test public void testAmount(){
 

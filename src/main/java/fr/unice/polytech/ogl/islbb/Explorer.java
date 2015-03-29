@@ -172,7 +172,7 @@ public class Explorer implements IExplorerRaid {
                     this.currentY = this.scoutedY;
                     this.lastMoveDirection = this.lastScoutDirection;
                     this.lastDecision = "move";
-                    System.out.println("cas1");
+                    //System.out.println("cas1");
 
                     this.objectiveResource=this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType();
 
@@ -196,8 +196,7 @@ public class Explorer implements IExplorerRaid {
                     this.objectiveResource=this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(objectifs).get(0).getType();
                     this.lastMoveDirection = this.lastScoutDirection;
                     this.lastDecision = "move";
-                    System.out.println("cas2"+lastScoutDirection);
-                    System.out.println("cas2"+lastScoutDirection);
+                    //System.out.println("cas2"+lastScoutDirection);
                     return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
                 }
 
@@ -216,7 +215,7 @@ public class Explorer implements IExplorerRaid {
                     this.currentY = this.scoutedY;
                     this.lastMoveDirection = this.lastScoutDirection;
                     this.lastDecision = "move";
-                    System.out.println("cas3");
+                    //System.out.println("cas3");
                     return Move.move(this.directions.getCardinaux(this.lastScoutDirection));
                 }
 
