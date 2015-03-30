@@ -154,7 +154,7 @@ public class Explorer implements IExplorerRaid {
                     this.lastScoutDirection = 0;
                     this.lastGlimpseDirection = 0;
                     this.lastDecision = "glimpse";
-                    return Glimpse.glimpse(this.lastGlimpseDirection, 2);
+                    //return Glimpse.glimpse(this.lastGlimpseDirection, 2);
                 }
             }
 
@@ -310,7 +310,9 @@ public class Explorer implements IExplorerRaid {
 
                 for (int i = 0; i < this.objectives.size(); i++) {
                     if (this.objectives.get(i).getObjective().equals(this.exploitObjective)) {
-                        this.objectives.get(i).updateAmount(JSONResults.getJSONObject("extras").getInt("amount"));
+                        if (!this.objectives.get(i).updateAmount(JSONResults.getJSONObject("extras").getInt("amount"))) {
+                            this.objectives.remove(i);
+                        }
                         break;
                     }
                 }
@@ -361,5 +363,7 @@ public class Explorer implements IExplorerRaid {
 
 
     }
-
+    public List<Objective> getObjectives(){
+        return this.objectives;
+    }
 }
