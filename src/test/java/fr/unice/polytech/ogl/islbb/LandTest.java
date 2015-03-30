@@ -14,7 +14,6 @@ public class LandTest {
     @Test public void testLand() {
 
         assertEquals(Land.land("IDazed3", 1), "{\"action\":\"land\",\"parameters\":{\"creek\":\"IDazed3\",\"people\":1}}" );
-
     }
 
 }

@@ -14,7 +14,6 @@ public class MoveTest {
     @Test public void testLand() {
 
         assertEquals(Move.move("N"), "{\"action\":\"move_to\",\"parameters\":{\"direction\":\"N\"}}" );
-
     }
 
 }
