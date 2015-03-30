@@ -154,7 +154,7 @@ public class Explorer implements IExplorerRaid {
                     this.lastScoutDirection = 0;
                     this.lastGlimpseDirection = 0;
                     this.lastDecision = "glimpse";
-                    return Glimpse.glimpse(this.lastGlimpseDirection, 2);
+                    //return Glimpse.glimpse(this.lastGlimpseDirection, 2);
                 }
             }
 
@@ -363,5 +363,7 @@ public class Explorer implements IExplorerRaid {
 
 
     }
-
+    public List<Objective> getObjectives(){
+        return this.objectives;
+    }
 }
