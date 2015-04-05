@@ -6,10 +6,8 @@ import fr.unice.polytech.ogl.islbb.reports.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Classe qui implemente les différentes actions du robot
@@ -25,6 +23,8 @@ public class Explorer implements IExplorerRaid {
     private int budget;
     private int men;
     private List<Objective> objectives;
+
+    private boolean starting;
 
     private int landedMen;
 
@@ -70,6 +70,8 @@ public class Explorer implements IExplorerRaid {
         this.men = contract.getMen();
         this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
 
+        this.starting = true;
+
         this.landedMen = Math.min(this.men, this.MEN_USED);
 
         this.arenaMap = new IslandMap();
@@ -106,56 +108,65 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
+        if (this.budget < ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0) + 25) {
+            this.lastDecision = "exit";
+            return Exit.exit("plus de budget" + ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0));
+        }
+
         if (this.lastDecision == null) {
             this.lastDecision = "land";
-            return Land.land(this.creek, this.landedMen);
+            return Land.land(this.creek, 2, "initial landing");
         }
 
-
-        if (75 > this.budget) {
-            this.lastDecision = "exit";
-            return Exit.exit();
+        if (this.lastDecision.equals("land") && this.starting) {
+            this.lastDecision = "explore";
+            return Explore.explore("exploring first tile");
         }
 
-        if (this.objectives.isEmpty()) {
-            this.lastDecision = "exit";
-            return Exit.exit();
+        if ((this.lastDecision.equals("explore") || this.lastDecision.equals("exploit")) && this.starting) {
+            for (Resource currentResource : this.arenaMap.getInformation(0, 0).hasResources(this.objectives)) {
+                if (ResultsComputing.parseAmount(currentResource.getAmount()) + ResultsComputing.parseCondition(currentResource.getCondition()) >= 2) {
+                    this.exploitObjective = currentResource.getType();
+                    this.lastDecision = "exploit";
+                    return Exploit.exploit(this.exploitObjective, "exploit objective enough present on initial tile");
+                }
+            }
+            this.arenaMap.getInformation(0, 0).setAlreadyExploited(true);
+            this.starting = false;
+
+            this.lastDecision = "scout";
+            return Scout.scout(this.arenaMap.firstDirectionToScout(0, 0), "after initial tile have been worked, start exploring other tiles");
         }
 
-        if (((this.lastDecision.equals("land")) || (this.lastDecision.equals("scout")) || (this.lastDecision.equals("move")) || (this.lastDecision.equals("exploit"))) && (!this.hasObjective)) {
+        if (this.lastDecision.equals("scout")) {
             while (this.lastScoutDirection < 4) {
-                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
-                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
-
-                if (this.arenaMap.isAlreadyScouted(this.scoutedX, this.scoutedY)) {
-                    if (this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(this.objectives).isEmpty()) {
-                        this.lastScoutDirection++;
-                    } else {
-                        this.objectiveX = this.scoutedX;
-                        this.objectiveY = this.scoutedY;
-                        if (!this.arenaMap.getInformation(this.objectiveX, this.objectiveY).isAlreadyExploited()) {
+                if (this.arenaMap.isAlreadyScouted(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection))) {
+                    if (this.arenaMap.getInformation(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection)).isAlreadyExploited() == false) {
+                        for (Resource currentResource : this.arenaMap.getInformation(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection)).hasResources(this.objectives)) {
+                            this.exploitObjective = currentResource.getType();
                             this.hasObjective = true;
-                            this.exploitObjective = this.arenaMap.getInformation(this.scoutedX, this.scoutedY).hasResources(this.objectives).get(0).getType();
-                            break;
+                            this.lastMoveDirection = this.lastScoutDirection;
+                            this.lastScoutDirection = 0;
+                            this.lastDecision = "move";
+                            return Move.move(this.lastMoveDirection, "moving directly to interesting tile after a scout");
                         }
                     }
-                } else {
-                    break;
-                }
-
-            }
-
-            if (!this.hasObjective) {
-                if (this.lastScoutDirection < 4) {
-                    this.lastDecision = "scout";
-                    return Scout.scout(this.lastScoutDirection);
+                    this.arenaMap.getInformation(this.currentX + ResultsComputing.xOffset(this.lastScoutDirection), this.currentY + ResultsComputing.yOffset(this.lastScoutDirection)).setAlreadyExploited(true);
+                    this.lastScoutDirection++;
                 }
                 else {
-                    this.lastScoutDirection = 0;
-                    this.lastGlimpseDirection = 0;
-                    this.lastDecision = "glimpse";
-                    //return Glimpse.glimpse(this.lastGlimpseDirection, 2);
+                    break;
                 }
+            }
+
+            if (this.lastScoutDirection < 4) {
+                this.lastDecision = "scout";
+                return Scout.scout(this.lastScoutDirection, "scouting next tile" + this.lastScoutDirection + " " + this.arenaMap.isRegistered(0, 0)+" " + this.arenaMap.isRegistered(0, 1)+" " + this.arenaMap.isRegistered(1, 0)+" " + this.arenaMap.isRegistered(0, -1)+" " + this.arenaMap.isRegistered(-1, 0));
+            }
+            else {
+                this.lastScoutDirection = 0;
+                this.lastDecision = "glimpse";
+                return Glimpse.glimpse(this.lastGlimpseDirection, 2, "glimpsing after scouting all tiles");
             }
 
         }
@@ -163,26 +174,17 @@ public class Explorer implements IExplorerRaid {
         if (this.lastDecision.equals("glimpse")) {
             while (this.lastGlimpseDirection < 4) {
                 if (this.arenaMap.isAlreadyGlimpsed(this.currentX + ResultsComputing.xOffset(this.lastGlimpseDirection), this.currentY + ResultsComputing.yOffset(this.lastGlimpseDirection))) {
-                    if (this.arenaMap.isWater(this.currentX + ResultsComputing.xOffset(this.lastGlimpseDirection), this.currentY + ResultsComputing.yOffset(this.lastGlimpseDirection))) {
-                        this.lastGlimpseDirection++;
-                    }
-                    else if (!this.arenaMap.getInformation(this.currentX + ResultsComputing.xOffset(this.lastGlimpseDirection), this.currentY + ResultsComputing.yOffset(this.lastGlimpseDirection)).isAlreadyExploited()) {
-                        this.lastMoveDirection = this.lastGlimpseDirection;
-                        this.lastGlimpseDirection = 0;
-                        this.lastDecision = "move";
-                        return Move.move(this.lastMoveDirection);
-                    }
-                    else {
-                        this.lastGlimpseDirection++;
-                    }
+                    this.lastGlimpseDirection++;
                 }
                 else {
-                    return Glimpse.glimpse(this.lastGlimpseDirection, 2);
+                    break;
                 }
-
             }
 
-            if (this.lastGlimpseDirection >= 4) {
+            if (this.lastGlimpseDirection < 4) {
+                return Glimpse.glimpse(this.lastGlimpseDirection, 2);
+            }
+            else {
                 this.lastMoveDirection = this.arenaMap.lessWaterDirection(this.currentX, this.currentY);
                 this.lastGlimpseDirection = 0;
                 this.lastDecision = "move";
@@ -190,35 +192,40 @@ public class Explorer implements IExplorerRaid {
             }
         }
 
-        if (this.hasObjective) {
-            this.lastScoutDirection = 0;
-            if ((this.currentX != this.objectiveX) || (this.currentY != this.objectiveY)) {
-                this.lastDecision = "move";
-                if (this.currentX < this.objectiveX) {
-                    this.lastMoveDirection = 1;
-                    return Move.move(this.lastMoveDirection);
-                }
-                if (this.currentX > this.objectiveX) {
-                    this.lastMoveDirection = 3;
-                    return Move.move(this.lastMoveDirection);
-                }
-                if (this.currentY < this.objectiveY) {
-                    this.lastMoveDirection = 0;
-                    return Move.move(this.lastMoveDirection);
-                }
-                if (this.currentY > this.objectiveY) {
-                    this.lastMoveDirection = 2;
-                    return Move.move(this.lastMoveDirection);
-                }
+        if (this.lastDecision.equals("move")) {
+            if (this.hasObjective) {
+                this.lastDecision = "explore";
+                return Explore.explore("exploring possible interesting tile");
             }
-
-            this.hasObjective = false;
-            this.lastDecision = "exploit";
-            return Exploit.exploit(this.exploitObjective);
+            else {
+                this.lastDecision = "scout";
+                this.lastScoutDirection = this.arenaMap.firstDirectionToScout(this.currentX, this.currentY);
+                return Scout.scout(this.lastScoutDirection);
+            }
         }
 
+        if ((this.lastDecision.equals("explore") || this.lastDecision.equals("exploit")) && this.hasObjective) {
+            for (Resource currentResource : this.arenaMap.getInformation(this.currentX, this.currentY).hasResources(this.objectives)) {
+                if (ResultsComputing.parseAmount(currentResource.getAmount()) + ResultsComputing.parseCondition(currentResource.getCondition()) >= 3) {
+                    this.exploitObjective = currentResource.getType();
+                    this.lastDecision = "exploit";
+                    return Exploit.exploit(this.exploitObjective, "exploit objective enough present on tile");
+                }
+            }
+            this.arenaMap.getInformation(this.currentX, this.currentY).setAlreadyExploited(true);
+            this.hasObjective = false;
+        }
+
+        if (this.lastDecision.equals("exploit") ||this.lastDecision.equals("explore")) {
+            this.lastDecision = "scout";
+            this.lastScoutDirection = this.arenaMap.firstDirectionToScout(this.currentX, this.currentY);
+            return Scout.scout(this.lastScoutDirection, "FUCK FUCK FUCK");
+        }
+
+
+
         this.lastDecision = "exit";
-        return Exit.exit();
+        return Exit.exit("final exit");
 
     }
 
@@ -240,6 +247,9 @@ public class Explorer implements IExplorerRaid {
             }
 
             if (this.lastDecision.equals("scout")) {
+                //throw new RuntimeException("MAISPUTAINDEMERDE");
+                this.scoutedX = this.currentX + ResultsComputing.xOffset(this.lastScoutDirection);
+                this.scoutedY = this.currentY + ResultsComputing.yOffset(this.lastScoutDirection);
 
                 // On créer la liste des ressources disponibles sur la case.
                 List<Resource> tileResources = new ArrayList<>();

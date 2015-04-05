@@ -56,5 +56,10 @@ public class Objective {
             System.out.println(obj.getObjective()+obj.getAmount());
         }
     }
+
+    @Override
+    public String toString() {
+        return this.objective + ": " + this.amount;
+    }
 }
 

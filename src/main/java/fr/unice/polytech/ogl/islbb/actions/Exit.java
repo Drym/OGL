@@ -15,4 +15,12 @@ public final class Exit {
         return obj.toString();
     }
 
+    public static String exit(String debug){
+        JSONObject obj = new JSONObject();
+        obj.put("action", "stop");
+        obj.put("debug", debug);
+
+        return obj.toString();
+    }
+
 }

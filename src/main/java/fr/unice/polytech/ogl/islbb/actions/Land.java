@@ -19,6 +19,21 @@ public final class Land {
         obj.put("parameters",param);
 
         return obj.toString();
+
+    }
+
+    public static String land( String id, int people, String debug){
+        JSONObject obj = new JSONObject();
+        LinkedHashMap param = new LinkedHashMap();
+
+        param.put("creek",id);
+        param.put("people",people);
+        obj.put("action","land");
+        obj.put("parameters",param);
+        obj.put("debug", debug);
+
+        return obj.toString();
+
     }
 
 }

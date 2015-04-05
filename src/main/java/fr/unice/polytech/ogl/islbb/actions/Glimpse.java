@@ -40,4 +40,22 @@ public class Glimpse {
         return obj.toString();
 
     }
+
+    public static String glimpse(int direction, int range, String debug) {
+
+        Data directions = new Data();
+
+        JSONObject obj = new JSONObject();
+        JSONObject param = new JSONObject();
+
+        param.put("direction", directions.getCardinaux(direction));
+        param.put("range",range);
+
+        obj.put("action","glimpse");
+        obj.put("parameters",param);
+        obj.put("debug", debug);
+
+        return obj.toString();
+
+    }
 }

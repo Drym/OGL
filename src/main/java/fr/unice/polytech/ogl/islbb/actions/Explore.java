@@ -13,4 +13,11 @@ public class Explore {
         return obj.toString();
     }
 
+    public static String explore(String debug) {
+        JSONObject obj = new JSONObject();
+        obj.put("action", "explore");
+        obj.put("debug", debug);
+        return obj.toString();
+    }
+
 }

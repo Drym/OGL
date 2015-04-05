@@ -28,6 +28,20 @@ public final class Move {
         obj.put("action", "move_to");
         obj.put("parameters", obj2);
         return obj.toString();
+
     }
 
+    public static String move(int dir, String debug) {
+
+        Data directions = new Data();
+
+        JSONObject obj = new JSONObject();
+        JSONObject obj2 = new JSONObject();
+        obj2.put("direction", directions.getCardinaux(dir));
+        obj.put("action", "move_to");
+        obj.put("parameters", obj2);
+        obj.put("debug", debug);
+        return obj.toString();
+
+    }
 }

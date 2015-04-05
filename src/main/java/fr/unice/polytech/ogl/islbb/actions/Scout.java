@@ -30,4 +30,18 @@ public final class Scout {
         obj.put("parameters", par);
         return obj.toString();
     }
+
+    public static String scout(int dir, String debug) {
+
+        Data directions = new Data();
+
+        JSONObject obj = new JSONObject();
+        LinkedHashMap par = new LinkedHashMap();
+        par.put("direction", directions.getCardinaux(dir));
+        obj.put("action", "scout");
+        obj.put("parameters", par);
+        obj.put("debug", debug);
+        return obj.toString();
+
+    }
 }

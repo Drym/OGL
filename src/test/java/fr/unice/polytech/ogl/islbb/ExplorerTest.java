@@ -3,6 +3,7 @@ package fr.unice.polytech.ogl.islbb;
 import fr.unice.polytech.ogl.islbb.actions.*;
 
 import fr.unice.polytech.ogl.islbb.reports.Objective;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -27,6 +28,7 @@ public class ExplorerTest {
     ArrayList<String>scoutdecision;
     int direction=1;
 
+    @Ignore
     @Test public void testExplorer(){
         Objective obj=new Objective("WOOD",600);
         cardinaux=new Data();

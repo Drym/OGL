@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
  */
 public class ExploreTest   {
 
+
     @Test public void ExploreTest(){
         assertEquals(Explore.explore(), "{\"action\":\"explore\"}");
 

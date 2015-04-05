@@ -13,6 +13,11 @@ public class IslandTile {
 
     private int altitude;
     private List<Resource> resources;
+
+    public List<Resource> getResources() {
+        return resources;
+    }
+
     private List<POI> pois;
     private List<Biome> biomes;
     private int glimpsedRange;
@@ -24,6 +29,16 @@ public class IslandTile {
     private boolean alreadyExploited = false;
 
     private boolean unreachable = false;
+
+    public boolean isInterestring() {
+        return interestring;
+    }
+
+    public void setInterestring(boolean interestring) {
+        this.interestring = interestring;
+    }
+
+    private boolean interestring = true;
 
 
 
@@ -180,6 +195,10 @@ public class IslandTile {
         return null;
     }
 
+    public List<Biome> getBiomes() {
+        return biomes;
+    }
+
     /**
      * Méthode pour savoir si le biome est présent sur la case.
      */
@@ -292,5 +311,13 @@ public class IslandTile {
     public boolean isUnreachable() {
 
         return this.unreachable;
+    }
+
+    public String toExploreString() {
+        String result = new String();
+        for (Resource curRes : this.resources) {
+            result+= curRes.getType() + ": " + curRes.getAmount() + " - " + curRes.getCondition() + " ";
+        }
+        return result;
     }
 }
