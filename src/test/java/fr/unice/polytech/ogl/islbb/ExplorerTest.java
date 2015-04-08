@@ -15,13 +15,15 @@ import java.util.List;
  */
 public class ExplorerTest {
     String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}";
+    String init3="{\"creek\":\"creek_id\", \"budget\":70,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}";
     String resultland="{\"status\":\"OK\",\"cost\":12}";
     String testN = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
     String testW = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
     String testS = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
     String testE = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
     String exploit="{\"status\":\"OK\",\"cost\":40,\"extras\":{\"amount\":600}}";
-    String testScout ="{\"status\":\"OK\",\"cost\":550,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
+    String exploit2="{\"status\":\"OK\",\"cost\":73,\"extras\":{\"amount\":600}}";
+    String testScout ="{\"status\":\"OK\",\"cost\":576,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
     String init2="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"FLOWER\", \"amount\":2}]}";
     ArrayList<String>resultscout;
     Data cardinaux;
@@ -108,20 +110,38 @@ public class ExplorerTest {
 
 
     }
-//
-//    /**
-//     * @Creator Lucas
-//     * Vérifie si le bot quitte bien l'ile quand son budget est infèrieur a 50
-//     */
-//    @Test public void testStopByBudget(){
-//        Explorer test=new Explorer();
-//        test.initialize(init);
-//        String decision1=test.takeDecision();
-//
-//        //première décision ( coute 550 avec 600 de budget)
-//        test.acknowledgeResults(testScout);
-//        //regarde si le bot quiite l'ile
-//        assertEquals(Exit.exit(), test.takeDecision());
-//
-//    }
+
+    /**
+     * @Creator Lucas
+     * Vérifie si le bot quitte bien l'ile quand son budget est infèrieur a 25
+     */
+    //@Ignore
+    @Test public void testStopByBudget(){
+        Explorer test=new Explorer();
+        test.initialize(init);
+        String decision1=test.takeDecision();
+
+        //première décision ( coute 576 avec 600 de budget)
+        test.acknowledgeResults(testScout);
+        //regarde si le bot quiite l'ile
+        assertEquals(Exit.exit("Not enough budget, distance:0"), test.takeDecision());
+
+    }
+
+    /**
+     * @Creator Lucas
+     * Vérifie si le bot quitte bien l'ile quand il n'a plus assez de budget pour exploit mais que le budget était suppérieur à 25
+     */
+    @Test public void testExploitBudget(){
+        Explorer test=new Explorer();
+        test.initialize(init3);
+        String decision1=test.takeDecision();
+
+        //Budget trop faible par rapport au coups de l'exploit, doit quitter
+        test.acknowledgeResults(exploit2);
+
+        //regarde si le bot quiite l'ile
+        assertEquals(Exit.exit("Not enough budget, distance:0"), test.takeDecision());
+
+    }
 }
