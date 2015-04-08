@@ -30,7 +30,12 @@ public class IslandTileTest {
         IslandTile test=new IslandTile(list,2);
         assertEquals(90,test.getOceanPart());
         assertTrue(test.isWater());
+        assertEquals(test.containBiome("OCEAN").getBiome(), "OCEAN");
+        assertEquals(test.getOceanPart(),90);
     }
+
+
+
     @Test
     public void testScout(){
         init =new Initialization("{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}");
@@ -43,6 +48,9 @@ public class IslandTileTest {
         assertEquals(test.hasResources(objectives).get(0).getType(), "WOOD");
         assertEquals(test.hasResources(objectives).get(1).getType(),"FISH");
         assertEquals(test.hasResources(objectives).size(),2);
-
+        test.removeResource("FISH");
+        assertEquals(test.getResources().size(),2);
+        test.removeResource("FUR");
+        assertEquals(test.getResources().size(),1);
     }
 }
