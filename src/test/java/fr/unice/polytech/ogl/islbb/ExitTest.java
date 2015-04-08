@@ -12,8 +12,9 @@ public class ExitTest  {
 
     @Test public void testExit() {
 
+        //Test si l'action retourne la bonne chose
         assertEquals(Exit.exit(), "{\"action\":\"stop\"}" );
-
+        assertEquals(Exit.exit("exemple debug"), "{\"debug\":\"exemple debug\",\"action\":\"stop\"}");
 
     }
 }

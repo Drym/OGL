@@ -11,9 +11,11 @@ import static org.junit.Assert.*;
 public class MoveTest {
 
 
-    @Test public void testLand() {
+    @Test public void testMove() {
 
+        //Test si l'action retourne la bonne chose
         assertEquals(Move.move("N"), "{\"action\":\"move_to\",\"parameters\":{\"direction\":\"N\"}}" );
+        assertEquals(Move.move(0, "exemple debug"), "{\"debug\":\"exemple debug\",\"action\":\"move_to\",\"parameters\":{\"direction\":\"N\"}}" );
     }
 
 }

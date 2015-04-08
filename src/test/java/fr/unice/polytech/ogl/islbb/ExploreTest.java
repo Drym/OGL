@@ -11,7 +11,9 @@ public class ExploreTest   {
 
 
     @Test public void ExploreTest(){
+        //Test si l'action retourne la bonne chose
         assertEquals(Explore.explore(), "{\"action\":\"explore\"}");
+        assertEquals(Explore.explore("exemple debug"), "{\"debug\":\"exemple debug\",\"action\":\"explore\"}");
 
     }
 }

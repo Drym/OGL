@@ -13,7 +13,9 @@ public class LandTest {
 
     @Test public void testLand() {
 
+        //Test si l'action retourne la bonne chose
         assertEquals(Land.land("IDazed3", 1), "{\"action\":\"land\",\"parameters\":{\"creek\":\"IDazed3\",\"people\":1}}" );
+        assertEquals(Land.land("IDazed3", 1, "exemple debug"), "{\"debug\":\"exemple debug\",\"action\":\"land\",\"parameters\":{\"creek\":\"IDazed3\",\"people\":1}}" );
     }
 
 }
