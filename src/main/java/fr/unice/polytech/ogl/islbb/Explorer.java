@@ -121,6 +121,11 @@ public class Explorer implements IExplorerRaid {
             return Exit.exit("Not enough budget, distance:" + ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0));
         }
 
+        if ( this.lastDecision == null && this.creek == null ) {
+            this.lastDecision = "exit";
+            return Exit.exit("No creek so exit directly !");
+        }
+
         if (this.lastDecision == null) {
             this.lastDecision = "land";
             return Land.land(this.creek, 2, "Initial landing.");
