@@ -115,7 +115,6 @@ public class ExplorerTest {
      * @Creator Lucas
      * Vérifie si le bot quitte bien l'ile quand son budget est infèrieur a 25
      */
-    //@Ignore
     @Test public void testStopByBudget(){
         Explorer test=new Explorer();
         test.initialize(init);

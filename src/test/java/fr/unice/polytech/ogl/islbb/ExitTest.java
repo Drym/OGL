@@ -12,7 +12,8 @@ public class ExitTest  {
 
     @Test public void testExit() {
 
-       assertEquals(Exit.exit(), "{\"action\":\"stop\"}" );
+        assertEquals(Exit.exit(), "{\"action\":\"stop\"}" );
+
 
     }
 }
