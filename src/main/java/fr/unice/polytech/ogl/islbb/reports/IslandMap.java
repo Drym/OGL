@@ -1,6 +1,7 @@
 package fr.unice.polytech.ogl.islbb.reports;
 
 import fr.unice.polytech.ogl.islbb.Data;
+import fr.unice.polytech.ogl.islbb.Explorer;
 import fr.unice.polytech.ogl.islbb.ResultsComputing;
 
 import javax.xml.transform.Result;
@@ -51,7 +52,7 @@ public class IslandMap {
         for (int i = 0 ; i < 4 ; i++) {
             if (this.isAlreadyScouted(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i))) {
                 if ((highestAltitude <= this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getAltitude())
-                && (!this.isWater(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)))) {
+                        && (!this.isWater(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)))) {
                     resultDirection = i;
                     highestAltitude = this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getAltitude();
                 }
@@ -72,29 +73,49 @@ public class IslandMap {
         }
     }
 
-    public int lessWaterDirection(int x, int y) {
-        int result = 0;
-        int minimumWater = 100;
+    public int lessWaterDirection(int x, int y, int lastMove) {
+
+        String debug = new String();
+
+        int result = -1;
+        int minimumWater = 101;
+
         for (int i = 0 ; i < 4 ; i++) {
             int currentWater = this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getOceanPart();
             if (minimumWater >= currentWater) {
                 result = i;
                 minimumWater = currentWater;
+                debug += "Loop 1: " + i + " " + minimumWater + " ";
             }
         }
 
-        if (this.getInformation(x + ResultsComputing.xOffset(result), y + ResultsComputing.yOffset(result)).isAlreadyExploited()) {
-            int lastResult = result;
+        debug += "(TEST MOD " + ((lastMove + 2) % 4) + " = " + result + ") ";
+        int lastResult = result;
+        if (((lastMove + 2) % 4) == result) {
+
+            debug += " | ";
+
+            minimumWater = 101;
+
             for (int i = 0 ; i < 4 ; i++) {
-                if (i != lastResult) {
-                    int currentWater = this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getOceanPart();
-                    if (minimumWater >= currentWater) {
-                        result = i;
-                        minimumWater = currentWater;
-                    }
+                debug += "(TEST " + i + " = " + lastResult + ") ";
+                if (i == lastResult) {
+                    continue;
+                }
+                int currentWater = this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getOceanPart();
+                if (minimumWater >= currentWater) {
+                    result = i;
+                    minimumWater = currentWater;
+                    debug += "Loop 2: " + i + " " + minimumWater + " ";
                 }
             }
         }
+
+        if (minimumWater > 90) {
+            result = -1;
+        }
+
+        Explorer.setDebug(debug);
         return result;
     }
 
@@ -176,6 +197,15 @@ public class IslandMap {
     public int firstDirectionToScout(int x, int y) {
         for (int i = 0 ; i < 4 ; i++) {
             if (!this.isAlreadyScouted(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i))) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int firstDirectionToGlimpse(int x, int y) {
+        for (int i = 0 ; i < 4 ; i++) {
+            if (!this.isAlreadyGlimpsed(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i))) {
                 return i;
             }
         }
