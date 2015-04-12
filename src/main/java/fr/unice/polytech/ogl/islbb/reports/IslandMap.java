@@ -103,16 +103,12 @@ public class IslandMap {
                     continue;
                 }
                 int currentWater = this.getInformation(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i)).getOceanPart();
-                if (minimumWater >= currentWater) {
+                if ((minimumWater >= currentWater) && (currentWater < 90)) {
                     result = i;
                     minimumWater = currentWater;
                     debug += "Loop 2: " + i + " " + minimumWater + " ";
                 }
             }
-        }
-
-        if (minimumWater > 90) {
-            result = -1;
         }
 
         Explorer.setDebug(debug);

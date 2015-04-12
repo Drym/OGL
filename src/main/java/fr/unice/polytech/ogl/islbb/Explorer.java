@@ -1,12 +1,13 @@
 package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
+
 import fr.unice.polytech.ogl.islbb.actions.*;
 import fr.unice.polytech.ogl.islbb.reports.*;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
