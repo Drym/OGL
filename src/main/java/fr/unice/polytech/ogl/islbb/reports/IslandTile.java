@@ -240,7 +240,13 @@ public class IslandTile {
      */
     public boolean isWater() {
 
-       return this.getOceanPart() >= 60;
+        if (this.glimpsedRange < 2) {
+            return this.getOceanPart() >= 60;
+        }
+        else {
+            return this.containBiome("OCEAN") != null;
+        }
+
 
     }
 

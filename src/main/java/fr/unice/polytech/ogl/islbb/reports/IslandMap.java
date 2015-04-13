@@ -4,8 +4,10 @@ import fr.unice.polytech.ogl.islbb.Data;
 import fr.unice.polytech.ogl.islbb.Explorer;
 import fr.unice.polytech.ogl.islbb.ResultsComputing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Quentin WEPHRE on 11/03/2015.
@@ -17,10 +19,12 @@ public class IslandMap {
 
     private Map<String, IslandTile> islandMap;
     private Data directions;
+    private int firstDirectionRandom;
 
     public IslandMap() {
         this.islandMap = new HashMap<String, IslandTile>();
         this.directions = new Data();
+        this.firstDirectionRandom = 0;
     }
 
     public void addTile(String coordinates, IslandTile newTile) {
@@ -198,7 +202,8 @@ public class IslandMap {
 
     public void addVisit(int x, int y) {
 
-        this.getInformation(x, y).addTileVisit();
+        if (this.isRegistered(x, y))
+            this.getInformation(x, y).addTileVisit();
 
     }
 
@@ -232,9 +237,29 @@ public class IslandMap {
         }
     }
 
-    public int firstDirectionToScout(int x, int y) {
+    public int randomDirectionToScout(int x, int y) {
+
+        Random r = new Random();
+
+        ArrayList<Integer> possibleDirections = new ArrayList<>();
+
         for (int i = 0 ; i < 4 ; i++) {
             if (!this.isAlreadyScouted(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i))) {
+                possibleDirections.add(i);
+            }
+        }
+
+        if (possibleDirections.size() > 0) {
+            return possibleDirections.get(r.nextInt(possibleDirections.size()));
+        }
+
+        return 0;
+
+    }
+    public int firstDirectionToScout(int x, int y) {
+        this.firstDirectionRandom++;
+        for (int i = 0 ; i < 4 ; i++) {
+            if (!this.isAlreadyScouted(x + ResultsComputing.xOffset((i + this.firstDirectionRandom) % 4), y + ResultsComputing.yOffset((i + this.firstDirectionRandom) % 4))) {
                 return i;
             }
         }

@@ -51,9 +51,6 @@ public class Explorer implements IExplorerRaid {
     private int scoutedX;
     private int scoutedY;
 
-    private boolean hasArrived;
-    private boolean inMovement;
-
     private int lastMoveDirection;
 
     private int lastGlimpseDirection;
@@ -64,6 +61,10 @@ public class Explorer implements IExplorerRaid {
     private boolean hasObjective;
 
     private String lastDecision;
+
+    private boolean hasArrived;
+    private boolean inMovement;
+    private int escapeMovementCount;
 
 
     /**
@@ -80,7 +81,6 @@ public class Explorer implements IExplorerRaid {
         this.budget = this.contract.getBudget();
         this.men = contract.getMen();
         this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
-        inMovement =false;
         this.starting = true;
 
         this.landedMen = Math.min(this.men, this.MEN_USED);
@@ -108,6 +108,10 @@ public class Explorer implements IExplorerRaid {
         this.hasObjective = false;
 
         this.lastDecision = null;
+
+        this.hasArrived = false;
+        this.inMovement = false;
+        this.escapeMovementCount = 0;
 
     }
 
@@ -153,42 +157,35 @@ public class Explorer implements IExplorerRaid {
             this.lastDecision = "scout";
             return Scout.scout(this.arenaMap.firstDirectionToScout(0, 0), "After the initial tile has been worked out, starting to explore the island.");
         }
-/*
-        if (this.arenaMap.getInformation(currentX, currentY).getTileVisits() > 2) {
-            this.inMovement = true;
-        }
 
         if (this.inMovement) {
 
-            int exploringDirection = this.arenaMap.firstDirectionToGlimpse(this.currentX, this.currentY);
+            if (this.lastDecision.equals("glimpse")) {
+                int observedX = this.currentX + ResultsComputing.xOffset(this.lastGlimpseDirection) * 3;
+                int observedY = this.currentY + ResultsComputing.yOffset(this.lastGlimpseDirection) * 3;
 
-            if (exploringDirection >= 0) {
-
-                this.lastGlimpseDirection = exploringDirection;
-                this.lastDecision = "glimpse";
-                return Glimpse.glimpse(exploringDirection, 4, "Escaping method, after glimpsing direction was found");
+                if (!this.arenaMap.isWater(observedX, observedY)) {
+                    this.escapeMovementCount++;
+                    this.lastMoveDirection = this.lastGlimpseDirection;
+                    this.lastDecision = "move";
+                    return Move.move(this.lastMoveDirection, "Move after finding a possible direction without water.");
+                }
+                else {
+                    this.lastGlimpseDirection = this.arenaMap.firstDirectionToGlimpse(this.currentX, this.currentY);
+                    return Glimpse.glimpse(this.lastGlimpseDirection, 4, "Direction found with water...");
+                }
             }
 
-
-            if (!this.hasArrived) {
-
-                this.lastDecision = "move";
-                return Move.move(lastMoveDirection);
-
+            if (this.lastDecision.equals("move")) {
+                if (this.escapeMovementCount < 3) {
+                    this.escapeMovementCount++;
+                    return Move.move(this.lastMoveDirection, "Continuing escape moves.");
+                }
+                else {
+                    this.inMovement = false;
+                }
             }
-
-            if (this.arenaMap.getInformation(currentX, currentY).getTileVisits() == 0) {
-
-                this.inMovement = false;
-                this.hasArrived = true;
-
-            }
-
-
-            this.lastMoveDirection = exploringDirection;
-            return Move.move(lastMoveDirection);
-
-        }*/
+        }
 
         if (this.lastDecision.equals("scout") || this.lastDecision.equals("land")) {
             while (this.lastScoutDirection < 4) {
@@ -237,6 +234,18 @@ public class Explorer implements IExplorerRaid {
                 return Glimpse.glimpse(this.lastGlimpseDirection, 2, "Continuing to glimpsing, direction: " + this.lastGlimpseDirection + " | current: " + this.arenaMap.isAlreadyGlimpsed(this.currentX, this.currentY) + " | N: " + this.arenaMap.isAlreadyGlimpsed(this.currentX, this.currentY + 1) + " | E: " + this.arenaMap.isAlreadyGlimpsed(this.currentX + 1, this.currentY) + " | S: " + this.arenaMap.isAlreadyGlimpsed(this.currentX, this.currentY - 1) + " | W: " + this.arenaMap.isAlreadyGlimpsed(this.currentX - 1, this.currentY));
             }
             else {
+
+                if (this.arenaMap.getInformation(this.currentX, this.currentY).getTileVisits() > 1) {
+                    int escapeDirection = this.arenaMap.firstDirectionToGlimpse(this.currentX, this.currentY);
+
+                    if (escapeDirection != -1) {
+                        this.inMovement = true;
+                        this.escapeMovementCount = 0;
+                        this.lastGlimpseDirection = escapeDirection;
+                        this.lastDecision = "glimpse";
+                        return Glimpse.glimpse(this.lastGlimpseDirection, 4, "Trying to escape loop movement.");
+                    }
+                }
                 this.lastMoveDirection = this.arenaMap.lessWaterDirection(this.currentX, this.currentY, this.lastMoveDirection);
                 if (this.lastScoutDirection == -1) {
                     this.lastDecision = "land";
@@ -398,17 +407,29 @@ public class Explorer implements IExplorerRaid {
                     int glimpsedX = this.currentX + (ResultsComputing.xOffset(this.lastGlimpseDirection) * i);
                     int glimpsedY = this.currentY + (ResultsComputing.yOffset(this.lastGlimpseDirection) * i);
 
-                    List<Biome> tileBiomes = new ArrayList<>();
+
                     JSONArray tileBiomesJSONArray = biomesJSONArray.getJSONArray(i);
                     Map<String, Integer> biomesMap = new HashMap<>();
+                    List<Biome> tileBiomes = new ArrayList<>();
 
-                    for (int j = 0; j < tileBiomesJSONArray.length(); j++) {
-                        if (biomesMap.containsKey(tileBiomesJSONArray.getJSONArray(j).getString(0))) {
-                            biomesMap.put(tileBiomesJSONArray.getJSONArray(j).getString(0), biomesMap.get(tileBiomesJSONArray.getJSONArray(j).getString(0)) + tileBiomesJSONArray.getJSONArray(j).getInt(1));
-                        } else {
-                            biomesMap.put(tileBiomesJSONArray.getJSONArray(j).getString(0), tileBiomesJSONArray.getJSONArray(j).getInt(1));
+                    if (i < 2) {
+                        for (int j = 0; j < tileBiomesJSONArray.length(); j++) {
+                            if (biomesMap.containsKey(tileBiomesJSONArray.getJSONArray(j).getString(0))) {
+                                biomesMap.put(tileBiomesJSONArray.getJSONArray(j).getString(0), biomesMap.get(tileBiomesJSONArray.getJSONArray(j).getString(0)) + tileBiomesJSONArray.getJSONArray(j).getInt(1));
+                            } else {
+                                biomesMap.put(tileBiomesJSONArray.getJSONArray(j).getString(0), tileBiomesJSONArray.getJSONArray(j).getInt(1));
+                            }
                         }
                     }
+                    else if (i == 2) {
+                        for (int j = 0; j < tileBiomesJSONArray.length(); j++) {
+                            biomesMap.put(tileBiomesJSONArray.getString(j), -1);
+                        }
+                    }
+                    else {
+                        biomesMap.put(tileBiomesJSONArray.getString(0), -1);
+                    }
+
 
                     for (Map.Entry<String, Integer> entry : biomesMap.entrySet()) {
                         tileBiomes.add(new Biome(entry.getKey(), entry.getValue()));
@@ -429,19 +450,5 @@ public class Explorer implements IExplorerRaid {
 
 
     }
-    public int getLastScoutDirection(){
-        return this.lastScoutDirection;
-    }
-    public int getX(){
-        return this.currentX;
-    }
-    public int getY(){
-        return this.currentY;
-    }
-    public IslandMap getMap(){
-        return this.arenaMap;
-    }
-    public List<Objective> getObjectives(){
-        return this.objectives;
-    }
+
 }
