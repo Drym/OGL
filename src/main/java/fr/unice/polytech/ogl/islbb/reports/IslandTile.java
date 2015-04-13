@@ -21,7 +21,7 @@ public class IslandTile {
     private List<POI> pois;
     private List<Biome> biomes;
     private int glimpsedRange;
-    private int visite;
+    private int visits;
     private boolean alreadyScouted = false;
     private boolean alreadyExplored = false;
     private boolean alreadyGlimpsed = false;
@@ -58,7 +58,8 @@ public class IslandTile {
         this.alreadyScouted = true;
 
         this.unreachable = isUnreachable;
-        visite=0;
+
+        this.visits  = 0;
     }
 
     /**
@@ -75,7 +76,8 @@ public class IslandTile {
         this.glimpsedRange = -1;
 
         this.alreadyExplored = true;
-        visite=0;
+
+        this.visits = 0;
     }
 
     /**
@@ -92,7 +94,7 @@ public class IslandTile {
         this.glimpsedRange = range;
 
         this.alreadyGlimpsed = true;
-        visite=0;
+        this.visits = 0;
     }
 
     /**
@@ -226,19 +228,19 @@ public class IslandTile {
         }
 
     }
-    public void visiter(){
-        this.visite++;
+    public void addTileVisit(){
+        this.visits++;
     }
 
-    public int getvisite(){
-        return this.visite;
+    public int getTileVisits(){
+        return this.visits;
     }
     /**
      * Est-ce que la case semble marquer le rivage de l'océan ?
      */
     public boolean isWater() {
 
-        return this.containBiome("OCEAN") != null;
+       return this.getOceanPart() >= 60;
 
     }
 

@@ -52,7 +52,7 @@ public class Explorer implements IExplorerRaid {
     private int scoutedY;
 
     private boolean hasArrived;
-    private boolean deplacement;
+    private boolean inMovement;
 
     private int lastMoveDirection;
 
@@ -80,7 +80,7 @@ public class Explorer implements IExplorerRaid {
         this.budget = this.contract.getBudget();
         this.men = contract.getMen();
         this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
-        deplacement=false;
+        inMovement =false;
         this.starting = true;
 
         this.landedMen = Math.min(this.men, this.MEN_USED);
@@ -119,34 +119,19 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
-        if(deplacement){
-            if(!this.hasArrived)
-            {
-                return Move.move(lastMoveDirection);
-            }
-            int direction=this.arenaMap.AlreadyglimpsedNotMove(currentX,currentY);
-            if(direction==-1){
-
-                //todo glimpse range 3 decider de la direction
-
-            }
-            hasArrived=false;
-            lastMoveDirection=direction;
-            return Move.move(lastMoveDirection);
-            }
-        if (this.budget < ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0) + 25) {
+        if (this.lastDecision == null && this.creek == null) {
             this.lastDecision = "exit";
-            return Exit.exit("Not enough budget, distance:" + ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0));
-        }
-
-        if ( this.lastDecision == null && this.creek == null ) {
-            this.lastDecision = "exit";
-            return Exit.exit("No creek so exit directly !");
+            return Exit.exit("No creek given at initialization, stopping...");
         }
 
         if (this.lastDecision == null) {
             this.lastDecision = "land";
             return Land.land(this.creek, 2, "Initial landing.");
+        }
+
+        if (this.budget < ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0) + 25) {
+            this.lastDecision = "exit";
+            return Exit.exit("Not enough budget, distance:" + ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0));
         }
 
         if (this.lastDecision.equals("land") && this.starting) {
@@ -168,6 +153,42 @@ public class Explorer implements IExplorerRaid {
             this.lastDecision = "scout";
             return Scout.scout(this.arenaMap.firstDirectionToScout(0, 0), "After the initial tile has been worked out, starting to explore the island.");
         }
+/*
+        if (this.arenaMap.getInformation(currentX, currentY).getTileVisits() > 2) {
+            this.inMovement = true;
+        }
+
+        if (this.inMovement) {
+
+            int exploringDirection = this.arenaMap.firstDirectionToGlimpse(this.currentX, this.currentY);
+
+            if (exploringDirection >= 0) {
+
+                this.lastGlimpseDirection = exploringDirection;
+                this.lastDecision = "glimpse";
+                return Glimpse.glimpse(exploringDirection, 4, "Escaping method, after glimpsing direction was found");
+            }
+
+
+            if (!this.hasArrived) {
+
+                this.lastDecision = "move";
+                return Move.move(lastMoveDirection);
+
+            }
+
+            if (this.arenaMap.getInformation(currentX, currentY).getTileVisits() == 0) {
+
+                this.inMovement = false;
+                this.hasArrived = true;
+
+            }
+
+
+            this.lastMoveDirection = exploringDirection;
+            return Move.move(lastMoveDirection);
+
+        }*/
 
         if (this.lastDecision.equals("scout") || this.lastDecision.equals("land")) {
             while (this.lastScoutDirection < 4) {
@@ -307,22 +328,14 @@ public class Explorer implements IExplorerRaid {
 
                 this.currentX += ResultsComputing.xOffset(this.lastMoveDirection);
                 this.currentY += ResultsComputing.yOffset(this.lastMoveDirection);
-                this.arenaMap.visite(currentX,currentY);// augmente le nombre de visite sur la case
-                if(this.arenaMap.getInformation(currentX,currentY).getvisite()>2){
-                    deplacement=true;
-                }
+                this.arenaMap.addVisit(currentX, currentY);
+
                 if (this.arenaMap.isAlreadyScouted(this.currentX, this.currentY)) {
                     this.currentAltitude += this.arenaMap.getInformation(this.currentX, this.currentY).getAltitude();
                 }
 
                 this.moveBudget += JSONResults.getInt("cost");
-                //si je suis en mode déplacement et si j'arrive sur une case non exploré je suis "arrivé"
-                if(deplacement){
-                    if(this.arenaMap.getInformation(currentX,currentY).getvisite()==0){
-                        deplacement=false;
-                        hasArrived=true;
-                    }
-                }
+
             }
 
 
