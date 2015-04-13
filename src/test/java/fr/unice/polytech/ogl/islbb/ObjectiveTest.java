@@ -1,19 +1,13 @@
 package fr.unice.polytech.ogl.islbb;
-import fr.unice.polytech.ogl.islbb.actions.*;
 
 import fr.unice.polytech.ogl.islbb.reports.Objective;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
-import java.util.List;
 
 /**
  * Created by Lucas on 08/04/2015.
