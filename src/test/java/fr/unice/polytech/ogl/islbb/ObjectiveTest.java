@@ -33,6 +33,10 @@ public class ObjectiveTest {
         contract = new Initialization("{\"creek\":\"creek_id\", \"budget\":70,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}");
         this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
 
+        //Vérifie l'object ref
+        assertEquals(objectiveRef.getObjective(), "WOOD");
+        assertEquals(objectiveRef.getAmount(), 600);
+
         //Vérifie que les bonnes inforamtions sont récupérées dans le contract
         assertEquals(objectiveRef.getObjective(), objectives.get(0).getObjective());
         assertEquals(objectiveRef.getAmount(), objectives.get(0).getAmount());
