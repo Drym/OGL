@@ -15,6 +15,7 @@ public class ScoutTest {
 
         //Test si l'action retourne la bonne chose
         assertEquals(Scout.scout("N"), "{\"action\":\"scout\",\"parameters\":{\"direction\":\"N\"}}" );
+        assertEquals(Scout.scout(0), "{\"action\":\"scout\",\"parameters\":{\"direction\":\"N\"}}" );
         assertEquals(Scout.scout(0, "exemple debug"), "{\"debug\":\"exemple debug\",\"action\":\"scout\",\"parameters\":{\"direction\":\"N\"}}" );
 
     }
