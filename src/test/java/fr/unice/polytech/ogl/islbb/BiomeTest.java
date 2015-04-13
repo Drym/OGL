@@ -19,5 +19,11 @@ public class BiomeTest {
         assertEquals(b.getBiome(), "BEACH");
         //0 étant le "delta", donc ici delta nul
         assertEquals(b.getPercentage(), nb, 0);
+
+        b.setBiome("MANGROVE");
+        b.setPercentage(20);
+
+        assertEquals(b.getPercentage(), 20, 0);
+        assertEquals(b.getBiome(), "MANGROVE");
     }
 }

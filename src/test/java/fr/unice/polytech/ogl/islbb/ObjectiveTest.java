@@ -38,5 +38,12 @@ public class ObjectiveTest {
         assertEquals(objectiveRef2.getObjective(), objectives.get(1).getObjective());
         assertEquals(objectiveRef2.getAmount(), objectives.get(1).getAmount());
 
+        objectiveRef.setAmount(1000);
+        objectiveRef.setObjective("FISH");
+
+        assertEquals(objectiveRef.getObjective(), "FISH");
+        assertEquals(objectiveRef.getAmount(),1000);
+
+
     }
 }
