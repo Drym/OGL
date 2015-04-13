@@ -16,6 +16,7 @@ public class GlimpseTest {
 
         //Test si l'action retourne la bonne chose
         assertEquals(Glimpse.glimpse("N", 2), "{\"action\":\"glimpse\",\"parameters\":{\"range\":2,\"direction\":\"N\"}}" );
+        assertEquals(Glimpse.glimpse(0, 2), "{\"action\":\"glimpse\",\"parameters\":{\"range\":2,\"direction\":\"N\"}}" );
         assertEquals(Glimpse.glimpse(0, 2, "exemple debug"), "{\"debug\":\"exemple debug\",\"action\":\"glimpse\",\"parameters\":{\"range\":2,\"direction\":\"N\"}}" );
 /*        String result = "{ \"status\": \"OK\", \"cost\": 12,\n" +
                 "  \"extras\": {\n" +
