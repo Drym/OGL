@@ -51,6 +51,8 @@ public class Explorer implements IExplorerRaid {
     private int scoutedX;
     private int scoutedY;
 
+    private boolean hasArrived;
+    private boolean deplacement;
 
     private int lastMoveDirection;
 
@@ -73,12 +75,12 @@ public class Explorer implements IExplorerRaid {
     public void initialize(String context) {
 
         this.contract = new Initialization(context);
-
+        this.hasArrived=true;
         this.creek = this.contract.getCreek();
         this.budget = this.contract.getBudget();
         this.men = contract.getMen();
         this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
-
+        deplacement=false;
         this.starting = true;
 
         this.landedMen = Math.min(this.men, this.MEN_USED);
@@ -117,6 +119,21 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
+        if(deplacement){
+            if(!this.hasArrived)
+            {
+                return Move.move(lastMoveDirection);
+            }
+            int direction=this.arenaMap.AlreadyglimpsedNotMove(currentX,currentY);
+            if(direction==-1){
+
+                //todo glimpse range 3 decider de la direction
+
+            }
+            hasArrived=false;
+            lastMoveDirection=direction;
+            return Move.move(lastMoveDirection);
+            }
         if (this.budget < ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0) + 25) {
             this.lastDecision = "exit";
             return Exit.exit("Not enough budget, distance:" + ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0));
@@ -290,13 +307,22 @@ public class Explorer implements IExplorerRaid {
 
                 this.currentX += ResultsComputing.xOffset(this.lastMoveDirection);
                 this.currentY += ResultsComputing.yOffset(this.lastMoveDirection);
-
+                this.arenaMap.visite(currentX,currentY);// augmente le nombre de visite sur la case
+                if(this.arenaMap.getInformation(currentX,currentY).getvisite()>2){
+                    deplacement=true;
+                }
                 if (this.arenaMap.isAlreadyScouted(this.currentX, this.currentY)) {
                     this.currentAltitude += this.arenaMap.getInformation(this.currentX, this.currentY).getAltitude();
                 }
 
                 this.moveBudget += JSONResults.getInt("cost");
-
+                //si je suis en mode déplacement et si j'arrive sur une case non exploré je suis "arrivé"
+                if(deplacement){
+                    if(this.arenaMap.getInformation(currentX,currentY).getvisite()==0){
+                        deplacement=false;
+                        hasArrived=true;
+                    }
+                }
             }
 
 
@@ -389,6 +415,18 @@ public class Explorer implements IExplorerRaid {
         }
 
 
+    }
+    public int getLastScoutDirection(){
+        return this.lastScoutDirection;
+    }
+    public int getX(){
+        return this.currentX;
+    }
+    public int getY(){
+        return this.currentY;
+    }
+    public IslandMap getMap(){
+        return this.arenaMap;
     }
     public List<Objective> getObjectives(){
         return this.objectives;

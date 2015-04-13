@@ -167,6 +167,44 @@ public class IslandMap {
     }
 
     /**
+     *
+     */
+    public int AlreadyglimpsedNotMove(int x, int y) {
+        int i;
+        int k;
+        //i disctance
+        for (i = 0; i < 4; i++) {
+            //k direction
+            //Todo Nord sud
+            for (k = 0; k <= 2; k += 2) {
+                if (this.getInformation(x + (i * k), y).isAlreadyGlimpsed() && !this.getInformation(x + (i * k), y).isWater()) {
+                    return k;
+                }
+            }
+            // todo est ouest
+            for (k = -1; k <= 1; k += 2) {
+                if (this.getInformation(x, y + (i * k)).isAlreadyGlimpsed() && !this.getInformation(x, y + (i * k)).isWater()) {
+                    return k;
+                }
+            }
+        }
+        return -1;
+    }
+    /**
+     * augmente le nombre de visite sur la case;
+     */
+
+    public void visite(int x,int y){
+        this.getInformation(x, y).visiter();
+    }
+
+    public boolean isvisited(int x,int y){
+        if(this.getInformation(x, y).getvisite()>0){
+            return true;
+        }
+        else return false;
+    }
+    /**
      * La case x y a-t-elle déjà été Explore ?
      */
     public boolean isAlreadyExplored(int x, int y) {
