@@ -4,9 +4,7 @@ import fr.unice.polytech.ogl.islbb.Data;
 import fr.unice.polytech.ogl.islbb.Explorer;
 import fr.unice.polytech.ogl.islbb.ResultsComputing;
 
-import javax.xml.transform.Result;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -167,6 +165,50 @@ public class IslandMap {
     }
 
     /**
+     *
+     */
+
+    public int firstDirectionToGlimpse(int x, int y) {
+
+        int observedX, observedY;
+        
+        for (int d = 0 ; d < 4 ; d++) {
+            
+            for (int p = 1 ; p < 4 ; p--) {
+                
+                observedX = x + (ResultsComputing.xOffset(d) * p);
+                observedY = y + (ResultsComputing.yOffset(d) * p);
+                
+                if (this.isAlreadyGlimpsed(observedX,  observedY)) {
+                    continue;
+                }
+                else {
+                    return d;
+                }
+                
+            }
+            
+        }
+        
+        return -1;
+    }
+    /**
+     * augmente le nombre de addVisit sur la case;
+     */
+
+    public void addVisit(int x, int y) {
+
+        this.getInformation(x, y).addTileVisit();
+
+    }
+
+    public boolean isVisited(int x,int y){
+
+        return this.getInformation(x, y).getTileVisits() > 0;
+
+    }
+
+    /**
      * La case x y a-t-elle déjà été Explore ?
      */
     public boolean isAlreadyExplored(int x, int y) {
@@ -199,13 +241,13 @@ public class IslandMap {
         return 0;
     }
 
-    public int firstDirectionToGlimpse(int x, int y) {
+/*    public int firstDirectionToGlimpse(int x, int y) {
         for (int i = 0 ; i < 4 ; i++) {
             if (!this.isAlreadyGlimpsed(x + ResultsComputing.xOffset(i), y + ResultsComputing.yOffset(i))) {
                 return i;
             }
         }
         return 0;
-    }
+    }*/
 
 }

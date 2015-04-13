@@ -51,6 +51,8 @@ public class Explorer implements IExplorerRaid {
     private int scoutedX;
     private int scoutedY;
 
+    private boolean hasArrived;
+    private boolean inMovement;
 
     private int lastMoveDirection;
 
@@ -73,12 +75,12 @@ public class Explorer implements IExplorerRaid {
     public void initialize(String context) {
 
         this.contract = new Initialization(context);
-
+        this.hasArrived=true;
         this.creek = this.contract.getCreek();
         this.budget = this.contract.getBudget();
         this.men = contract.getMen();
         this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
-
+        inMovement =false;
         this.starting = true;
 
         this.landedMen = Math.min(this.men, this.MEN_USED);
@@ -117,19 +119,19 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
 
-        if (this.budget < ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0) + 25) {
+        if (this.lastDecision == null && this.creek == null) {
             this.lastDecision = "exit";
-            return Exit.exit("Not enough budget, distance:" + ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0));
-        }
-
-        if ( this.lastDecision == null && this.creek == null ) {
-            this.lastDecision = "exit";
-            return Exit.exit("No creek so exit directly !");
+            return Exit.exit("No creek given at initialization, stopping...");
         }
 
         if (this.lastDecision == null) {
             this.lastDecision = "land";
             return Land.land(this.creek, 2, "Initial landing.");
+        }
+
+        if (this.budget < ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0) + 25) {
+            this.lastDecision = "exit";
+            return Exit.exit("Not enough budget, distance:" + ResultsComputing.computeDistance(this.currentX, this.currentY, 0, 0));
         }
 
         if (this.lastDecision.equals("land") && this.starting) {
@@ -151,6 +153,42 @@ public class Explorer implements IExplorerRaid {
             this.lastDecision = "scout";
             return Scout.scout(this.arenaMap.firstDirectionToScout(0, 0), "After the initial tile has been worked out, starting to explore the island.");
         }
+/*
+        if (this.arenaMap.getInformation(currentX, currentY).getTileVisits() > 2) {
+            this.inMovement = true;
+        }
+
+        if (this.inMovement) {
+
+            int exploringDirection = this.arenaMap.firstDirectionToGlimpse(this.currentX, this.currentY);
+
+            if (exploringDirection >= 0) {
+
+                this.lastGlimpseDirection = exploringDirection;
+                this.lastDecision = "glimpse";
+                return Glimpse.glimpse(exploringDirection, 4, "Escaping method, after glimpsing direction was found");
+            }
+
+
+            if (!this.hasArrived) {
+
+                this.lastDecision = "move";
+                return Move.move(lastMoveDirection);
+
+            }
+
+            if (this.arenaMap.getInformation(currentX, currentY).getTileVisits() == 0) {
+
+                this.inMovement = false;
+                this.hasArrived = true;
+
+            }
+
+
+            this.lastMoveDirection = exploringDirection;
+            return Move.move(lastMoveDirection);
+
+        }*/
 
         if (this.lastDecision.equals("scout") || this.lastDecision.equals("land")) {
             while (this.lastScoutDirection < 4) {
@@ -290,6 +328,7 @@ public class Explorer implements IExplorerRaid {
 
                 this.currentX += ResultsComputing.xOffset(this.lastMoveDirection);
                 this.currentY += ResultsComputing.yOffset(this.lastMoveDirection);
+                this.arenaMap.addVisit(currentX, currentY);
 
                 if (this.arenaMap.isAlreadyScouted(this.currentX, this.currentY)) {
                     this.currentAltitude += this.arenaMap.getInformation(this.currentX, this.currentY).getAltitude();
@@ -389,6 +428,18 @@ public class Explorer implements IExplorerRaid {
         }
 
 
+    }
+    public int getLastScoutDirection(){
+        return this.lastScoutDirection;
+    }
+    public int getX(){
+        return this.currentX;
+    }
+    public int getY(){
+        return this.currentY;
+    }
+    public IslandMap getMap(){
+        return this.arenaMap;
     }
     public List<Objective> getObjectives(){
         return this.objectives;
