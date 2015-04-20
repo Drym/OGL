@@ -17,12 +17,18 @@ public class ExplorerTest {
     String init="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}";
     String init3="{\"creek\":\"creek_id\", \"budget\":70,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}";
     String resultland="{\"status\":\"OK\",\"cost\":12}";
+    String moveafterscoot="{\"debug\":\"If after scouting a possible objective has been found, moving to it.\",\"action\":\"move_to\",\"parameters\":{\"direction\":\"E\"}}";
+    String scootN="{\"debug\":\"After the initial tile has been worked out, starting to explore the island.\",\"action\":\"scout\",\"parameters\":{\"direction\":\"N\"}}";
+    String scootE="{\"debug\":\"Scouting next tile, direction: 1 | current: false | N: true | E: false | S: false | W: false\",\"action\":\"scout\",\"parameters\":{\"direction\":\"E\"}}";
     String testN = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
     String testW = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
     String testS = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
     String testE = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
     String exploit="{\"status\":\"OK\",\"cost\":40,\"extras\":{\"amount\":600}}";
     String exploit2="{\"status\":\"OK\",\"cost\":73,\"extras\":{\"amount\":600}}";
+    String land="{\"debug\":\"Initial landing.\",\"action\":\"land\",\"parameters\":{\"creek\":\"creek_id\",\"people\":2}}";
+    String exploring1="{\"debug\":\"Exploring first tile.\",\"action\":\"explore\"}";
+    String exploretest="{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"LOW\",\"resource\": \"FUR\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
     String testScout ="{\"status\":\"OK\",\"cost\":576,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
     String init2="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"FLOWER\", \"amount\":2}]}";
     ArrayList<String>resultscout;
@@ -30,7 +36,6 @@ public class ExplorerTest {
     ArrayList<String>scoutdecision;
     int direction=1;
 
-    @Ignore
     @Test public void testExplorer(){
         Objective obj=new Objective("WOOD",600);
         cardinaux=new Data();
@@ -49,31 +54,38 @@ public class ExplorerTest {
         Explorer test=new Explorer();
         test.initialize(init);
         String decision1=test.takeDecision();
-        assertEquals(decision1, Land.land("creek_id", 3));
+        assertEquals(land,decision1);
         //première décision
         test.acknowledgeResults(resultland);
         //regarde si la 2 eme est un scout
-        assertEquals(Scout.scout("N"), test.takeDecision());
-        test.acknowledgeResults(resultscout.get(i));
-        scoutdecision.add(test.takeDecision());
-        i++;
-        //scout est
-        assertEquals(Scout.scout(cardinaux.getCardinaux(i)),test.takeDecision());
-        test.acknowledgeResults(resultscout.get(i));
-        //move E
-        assertEquals(Move.move("E"), test.takeDecision());//trouve du bois land 10
-        test.acknowledgeResults(resultland);
-        //exploit
-        assertEquals(Exploit.exploit("FISH"), test.takeDecision());
-        test.acknowledgeResults(exploit);
-        //Objective.print(test.getObjectives());
-        //redémarre à scoot
-        assertEquals(Scout.scout("N"), test.takeDecision());
-        //regarde si objectives est à jour
-        List<Objective> objec=new ArrayList<Objective>();
-        objec.add(obj);
-        //assertEquals(test.getObjectives().size(),1);
-        test.takeDecision();
+        assertEquals(test.takeDecision(),exploring1);
+        test.acknowledgeResults(exploretest);
+        assertEquals(test.takeDecision(),scootN);
+        test.acknowledgeResults(testN);
+        assertEquals(test.takeDecision(),scootE);
+        test.acknowledgeResults(testE);
+        assertEquals(test.takeDecision(),moveafterscoot);
+       // assertEquals(Scout.scout("N"), test.takeDecision());
+//        test.acknowledgeResults(resultscout.get(i));
+//        scoutdecision.add(test.takeDecision());
+//        i++;
+//        //scout est
+//        assertEquals(Scout.scout(cardinaux.getCardinaux(i)),test.takeDecision());
+//        test.acknowledgeResults(resultscout.get(i));
+//        //move E
+//        assertEquals(Move.move("E"), test.takeDecision());//trouve du bois land 10
+//        test.acknowledgeResults(resultland);
+//        //exploit
+//        assertEquals(Exploit.exploit("FISH"), test.takeDecision());
+//        test.acknowledgeResults(exploit);
+//        //Objective.print(test.getObjectives());
+//        //redémarre à scoot
+//        assertEquals(Scout.scout("N"), test.takeDecision());
+//        //regarde si objectives est à jour
+//        List<Objective> objec=new ArrayList<Objective>();
+//        objec.add(obj);
+//        //assertEquals(test.getObjectives().size(),1);
+//        test.takeDecision();
         }
 
      public void testglimpse(){
