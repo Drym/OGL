@@ -20,6 +20,8 @@ public class ExplorerTest {
     String moveafterscoot="{\"debug\":\"If after scouting a possible objective has been found, moving to it.\",\"action\":\"move_to\",\"parameters\":{\"direction\":\"E\"}}";
     String scootN="{\"debug\":\"After the initial tile has been worked out, starting to explore the island.\",\"action\":\"scout\",\"parameters\":{\"direction\":\"N\"}}";
     String scootE="{\"debug\":\"Scouting next tile, direction: 1 | current: false | N: true | E: false | S: false | W: false\",\"action\":\"scout\",\"parameters\":{\"direction\":\"E\"}}";
+    String scootNafterexpoit="{\"debug\":\"After exploring and the resource was not exploitable or after exploiting it, restart scouting.\",\"action\":\"scout\",\"parameters\":{\"direction\":\"N\"}}";
+
     String testN = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":-23}}";
     String testW = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
     String testS = "{\"status\":\"OK\",\"cost\":8,\"extras\":{\"resources\":[\"FLOWER\"],\"altitude\":23}}";
@@ -28,8 +30,11 @@ public class ExplorerTest {
     String exploit2="{\"status\":\"OK\",\"cost\":73,\"extras\":{\"amount\":600}}";
     String land="{\"debug\":\"Initial landing.\",\"action\":\"land\",\"parameters\":{\"creek\":\"creek_id\",\"people\":2}}";
     String exploring1="{\"debug\":\"Exploring first tile.\",\"action\":\"explore\"}";
-    String exploretest="{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"LOW\",\"resource\": \"FUR\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
+    String exploring2="{\"debug\":\"Afer moving to a possible objective, exploring it.\",\"action\":\"explore\"}";
+    String exploretest="{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"FUR\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
+    String exploretest2="{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"FISH\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
     String testScout ="{\"status\":\"OK\",\"cost\":576,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
+    String exploitdecision="{\"debug\":\"After exploring, the objective is exploitable.\",\"action\":\"exploit\",\"parameters\":{\"resource\":\"FISH\"}}";
     String init2="{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"FLOWER\", \"amount\":2}]}";
     ArrayList<String>resultscout;
     Data cardinaux;
@@ -65,6 +70,16 @@ public class ExplorerTest {
         assertEquals(test.takeDecision(),scootE);
         test.acknowledgeResults(testE);
         assertEquals(test.takeDecision(),moveafterscoot);
+        test.acknowledgeResults(resultland);
+        assertEquals(test.takeDecision(),exploring2);
+        test.acknowledgeResults(exploretest2);
+        //exploit
+        assertEquals(test.takeDecision(),exploitdecision);
+        test.acknowledgeResults(exploit);
+        assertEquals(test.takeDecision(),scootNafterexpoit);
+        test.acknowledgeResults(testN);
+        assertEquals(test.takeDecision(),scootE);
+        //To do checker objectifs
        // assertEquals(Scout.scout("N"), test.takeDecision());
 //        test.acknowledgeResults(resultscout.get(i));
 //        scoutdecision.add(test.takeDecision());
