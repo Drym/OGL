@@ -13,6 +13,8 @@ import java.util.List;
 /**
  * Created by Thibault OBER on 14/03/2015.
  */
+
+@Ignore
 public class ExplorerTest {
     String init = "{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}";
     String init3 = "{\"creek\":\"creek_id\", \"budget\":70,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}";

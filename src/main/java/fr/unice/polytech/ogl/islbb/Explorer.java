@@ -2,16 +2,8 @@ package fr.unice.polytech.ogl.islbb;
 
 import eu.ace_design.island.bot.*;
 
-import fr.unice.polytech.ogl.islbb.actions.*;
 import fr.unice.polytech.ogl.islbb.data.ArenaData;
-import fr.unice.polytech.ogl.islbb.data.ExplorerData;
 import fr.unice.polytech.ogl.islbb.data.ExplorerDecision;
-import fr.unice.polytech.ogl.islbb.reports.*;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.*;
 
 /**
  * Classe qui implemente les différentes actions du robot
