@@ -53,6 +53,7 @@ public class ExplorerTest {
     ArrayList<String> scoutdecision;
     int direction = 1;
 
+    @Ignore
     @Test
     public void testExplorer() {
         Objective obj = new Objective("WOOD", 600);
@@ -192,8 +193,6 @@ public class ExplorerTest {
      */
     @Test
     public void testExploitAfterExplore() {
-        //beaucoup et fair/esay
-        //medium/esay
         Explorer test = new Explorer();
         test.initialize(init);
         String decision1 = test.takeDecision();
@@ -201,72 +200,141 @@ public class ExplorerTest {
         //Ressource inutile, doit pas exploit, donc continu explore
         test.acknowledgeResults(exploretest);
         assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
-
-        //Ressource utile High et fair -> doit exploit
-        test.acknowledgeResults(exploretest2b);
-        assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
-
-        Explorer test2 = new Explorer();
-        test2.initialize(init);
-        String decision2 = test2.takeDecision();
-
-        //High et easy --> ok
-        test2.acknowledgeResults(exploreTest3);
-        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test2.takeDecision());
-        //High et hard --> pas ok
-        test2.acknowledgeResults(exploreTest4);
-        assertEquals(Explore.explore("Exploring first tile."), test2.takeDecision());
-
-        Explorer test3 = new Explorer();
-        test3.initialize(init);
-        String decision3 = test3.takeDecision();
-
-        //Medium et easy --> ok
-        test3.acknowledgeResults(exploreTest5);
-        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test3.takeDecision());
-        //Medium et fair --> pas ok
-        test3.acknowledgeResults(exploreTest6);
-        assertEquals(Explore.explore("Exploring first tile."), test3.takeDecision());
-
-        Explorer test4 = new Explorer();
-        test4.initialize(init);
-        String decision4 = test4.takeDecision();
-
-        //Medium et hard --> pas ok
-        test4.acknowledgeResults(exploreTest7);
-        assertEquals(Explore.explore("Exploring first tile."), test4.takeDecision());
-        //low et easy --> pas ok
-        test4.acknowledgeResults(exploreTest8);
-        //TODO assertEquals(Explore.explore("Exploring first tile."), test4.takeDecision());
-
-        Explorer test5 = new Explorer();
-        test5.initialize(init);
-        String decision5 = test5.takeDecision();
-
-        //low et fair --> pas ok
-        test5.acknowledgeResults(exploreTest9);
-        assertEquals(Explore.explore("Exploring first tile."), test5.takeDecision());
-        //low et hard --> pas ok
-        test5.acknowledgeResults(exploreTest10);
-        //TODO assertEquals(Explore.explore("Exploring first tile."), test5.takeDecision());
-
-
     }
 
     /**
      * @Author Lucas
-     * Ne pas toucher
+     * Vérifie si le bot exploit bien après une exploration
      */
-   @Ignore @Test
+    @Test
     public void testExploitAfterExplore2() {
-        Explorer test2 = new Explorer();
-        test2.initialize(init);
-        String decision2 = test2.takeDecision();
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //Ressource utile High et fair -> doit exploit
+        test.acknowledgeResults(exploretest2b);
+        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore3() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
 
         //High et easy --> ok
-        System.out.println(exploreTest3);
-        test2.acknowledgeResults(exploreTest3);
-        assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test2.takeDecision());
+        test.acknowledgeResults(exploreTest3);
+        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore4() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //High et hard --> pas ok
+        test.acknowledgeResults(exploreTest4);
+        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore5() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //Medium et easy --> ok
+        test.acknowledgeResults(exploreTest5);
+        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore6() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //Medium et fair --> pas ok
+        test.acknowledgeResults(exploreTest6);
+        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore7() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //Medium et hard --> pas ok
+        test.acknowledgeResults(exploreTest7);
+        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore8() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //low et easy --> pas ok
+        test.acknowledgeResults(exploreTest8);
+        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore9() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //low et fair --> pas ok
+        test.acknowledgeResults(exploreTest9);
+        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
+    }
+
+    /**
+     * @Author Lucas
+     * Vérifie si le bot exploit bien après une exploration
+     */
+    @Test
+    public void testExploitAfterExplore10() {
+        Explorer test = new Explorer();
+        test.initialize(init);
+        String decision1 = test.takeDecision();
+
+        //low et hard --> pas ok
+        test.acknowledgeResults(exploreTest10);
+        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
     }
 
 }
