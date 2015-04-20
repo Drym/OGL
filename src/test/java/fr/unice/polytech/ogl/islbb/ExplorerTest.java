@@ -212,9 +212,12 @@ public class ExplorerTest {
         test.initialize(init);
         String decision1 = test.takeDecision();
 
+        assertEquals(test.takeDecision(), scootN);
+        test.acknowledgeResults(testN);
+
         //Ressource utile High et fair -> doit exploit
         test.acknowledgeResults(exploretest2b);
-        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
+        assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
     }
 
     /**
