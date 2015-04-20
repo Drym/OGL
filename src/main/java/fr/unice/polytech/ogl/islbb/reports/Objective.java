@@ -36,9 +36,9 @@ public class Objective {
     {
         amount -= exploit;
         if (amount <= 0) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static List<Objective> buildObjectives(List<String> res, List<Integer> amount){

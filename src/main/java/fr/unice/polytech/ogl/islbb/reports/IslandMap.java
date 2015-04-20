@@ -3,6 +3,7 @@ package fr.unice.polytech.ogl.islbb.reports;
 import fr.unice.polytech.ogl.islbb.Data;
 import fr.unice.polytech.ogl.islbb.Explorer;
 import fr.unice.polytech.ogl.islbb.ResultsComputing;
+import fr.unice.polytech.ogl.islbb.data.ExplorerDecision;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +114,7 @@ public class IslandMap {
             }
         }
 
-        Explorer.setDebug(debug);
+        ExplorerDecision.setDebug(debug);
         return result;
     }
 

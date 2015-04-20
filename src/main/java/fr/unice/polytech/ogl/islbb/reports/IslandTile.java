@@ -114,6 +114,12 @@ public class IslandTile {
 
     }
 
+    public void scoutTile(IslandTile scoutedTile) {
+
+        this.scoutTile(scoutedTile.altitude, scoutedTile.resources, scoutedTile.unreachable);
+
+    }
+
     /**
      * Méthode pour explorer une case (rajouter les conditions des ressources).
      */
@@ -121,6 +127,15 @@ public class IslandTile {
 
         this.resources = exploredResources;
         this.pois = exploredPOIs;
+
+        this.alreadyExplored = true;
+
+    }
+
+    public void exploreTile(IslandTile exploredTile) {
+
+        this.resources = exploredTile.resources;
+        this.pois = exploredTile.pois;
 
         this.alreadyExplored = true;
 
@@ -143,6 +158,11 @@ public class IslandTile {
                 this.glimpsedRange = range;
             }
         }
+    }
+
+    public void glimpseTile(IslandTile glimpsedTile) {
+
+        this.glimpseTile(glimpsedTile.biomes, glimpsedTile.glimpsedRange);
     }
 
     /**
