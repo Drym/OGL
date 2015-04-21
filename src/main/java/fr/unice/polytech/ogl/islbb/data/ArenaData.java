@@ -25,6 +25,20 @@ public class ArenaData {
 
     }
 
+    /**
+     * A chaque acknowledgeDecision, on met à jour la carte de l'île, ainsi que ExplorerData.
+     *
+     * TESTABLE :
+     *  - Après un Explore, un Scout ou un Glimpse, les IslandTile sont rajoutés dans la IslandMap.
+     *    Commencer par tester si les cases sont rajoutées (bonne coordonnées).
+     *    Tester si les cases rajoutées sont équivalentes au résultat des méthodes de TileProcessing pour le même JSON.
+     *
+     *  - Après chaque action le budget de ExplorerData décroît correctement.
+     *
+     *  - Après chaque Move, la position de ExplorerData est bien mise-à-jour.
+     *
+     *  - D'autres possibilitées sûrement...
+     */
     public void update(String returnedJSON) {
 
         int x, y, altitude, direction;
@@ -66,11 +80,9 @@ public class ArenaData {
 
         if (this.explorerInformation.lastDecision.equals("explore")) {
 
-            // La case est déjà dans le carte de l'île, on la met à jour.
             if (this.arenaMap.isRegistered(x, y)) {
                 this.arenaMap.getInformation(x, y).exploreTile(TileProcessing.exploreTile(JSONResults));
             }
-            // La case n'est pas encore dans la carte de l'île, on l'ajoute avec les informations retirées.
             else {
                 this.arenaMap.addTile(x, y, TileProcessing.exploreTile(JSONResults));
             }

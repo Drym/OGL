@@ -14,10 +14,15 @@ import java.util.Map;
 
 public class TileProcessing {
 
+    /**
+     * Retourne l'IslandTile tirée du JSON donné en résultat d'un Explore.
+     *
+     * TESTABLE :
+     *  - L'IslandTile retourné contient bien la liste des ressources avec leurs conditions ainsi que la liste des PoIs,
+     *    et son champ alreadyExplored est à TRUE.
+     */
     public static IslandTile exploreTile(JSONObject tileInformation) {
 
-        // On créer la liste des ressources disponibles sur la case.
-        // Avec le type, la quantité et l'exploitabilité.
         List<Resource> tileResources = new ArrayList<>();
         JSONArray resourcesJSONArray = tileInformation.getJSONObject("extras").getJSONArray("resources");
 
@@ -26,8 +31,6 @@ public class TileProcessing {
             tileResources.add(new Resource(resourceCondition.getString("resource"), resourceCondition.getString("amount"), resourceCondition.getString("cond")));
         }
 
-        // On créer la liste des points d'intérêts disponibles sur la case.
-        // Avec le type, et l'ID.
         List<POI> tilePOIs = new ArrayList<>();
         JSONArray POIsJSONArray = tileInformation.getJSONObject("extras").getJSONArray("pois");
 
@@ -40,6 +43,13 @@ public class TileProcessing {
 
     }
 
+    /**
+     * Retourne l'IslandTile tirée du JSON donné en résultat d'un Scout.
+     *
+     * TESTABLE :
+     *  - L'IslandTile retourné contient bien la liste des ressources ainsi que son altitude (currentAltitude + valeur du JSON),
+     *    et son champ alreadyScouted est à TRUE.
+     */
     public static IslandTile scoutTile(JSONObject tileInformation, int currentAltitude) {
 
         // On créer la liste des ressources disponibles sur la case.
@@ -56,6 +66,29 @@ public class TileProcessing {
 
     }
 
+    /**
+     * Retourne la liste d'IslandTile tirée du JSON donné en résultat d'un Glimpse.
+     * Case actuelle à l'index 0 -> 3ème case à l'index 3.
+     *
+     * TESTABLE :
+     *      RANGE 1 :
+     *          - La liste contient seulement la case actuelle.
+     *            Avec la liste des Biome et leur pourcentage de présence TOTALE sur la case.
+     *            ATTENTION : Un écart de 1 peut-être trouvé sur chaque Biome de la case.
+     *                        Venant de la conversion en entier. Tester avec des nombres ronds.
+     *
+     *      RANGE 2 :
+     *          - La liste contient deux IslandTile avec leurs Biome et le pourcentage de chacun.
+     *
+     *      RANGE 3 :
+     *          - La liste contient deux IslandTile avec leurs Biome et le pourcentage de chacun.
+     *            La troisième IslandTile contient une liste de Biome avec un pourcentage équivalent.
+     *
+     *      RANGE 4 :
+     *          - La liste contient deux IslandTile avec leurs Biome et le pourcentage de chacun.
+     *            La troisième IslandTile contient une liste de Biome avec un pourcentage équivalent.
+     *            La quatrième IslandTile contient un Biome présent à 100%.
+     */
     public static List<IslandTile> glimpseTile(JSONObject tilesInformation) {
 
         List<IslandTile> results = new ArrayList<>();
@@ -79,11 +112,11 @@ public class TileProcessing {
             }
             else if (i == 2) {
                 for (int j = 0; j < tileBiomesJSONArray.length(); j++) {
-                    biomesMap.put(tileBiomesJSONArray.getString(j), -1);
+                    biomesMap.put(tileBiomesJSONArray.getString(j), 100 / tileBiomesJSONArray.length());
                 }
             }
             else {
-                biomesMap.put(tileBiomesJSONArray.getString(0), -1);
+                biomesMap.put(tileBiomesJSONArray.getString(0), 100);
             }
 
 

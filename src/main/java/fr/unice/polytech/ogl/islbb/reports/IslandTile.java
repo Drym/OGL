@@ -30,18 +30,6 @@ public class IslandTile {
 
     private boolean unreachable = false;
 
-    public boolean isInterestring() {
-        return interestring;
-    }
-
-    public void setInterestring(boolean interestring) {
-        this.interestring = interestring;
-    }
-
-    private boolean interestring = true;
-
-
-
     /**
      * Méthode d'instanciation lors d'un Scout.
      */

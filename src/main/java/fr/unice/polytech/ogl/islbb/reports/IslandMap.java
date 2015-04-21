@@ -76,6 +76,13 @@ public class IslandMap {
         }
     }
 
+    /**
+     * Trouve la case voisine (distance 1) contenant le moins d'eau.
+     * Prend en compte la direction du dernier mouvement :
+     *  Si la direction choisie à la fin de la première boucle est équivalent à un retour sur la case d'où on vient,
+     *  on récupère la deuxième direction contenant le moins d'eau.
+     *
+     */
     public int lessWaterDirection(int x, int y, int lastMove) {
 
         String debug = new String();
@@ -116,6 +123,7 @@ public class IslandMap {
 
         ExplorerDecision.setDebug(debug);
         return result;
+
     }
 
     /**

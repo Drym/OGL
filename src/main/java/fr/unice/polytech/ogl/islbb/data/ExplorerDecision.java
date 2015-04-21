@@ -29,26 +29,57 @@ public class ExplorerDecision {
     }
     
     public String computeDecision() {
+
+        /**
+         * Aucune action n'a été prise, on est donc à la première action.
+         * Si aucune Creek n'a été donnée à l'initialisation, on arrête.
+         *
+         * TESTABLE
+         */
         if (this.explorerCurrentState.lastDecision == null && this.explorerCurrentState.startCreek == null) {
             this.explorerCurrentState.lastDecision = "exit";
-            return Exit.exit("No startCreek given at initialization, stopping...");
+            return Exit.exit("No creek given at initialization, stopping...");
         }
 
+        /**
+         * Aucune action n'a été prise, on est donc à la première action.
+         * On Land sur la Creek donnée à l'initialisation.
+         *
+         * TESTABLE
+         */
         if (this.explorerCurrentState.lastDecision == null) {
             this.explorerCurrentState.lastDecision = "land";
             return Land.land(this.explorerCurrentState.startCreek, 2, "Initial landing.");
         }
 
+        /**
+         * Si le budget est trop faible, il vaut mieux rentrer.
+         * On calcule la distance directe entre la Creek et la position actuelle et on ajoute 25 de marge.
+         *
+         * TESTABLE
+         */
         if (this.explorerCurrentState.availableBudget < ResultsComputing.computeDistance(this.explorerCurrentState.x, this.explorerCurrentState.y, 0, 0) + 25) {
             this.explorerCurrentState.lastDecision = "exit";
             return Exit.exit("Not enough budget, distance:" + ResultsComputing.computeDistance(this.explorerCurrentState.x, this.explorerCurrentState.y, 0, 0));
         }
 
+        /**
+         * Après le Land du début de partie, on explore la case sur laquelle on est arrivé.
+         *
+         * TESTABLE
+         */
         if (this.explorerCurrentState.lastDecision.equals("land") && this.explorerCurrentState.starting) {
             this.explorerCurrentState.lastDecision = "explore";
             return Explore.explore("Exploring first tile.");
         }
 
+        /**
+         * Toujours en début de partie, après avoir fait un Explore ou un Exploit,
+         * on regarde si des ressources en quantités suffisantes sont présentes.
+         *
+         * TESTABLE :
+         *  - l'Explore rapporte plusieurs ressources faisant partie des objectifs, on va donc faire un Exploit de chaque ressource.
+         */
         if ((this.explorerCurrentState.lastDecision.equals("explore") || this.explorerCurrentState.lastDecision.equals("exploit")) && this.explorerCurrentState.starting) {
             for (Resource currentResource : this.islandData.arenaMap.getInformation(0, 0).hasResources(this.explorerCurrentState.objectives)) {
                 if (ResultsComputing.parseAmount(currentResource.getAmount()) + ResultsComputing.parseCondition(currentResource.getCondition()) >= 2) {
@@ -64,6 +95,11 @@ public class ExplorerDecision {
             return Scout.scout(this.islandData.arenaMap.firstDirectionToScout(0, 0), "After the initial tile has been worked out, starting to explore the island.");
         }
 
+        /**
+         * En cas de situation bloquée (boucle), on essaye une méthode d'échappement de la situation.
+         *
+         * NON TESTABLE
+         */
         if (this.explorerCurrentState.inMovement) {
 
             if (this.explorerCurrentState.lastDecision.equals("glimpse")) {
@@ -93,6 +129,19 @@ public class ExplorerDecision {
             }
         }
 
+        /**
+         * Lors de l'exploration de l'île, on lance un Scout dans chaque direction,
+         * si une ressource potentiellement intéressante et trouvée,
+         * on fait un Move dans cette direction et cela sans finir les Scout dans chaque direction.
+         *
+         * Si à la fin de tous les Scout, aucune ressource n'est trouvée,
+         * on commence à faire des Glimpse.
+         *
+         * TESTABLE :
+         *  - On passe bien par toutes les directions.
+         *  - Une ressource est trouvée lors d'un des Scout avant la fin, la prochaine décision doit être un Move dans la bonne direction.
+         *  - Aucune ressource n'est trouvée, on lance un Glimpse.
+         */
         if (this.explorerCurrentState.lastDecision.equals("scout") || this.explorerCurrentState.lastDecision.equals("land")) {
             while (this.explorerCurrentState.lastScoutDirection < 4) {
                 if (this.islandData.arenaMap.isAlreadyScouted(this.explorerCurrentState.x + ResultsComputing.xOffset(this.explorerCurrentState.lastScoutDirection), this.explorerCurrentState.y + ResultsComputing.yOffset(this.explorerCurrentState.lastScoutDirection))) {
@@ -126,6 +175,16 @@ public class ExplorerDecision {
 
         }
 
+        /**
+         * Lorsqu'on vient de faire un Glimpse, on continue dans toutes les directions.
+         *
+         * TESTABLE :
+         *  - Glimpse dans toutes les directions.
+         *  - Après les Glimpse, on va dans la case voisine contenant la moins grande partie de biome OCEAN.
+         *  - Si toutes les cases contiennent de l'OCEAN en quantité, on relance un Land.
+         * NON TESTABLE :
+         *  - Méthode d'échappement lors d'une situation coincée dans une boucle de décision.
+         */
         if (this.explorerCurrentState.lastDecision.equals("glimpse")) {
             while (this.explorerCurrentState.lastGlimpseDirection < 4) {
                 if (this.islandData.arenaMap.isAlreadyGlimpsed(this.explorerCurrentState.x + ResultsComputing.xOffset(this.explorerCurrentState.lastGlimpseDirection), this.explorerCurrentState.y + ResultsComputing.yOffset(this.explorerCurrentState.lastGlimpseDirection))) {
@@ -151,18 +210,30 @@ public class ExplorerDecision {
                         this.explorerCurrentState.lastDecision = "glimpse";
                         return Glimpse.glimpse(this.explorerCurrentState.lastGlimpseDirection, 4, "Trying to escape loop movement.");
                     }
+
                 }
+
                 this.explorerCurrentState.lastMoveDirection = this.islandData.arenaMap.lessWaterDirection(this.explorerCurrentState.x, this.explorerCurrentState.y, this.explorerCurrentState.lastMoveDirection);
+
                 if (this.explorerCurrentState.lastScoutDirection == -1) {
                     this.explorerCurrentState.lastDecision = "land";
                     return Land.land(this.explorerCurrentState.startCreek, 2, "Best tile was more than 90% OCEAN, so better reland");
                 }
+
                 this.explorerCurrentState.lastGlimpseDirection = 0;
                 this.explorerCurrentState.lastDecision = "move";
                 return Move.move(this.explorerCurrentState.lastMoveDirection, debugString);
+
             }
         }
 
+        /**
+         * Après un Move, on regarde si c'était pour aller vers un objectif (trouvé grâce à un Scout) :
+         *  - Si oui, on lance un Explore de la case.
+         *  - Si non, c'est qu'on continue l'exploration et on recommence les Scout.
+         *
+         *  TESTABLE
+         */
         if (this.explorerCurrentState.lastDecision.equals("move")) {
             if (this.explorerCurrentState.hasObjective) {
                 this.explorerCurrentState.lastDecision = "explore";
@@ -175,6 +246,11 @@ public class ExplorerDecision {
             }
         }
 
+        /**
+         * Après un Explore, on cherche à déterminer si la ressource est en quantité suffisante :
+         *  - Si oui, on lance l'Exploit.
+         *  - Si non, on recommence à Scout.
+         */
         if ((this.explorerCurrentState.lastDecision.equals("explore") || this.explorerCurrentState.lastDecision.equals("exploit")) && this.explorerCurrentState.hasObjective) {
             for (Resource currentResource : this.islandData.arenaMap.getInformation(this.explorerCurrentState.x, this.explorerCurrentState.y).hasResources(this.explorerCurrentState.objectives)) {
                 if (ResultsComputing.parseAmount(currentResource.getAmount()) + ResultsComputing.parseCondition(currentResource.getCondition()) >= 3) {
