@@ -14,5 +14,12 @@ public class POITest {
 
         assertEquals(p.getType(),"creek");
         assertEquals(p.getId(), "9166ed94-1fd6-4a31-9480-cac7f75d7922");
+
+        p.setId("id");
+        p.setType("type");
+
+        assertEquals(p.getType(), "type");
+        assertEquals(p.getId(), "id");
+
     }
 }
