@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class Comportement {
 
+    /*
     HashMap<String,ArrayList<String>> scoutResults; //résultat des scoots ex{"N",{"WOOD","FLOWER"};...}
     String action; //dernière action réalisée
     JSONObject obj; //résultat envoyé par Acknoledgeresult
@@ -30,18 +31,19 @@ public class Comportement {
         obj = new JSONObject();
         action = str;
     }
-/*
-Renvoie true si staut=OK
- */
+
+
+//Renvoie true si staut=OK
+
     public Boolean getStatus(){
         if(obj.getString("status").equals("OK")) {
             return true;
         }
         else return false;
     }
-    /*
-    Traite les informations des scoot et les inserre dans la HASHMAP
-     */
+
+    //Traite les informations des scoot et les inserre dans la HASHMAP
+
     public void getScout(String str, String dir){
         int i;
         if(scoutResults.size() == 4) {
@@ -58,9 +60,9 @@ Renvoie true si staut=OK
         }
     }
 
-    /*
-    renvoie la quantité de ressource
-     */
+
+    //renvoie la quantité de ressource
+
     public int getExploitAmount(){
         int result;
         //try
@@ -100,18 +102,19 @@ Renvoie true si staut=OK
         }
         else return false;
     }
-    /*
-    setters
-     */
+
+    //setters
+
     public void setAction(String str){
         this.action=str;
     }
-    /*
-    setters de notre retour d'action
-     */
+
+    //setters de notre retour d'action
+
     public void setObj(String str){
         obj=new JSONObject(str);
     }
 
+*/
 }
 
