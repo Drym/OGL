@@ -29,10 +29,12 @@ public class Initialization {
         }
     }
 
+    /*
     public JSONObject StrToJSON(String str) {
         JSONObject obj1 = new JSONObject(str);
         return obj1;
     }
+    */
 
     public int getBudget()
     {
@@ -67,10 +69,12 @@ public class Initialization {
         return this.amounts.get(i);
     }
 
+    /*
     public void setBudget(int m)
     {
         budget = m;
     }
+
 
     public void setMen( int m)
     {
@@ -89,9 +93,11 @@ public class Initialization {
         resources = m;
     }
 
+    */
     /**
      * Retourne le résultat de la déserialisation du JSON d'initialisation donné par l'arène au lancement, dans une forme plus lisible.
      */
+    /*
     public String initDesc() {
         String desc = "Creek ID: " + this.creek + "\nAction points: " + this.budget + "\nMens available: " + this.men + "\nObjectives:";
         for (int i = 0 ; i < this.resources.size() ; i++) {
@@ -101,5 +107,5 @@ public class Initialization {
 
         return desc;
     }
-
+    */
 }
