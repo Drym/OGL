@@ -1,12 +1,8 @@
 package fr.unice.polytech.ogl.islbb;
 
-import com.atlassian.clover.reporters.json.JSONObject;
-import fr.unice.polytech.ogl.islbb.Initialization;
 import org.junit.Test;
 
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 /**
