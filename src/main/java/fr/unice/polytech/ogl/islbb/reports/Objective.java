@@ -51,11 +51,13 @@ public class Objective {
         return list;
     }
 
+    /*
     public static void print(List<Objective> list){
         for(Objective obj:list){
             System.out.println(obj.getObjective()+obj.getAmount());
         }
     }
+    */
 
     @Override
     public String toString() {

@@ -42,7 +42,16 @@ public class ObjectiveTest {
         objectiveRef.setObjective("FISH");
 
         assertEquals(objectiveRef.getObjective(), "FISH");
-        assertEquals(objectiveRef.getAmount(),1000);
+        assertEquals(objectiveRef.getAmount(), 1000);
+
+        objectiveRef.updateAmount(10);
+        assertEquals(objectiveRef.getAmount(), 990);
+
+        assertEquals(objectiveRef.updateAmount(1), false);
+        assertEquals(objectiveRef.updateAmount(991), true);
+
+        assertEquals(objectiveRef.toString(), "FISH: 0");
+
 
 
     }
