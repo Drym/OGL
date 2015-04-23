@@ -34,19 +34,9 @@ public class ExplorerTest {
     String exploring1 = "{\"debug\":\"Exploring first tile.\",\"action\":\"explore\"}";
     String exploring2 = "{\"debug\":\"Afer moving to a possible objective, exploring it.\",\"action\":\"explore\"}";
     String exploretest = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"FUR\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
-
     String exploretest2 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"FISH\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
-    String exploretest2b = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"WOOD\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
-    String exploreTest3 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"WOOD\",\"cond\": \"EASY\"}],\"pois\": []},\"status\": \"OK\"}";
-    String exploreTest4 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"WOOD\",\"cond\": \"HARD\"}],\"pois\": []},\"status\": \"OK\"}";
+    String exploreTest3 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"WOOD\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
 
-    String exploreTest5 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"MEDIUM\",\"resource\": \"WOOD\",\"cond\": \"EASY\"}],\"pois\": []},\"status\": \"OK\"}";
-    String exploreTest6 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"MEDIUM\",\"resource\": \"WOOD\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
-    String exploreTest7 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"MEDIUM\",\"resource\": \"WOOD\",\"cond\": \"HARD\"}],\"pois\": []},\"status\": \"OK\"}";
-
-    String exploreTest8 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"LOW\",\"resource\": \"WOOD\",\"cond\": \"EASY\"}],\"pois\": []},\"status\": \"OK\"}";
-    String exploreTest9 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"LOW\",\"resource\": \"WOOD\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
-    String exploreTest10 = "{\"cost\": 6,\"extras\": {\"resources\": [{\"amount\": \"LOW\",\"resource\": \"WOOD\",\"cond\": \"HARD\"}],\"pois\": []},\"status\": \"OK\"}";
     String testScout = "{\"status\":\"OK\",\"cost\":576,\"extras\":{\"resources\":[\"FLOWER\",\"FISH\"],\"altitude\":23}}";
     String exploitdecision = "{\"debug\":\"After exploring, the objective is exploitable.\",\"action\":\"exploit\",\"parameters\":{\"resource\":\"FISH\"}}";
     String init2 = "{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"FLOWER\", \"amount\":2}]}";
@@ -202,144 +192,10 @@ public class ExplorerTest {
         //Ressource inutile, doit pas exploit, donc continu explore
         test.acknowledgeResults(exploretest);
         assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
-    }
 
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore2() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        assertEquals(test.takeDecision(), scootN);
-        test.acknowledgeResults(testN);
-
-        //Ressource utile High et fair -> doit exploit
-        test.acknowledgeResults(exploretest2b);
-        assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore3() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //High et easy --> ok
+        //Ressource utile
         test.acknowledgeResults(exploreTest3);
-        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore4() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //High et hard --> pas ok
-        test.acknowledgeResults(exploreTest4);
-        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore5() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //Medium et easy --> ok
-        test.acknowledgeResults(exploreTest5);
-        //TODO assertEquals(Exploit.exploit("WOOD", "Exploit objective present enough on initial case."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore6() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //Medium et fair --> pas ok
-        test.acknowledgeResults(exploreTest6);
-        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore7() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //Medium et hard --> pas ok
-        test.acknowledgeResults(exploreTest7);
-        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore8() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //low et easy --> pas ok
-        test.acknowledgeResults(exploreTest8);
-        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore9() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //low et fair --> pas ok
-        test.acknowledgeResults(exploreTest9);
-        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
-    }
-
-    /**
-     * @Author Lucas
-     * Vérifie si le bot exploit bien après une exploration
-     */
-    @Test
-    public void testExploitAfterExplore10() {
-        Explorer test = new Explorer();
-        test.initialize(init);
-        String decision1 = test.takeDecision();
-
-        //low et hard --> pas ok
-        test.acknowledgeResults(exploreTest10);
-        assertEquals(Explore.explore("Exploring first tile."), test.takeDecision());
+        assertEquals(Exploit.exploit("Exploit objective present enough on initial case."), test.takeDecision());
     }
 
 }
