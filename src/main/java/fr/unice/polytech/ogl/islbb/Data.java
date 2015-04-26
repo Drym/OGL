@@ -28,6 +28,10 @@ public class Data {
         resources.add("FISH");
         this.biomesResources.put("OCEAN", resources);
         this.biomesResources.put("LAKE", resources);
+
+        resources = new ArrayList<>();
+        resources.add("FISH");
+        resources.add("QUARTZ");
         this.biomesResources.put("BEACH", resources);
 
         resources = new ArrayList<>();
