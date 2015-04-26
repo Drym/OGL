@@ -100,34 +100,59 @@ public class ExplorerDecision {
          *
          * NON TESTABLE
          */
-        if (this.explorerCurrentState.inMovement) {
+//        if (this.explorerCurrentState.restart) {
+//            if (this.islandData.arenaMap.getVisit(this.explorerCurrentState.x + ResultsComputing.xOffset(this.explorerCurrentState.fuckingDirection), this.explorerCurrentState.y + ResultsComputing.xOffset(this.explorerCurrentState.fuckingDirection)) > 0) {
+//                this.explorerCurrentState.lastDecision = "move";
+//                return Move.move(this.explorerCurrentState.fuckingDirection, "HATE THIS!");
+//            }
+//            else {
+//                this.explorerCurrentState.restart = false;
+//                return Move.move(this.explorerCurrentState.fuckingDirection++, "HATE THIS!");
+//            }
+//        }
+//        if (this.explorerCurrentState.inMovement) {
+//
+//            if (this.explorerCurrentState.lastDecision.equals("glimpse")) {
+//                int observedX = this.explorerCurrentState.x + ResultsComputing.xOffset(this.explorerCurrentState.lastGlimpseDirection) * 3;
+//                int observedY = this.explorerCurrentState.y + ResultsComputing.yOffset(this.explorerCurrentState.lastGlimpseDirection) * 3;
+//
+//                if (!this.islandData.arenaMap.isWater(observedX, observedY)) {
+//                    this.explorerCurrentState.escapeMovementCount++;
+//                    this.explorerCurrentState.lastMoveDirection = this.explorerCurrentState.lastGlimpseDirection;
+//                    this.explorerCurrentState.lastDecision = "move";
+//                    return Move.move(this.explorerCurrentState.lastMoveDirection, "Move after finding a possible direction without water.");
+//                }
+//                else {
+//                    boolean looped = false;
+//                    this.explorerCurrentState.lastGlimpseDirection++;
+//                    if (this.explorerCurrentState.lastGlimpseDirection >= 4) {
+//                        looped = true;
+//                    }
+//                    if (looped) {
+//                        //if (this.islandData.arenaMap.lostInOcean(this.explorerCurrentState.x, this.explorerCurrentState.y)) {
+//                            this.explorerCurrentState.lastDecision = "land";
+//                            this.explorerCurrentState.restart = true;
+//                            this.explorerCurrentState.escapeMovementCount = 0;
+//
+//                            return Land.land(this.explorerCurrentState.startCreek, 1, "FUCK THIS SHIT!");
+//                        //}//
+//                    }
+//                    return Glimpse.glimpse(this.explorerCurrentState.lastGlimpseDirection, 4, "Direction found with water...");
+//                }
+//            }
+//
+//            if (this.explorerCurrentState.lastDecision.equals("move")) {
+//                if (this.explorerCurrentState.escapeMovementCount < 3) {
+//                    this.explorerCurrentState.escapeMovementCount++;
+//                    return Move.move(this.explorerCurrentState.lastMoveDirection, "Continuing escape moves.");
+//                }
+//                else {
+//                    this.explorerCurrentState.inMovement = false;
+//                }
+//            }
+//        }
 
-            if (this.explorerCurrentState.lastDecision.equals("glimpse")) {
-                int observedX = this.explorerCurrentState.x + ResultsComputing.xOffset(this.explorerCurrentState.lastGlimpseDirection) * 3;
-                int observedY = this.explorerCurrentState.y + ResultsComputing.yOffset(this.explorerCurrentState.lastGlimpseDirection) * 3;
 
-                if (!this.islandData.arenaMap.isWater(observedX, observedY)) {
-                    this.explorerCurrentState.escapeMovementCount++;
-                    this.explorerCurrentState.lastMoveDirection = this.explorerCurrentState.lastGlimpseDirection;
-                    this.explorerCurrentState.lastDecision = "move";
-                    return Move.move(this.explorerCurrentState.lastMoveDirection, "Move after finding a possible direction without water.");
-                }
-                else {
-                    this.explorerCurrentState.lastGlimpseDirection = this.islandData.arenaMap.firstDirectionToGlimpse(this.explorerCurrentState.x, this.explorerCurrentState.y);
-                    return Glimpse.glimpse(this.explorerCurrentState.lastGlimpseDirection, 4, "Direction found with water...");
-                }
-            }
-
-            if (this.explorerCurrentState.lastDecision.equals("move")) {
-                if (this.explorerCurrentState.escapeMovementCount < 3) {
-                    this.explorerCurrentState.escapeMovementCount++;
-                    return Move.move(this.explorerCurrentState.lastMoveDirection, "Continuing escape moves.");
-                }
-                else {
-                    this.explorerCurrentState.inMovement = false;
-                }
-            }
-        }
 
         /**
          * Lors de l'exploration de l'île, on lance un Scout dans chaque direction,
@@ -200,8 +225,14 @@ public class ExplorerDecision {
             }
             else {
 
-                if (this.islandData.arenaMap.getInformation(this.explorerCurrentState.x, this.explorerCurrentState.y).getTileVisits() > 1) {
+                if (this.islandData.arenaMap.getInformation(this.explorerCurrentState.x, this.explorerCurrentState.y).getTileVisits() > 2) {
                     int escapeDirection = this.islandData.arenaMap.firstDirectionToGlimpse(this.explorerCurrentState.x, this.explorerCurrentState.y);
+                    if (escapeDirection == this.explorerCurrentState.lastGlimpseDirection) {
+                        escapeDirection++;
+                        if (escapeDirection > 4) {
+                            escapeDirection = 0;
+                        }
+                    }
 
                     if (escapeDirection != -1) {
                         this.explorerCurrentState.inMovement = true;
@@ -235,6 +266,20 @@ public class ExplorerDecision {
          *  TESTABLE
          */
         if (this.explorerCurrentState.lastDecision.equals("move")) {
+            if (this.islandData.arenaMap.getVisit(this.explorerCurrentState.x, this.explorerCurrentState.y) > 2) {
+                this.explorerCurrentState.escaping = true;
+            }
+            if (this.explorerCurrentState.escaping) {
+                if (this.islandData.arenaMap.getVisit(this.explorerCurrentState.x, this.explorerCurrentState.y) > 0) {
+                    return Move.move(this.explorerCurrentState.lastMoveDirection, "ESCAPING TEST");
+                }
+                else {
+                    this.explorerCurrentState.escaping = false;
+                    this.explorerCurrentState.lastDecision = "scout";
+                    this.explorerCurrentState.lastScoutDirection = this.explorerCurrentState.lastMoveDirection;
+                    return Scout.scout(this.explorerCurrentState.lastScoutDirection, "AFTER ESCAPING");
+                }
+            }
             if (this.explorerCurrentState.hasObjective) {
                 this.explorerCurrentState.lastDecision = "explore";
                 return Explore.explore("Afer moving to a possible objective, exploring it.");

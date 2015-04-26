@@ -181,6 +181,22 @@ public class IslandMap {
      *
      */
 
+    public boolean lostInOcean(int x, int y) {
+
+        boolean result = true;
+
+        for(int i = 0 ; i < 4 ; i++) {
+            if (this.getInformation(x + ResultsComputing.xOffset(i) * 3, y + ResultsComputing.yOffset(i) * 3).isWater()) {
+                continue;
+            }
+            else {
+                result = false;
+            }
+        }
+
+        return result;
+    }
+
     public int firstDirectionToGlimpse(int x, int y) {
 
         int observedX, observedY;
@@ -220,6 +236,15 @@ public class IslandMap {
 
         return this.getInformation(x, y).getTileVisits() > 0;
 
+    }
+
+    public int getVisit(int x, int y) {
+        if (this.isRegistered(x, y)) {
+            return this.getInformation(x, y).getTileVisits();
+        }
+        else {
+            return -1;
+        }
     }
 
     /**

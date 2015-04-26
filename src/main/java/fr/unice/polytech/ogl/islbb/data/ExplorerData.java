@@ -22,6 +22,9 @@ public class ExplorerData {
     protected boolean starting;
     protected boolean hasObjective;
     protected boolean inMovement;
+    protected boolean escaping;
+    protected boolean restart;
+    protected int fuckingDirection;
 
     protected int escapeMovementCount;
 
@@ -43,6 +46,10 @@ public class ExplorerData {
         this.availableBudget = contract.getBudget();
         this.availableMen = contract.getMen();
         this.objectives = Objective.buildObjectives(contract.getResources(), contract.getAmounts());
+
+        this.escaping = false;
+        this.restart = false;
+        this.fuckingDirection = 0;
 
     }
 

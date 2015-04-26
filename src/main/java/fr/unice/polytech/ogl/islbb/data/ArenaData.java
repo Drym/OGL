@@ -48,7 +48,10 @@ public class ArenaData {
 
         JSONObject JSONResults = new JSONObject(returnedJSON);
 
-        if (this.explorerInformation.lastDecision.equals("land")) {}
+        if (this.explorerInformation.lastDecision.equals("land")) {
+            this.explorerInformation.x = 0;
+            this.explorerInformation.y = 0;
+        }
 
         if (this.explorerInformation.lastDecision.equals("exit")) {}
 
@@ -71,6 +74,7 @@ public class ArenaData {
         if (this.explorerInformation.lastDecision.equals("move")) {
 
             this.explorerInformation.updatePosition();
+            this.arenaMap.addVisit(this.explorerInformation.x, this.explorerInformation.y);
 
             if (this.arenaMap.isAlreadyScouted(this.explorerInformation.x, this.explorerInformation.y)) {
                 this.explorerInformation.updateAltitude(this.arenaMap.getInformation(this.explorerInformation.x, this.explorerInformation.y).getAltitude());
