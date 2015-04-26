@@ -1,5 +1,6 @@
 package fr.unice.polytech.ogl.islbb;
 
+import fr.unice.polytech.ogl.islbb.reports.Biome;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,6 +18,12 @@ public class Initialization {
     private List<String> resources = new ArrayList<String>();
     private List<Integer> amounts = new ArrayList<Integer>();
 
+    public List<String> getWantedBiomes() {
+        return wantedBiomes;
+    }
+
+    private List<String> wantedBiomes = new ArrayList<>();
+
     public Initialization(String str) {
         JSONObject obj = new JSONObject(str);
         creek = obj.getString("creek");
@@ -27,6 +34,12 @@ public class Initialization {
             resources.add(arr.getJSONObject(i).getString("resource"));
             amounts.add(arr.getJSONObject(i).getInt("amount"));
         }
+
+        Data biomeBuild = new Data();
+        this.wantedBiomes = biomeBuild.buildWantedBiomesList(resources);
+
+
+
     }
 
     /*

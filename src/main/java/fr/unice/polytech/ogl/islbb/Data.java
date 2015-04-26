@@ -12,7 +12,7 @@ import java.util.Map;
 public class Data {
 
     ArrayList<String> cardinaux;
-    Map<String, ArrayList<String>> biomesResources;
+    Map<String, List<String>> biomesResources;
 
     public Data() {
 
@@ -24,7 +24,7 @@ public class Data {
 
         this.biomesResources = new HashMap<>();
 
-        ArrayList<String> resources = new ArrayList<>();
+        List<String> resources = new ArrayList<>();
         resources.add("FISH");
         this.biomesResources.put("OCEAN", resources);
         this.biomesResources.put("LAKE", resources);
@@ -60,5 +60,28 @@ public class Data {
 
         return this.biomesResources.get(biome);
 
+    }
+
+    /**
+     * Construit une liste de Biome (String) par rapport à la liste de Resource (String) données.
+     * La liste retournée est alors la liste des Biomes intéressants selon les ressources recherchées.
+     */
+
+    public List<String> buildWantedBiomesList(List<String> researchedResources) {
+
+        List<String> result = new ArrayList<>();
+
+        for (String currentResource : researchedResources) {
+
+            for (Map.Entry<String, List<String>> currentBiome : this.biomesResources.entrySet()) {
+
+                if (this.getBiomeResources(currentBiome.getKey()).contains(currentResource))
+                    result.add(currentBiome.getKey());
+
+            }
+
+        }
+
+        return result;
     }
 }
