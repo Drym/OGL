@@ -70,4 +70,47 @@ public class ExplorerData {
 
     }
 
+    /* Getters */
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getAltitude() {
+        return altitude;
+    }
+
+    public List<Objective> getObjectives() {
+        return objectives;
+    }
+
+    public int getAvailableMen() {
+        return availableMen;
+    }
+
+    public int getAvailableBudget() {
+        return availableBudget;
+    }
+
+    public String getStartCreek() {
+        return startCreek;
+    }
+
+    public boolean isInMovement() {
+        return inMovement;
+    }
+
+    public boolean isHasObjective() {
+        return hasObjective;
+    }
+
+    public boolean isStarting() {
+        return starting;
+    }
+
+
+
 }
