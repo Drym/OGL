@@ -141,4 +141,12 @@ public class ArenaData {
         return explorerAI;
     }
 
+    public ExplorerData getExplorerInformation() {
+        return explorerInformation;
+    }
+
+    public IslandMap getArenaMap() {
+        return arenaMap;
+    }
+
 }

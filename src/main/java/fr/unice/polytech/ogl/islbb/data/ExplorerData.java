@@ -111,6 +111,11 @@ public class ExplorerData {
         return starting;
     }
 
+    public void setLastDecision(String lastDecision) {
+        this.lastDecision = lastDecision;
+    }
 
-
+    public void setExploitedObjective(String exploitedObjective) {
+        this.exploitedObjective = exploitedObjective;
+    }
 }
