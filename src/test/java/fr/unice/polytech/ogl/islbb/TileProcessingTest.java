@@ -138,6 +138,8 @@ public class TileProcessingTest {
         assertEquals(testResultList.get(0).getBiomes().get(1).getBiome(), "BEACH");
         assertEquals(testResultList.get(0).getBiomes().get(1).getPercentage(), 60.00, 1);
 
+        assertEquals(testResultList.get(0).isAlreadyGlimpsed(), true);
+
 
     }
 

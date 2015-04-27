@@ -46,9 +46,7 @@ public class ExplorerTest {
     ArrayList<String> scoutdecision;
     int direction = 1;
 
-    @Ignore
-    @Test
-    public void testExplorer() {
+    @Ignore @Test public void testExplorer() {
         Objective obj = new Objective("WOOD", 600);
         cardinaux = new Data();
         //contient les décisions après les scouts
@@ -140,7 +138,7 @@ public class ExplorerTest {
             assertEquals(scoutdecision.get(i++), Scout.scout(cardinaux.getCardinaux(i)));
             i++;
         }
-        System.out.println(essai.takeDecision());
+
 
 
     }

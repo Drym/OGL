@@ -69,9 +69,6 @@ public class DataTest {
 
         result.put("extras", extras);
 
-        System.out.println(result);
-
-
     }
 
 
