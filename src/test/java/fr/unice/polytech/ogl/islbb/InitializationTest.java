@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Lucas on 23/04/2015.
+ * Classe test de Initialization
  */
 public class InitializationTest {
 

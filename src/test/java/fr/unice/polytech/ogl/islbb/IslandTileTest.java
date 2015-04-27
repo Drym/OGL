@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by user on 08/04/2015.
+ * Classe test de IslandTile
  */
 public class IslandTileTest {
     Biome ocean = new Biome("OCEAN", 90);

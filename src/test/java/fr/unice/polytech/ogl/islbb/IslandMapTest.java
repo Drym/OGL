@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * Created by user on 08/04/2015.
+ * Classe test de IslandMap
  */
 public class IslandMapTest  {
     Biome ocean = new Biome("OCEAN", 90);

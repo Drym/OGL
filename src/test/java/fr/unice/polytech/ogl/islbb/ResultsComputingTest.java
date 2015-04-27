@@ -5,6 +5,7 @@ import org.junit.Test;
 
 /**
  * Created by Lucas on 23/04/2015.
+ * Classe test de ResultsComputing
  */
 public class ResultsComputingTest {
 

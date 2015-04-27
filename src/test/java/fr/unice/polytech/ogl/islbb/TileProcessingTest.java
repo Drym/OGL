@@ -1,13 +1,9 @@
 package fr.unice.polytech.ogl.islbb;
 
-import com.atlassian.clover.reporters.json.JSONObject;
-import fr.unice.polytech.ogl.islbb.reports.Resource;
 import fr.unice.polytech.ogl.islbb.data.TileProcessing;
 import fr.unice.polytech.ogl.islbb.reports.IslandTile;
 import static org.junit.Assert.assertEquals;
 
-import org.json.JSONArray;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;

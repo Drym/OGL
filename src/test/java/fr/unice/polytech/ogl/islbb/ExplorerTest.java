@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by Thibault OBER on 14/03/2015.
+ * Classe test de Explorer
  */
 
 @Ignore
