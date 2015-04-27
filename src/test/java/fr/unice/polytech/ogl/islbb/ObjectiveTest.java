@@ -48,9 +48,9 @@ public class ObjectiveTest {
         assertEquals(objectiveRef.getAmount(), 990);
 
         assertEquals(objectiveRef.updateAmount(1), false);
-        assertEquals(objectiveRef.updateAmount(991), true);
+        assertEquals(objectiveRef.updateAmount(989), true);
 
-        //assertEquals(objectiveRef.toString(), "FISH: 0");
+        assertEquals(objectiveRef.toString(), "FISH: 0");
 
 
 

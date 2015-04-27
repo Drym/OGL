@@ -23,6 +23,13 @@ public class InitializationTest {
         list2.add("WOOD");
         list2.add("FISH");
 
+        ArrayList<String> list3 = new ArrayList<String>();
+        list3.add("TROPICAL_SEASONAL_FOREST");
+        list3.add("TROPICAL_RAIN_FOREST");
+        list3.add("BEACH");
+        list3.add("OCEAN");
+        list3.add("LAKE");
+
         assertEquals(init2.getBudget(), 600);
         assertEquals(init2.getMen(), 50);
         assertEquals(init2.getAmounts(), list);
@@ -32,6 +39,8 @@ public class InitializationTest {
         assertEquals(init2.getResource(1), "FISH");
         assertEquals(init2.getAmount(1), 600);
         assertEquals(init2.getResource(1), "FISH");
+
+        assertEquals(init2.getWantedBiomes(), list3);
 
 
     }
