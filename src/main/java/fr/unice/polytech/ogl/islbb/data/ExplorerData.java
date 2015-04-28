@@ -118,4 +118,8 @@ public class ExplorerData {
     public void setExploitedObjective(String exploitedObjective) {
         this.exploitedObjective = exploitedObjective;
     }
+
+    public void setStartCreek(String startCreek) {
+        this.startCreek = startCreek;
+    }
 }

@@ -320,4 +320,8 @@ public class ExplorerDecision {
         return Exit.exit("FINAL EXIT");
 
     }
+
+    public ExplorerData getExplorerCurrentState() {
+        return explorerCurrentState;
+    }
 }

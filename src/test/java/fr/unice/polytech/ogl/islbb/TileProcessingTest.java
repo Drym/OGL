@@ -1,7 +1,8 @@
 package fr.unice.polytech.ogl.islbb;
 
 import fr.unice.polytech.ogl.islbb.data.TileProcessing;
-import fr.unice.polytech.ogl.islbb.reports.IslandTile;
+import fr.unice.polytech.ogl.islbb.reports.*;
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -18,6 +19,10 @@ public class TileProcessingTest {
 
     IslandTile testResult;
     List<IslandTile> testResultList;
+    ArrayList<Objective> listObjective = new ArrayList<>();
+    ArrayList<Objective> listObjective2 = new ArrayList<>();
+    ArrayList<Resource> listResources = new ArrayList<>();
+    List<Biome> listBiomes= new ArrayList<>();
 
     @Test
     public void testTileProcessingScout() {
@@ -45,6 +50,23 @@ public class TileProcessingTest {
         assertEquals(testResult.getResources().get(0).getType(), "FLOWER");
         assertEquals(testResult.getResources().get(1).getType(), "FISH");
 
+        assertEquals(testResult.isAlreadyScouted(), true);
+
+        testResult.setAltitude(10);
+        assertEquals(testResult.getAltitude(), 10);
+        testResult.setAlreadyScouted(false);
+        assertEquals(testResult.isAlreadyScouted(), false);
+
+        testResult.setAlreadyExplored(true);
+        assertEquals(testResult.isAlreadyExplored(), true);
+        testResult.setAlreadyGlimpsed(true);
+        assertEquals(testResult.isAlreadyGlimpsed(), true);
+
+        assertEquals(testResult.isUnreachable(), false);
+
+        testResult.scoutTile(10, listResources, true);
+        assertEquals(testResult.getAltitude(), 10);
+        assertEquals(testResult.isUnreachable(), true);
         assertEquals(testResult.isAlreadyScouted(), true);
 
 
@@ -91,6 +113,23 @@ public class TileProcessingTest {
         assertEquals(testResult.getResources().get(0).getCondition(), "EASY");
         assertEquals(testResult.isAlreadyExplored(), true);
 
+        assertEquals(testResult.hasResource("WOOD").getType(), "WOOD");
+        assertEquals(testResult.hasResource(null), null);
+        assertEquals(testResult.hasOnlyResource("WOOD"), true);
+        assertEquals(testResult.hasOnlyResource(null), false);
+
+        Objective wood = new Objective("WOOD", 300);
+        Objective fish = new Objective("FISH", 300);
+        listObjective.add(wood);
+        listObjective2.add(fish);
+        assertEquals(testResult.hasOnlyResources(listObjective), true);
+        assertEquals(testResult.hasOnlyResources(listObjective2), false);
+        assertEquals(testResult.hasResources(listObjective).get(0).getType(), "WOOD");
+
+        testResult.setAlreadyExplored(false);
+        assertEquals(testResult.hasResources(listObjective), null);
+
+        testResult.exploreTile(listResources, null);
     }
 
 
@@ -139,6 +178,14 @@ public class TileProcessingTest {
         assertEquals(testResultList.get(0).getBiomes().get(1).getPercentage(), 60.00, 1);
 
         assertEquals(testResultList.get(0).isAlreadyGlimpsed(), true);
+        assertEquals(testResultList.get(0).containBiome(null), null);
+
+        testResultList.get(0).setAlreadyGlimpsed(false);
+        Biome biome = new Biome("biome");
+        listBiomes.add(biome);
+        testResultList.get(0).glimpseTile(listBiomes, 1);
+        assertEquals(testResultList.get(0).isAlreadyGlimpsed(), true);
+
 
 
     }
@@ -305,6 +352,4 @@ public class TileProcessingTest {
         assertEquals(testResultList.get(3).getBiomes().get(0).getBiome(), "TROPICAL_RAIN_FOREST");
 
     }
-
-
 }
