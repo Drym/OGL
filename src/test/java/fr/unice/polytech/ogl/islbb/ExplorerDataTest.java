@@ -21,6 +21,7 @@ public class ExplorerDataTest {
 
     @Test public void testExplorerData() {
 
+        //Initialisation
         init2 = new Initialization(init);
         test = new ExplorerData(init2);
 
@@ -30,6 +31,7 @@ public class ExplorerDataTest {
         objectifs.add(ob1);
         objectifs.add(ob2);
 
+        //Tests
         assertEquals(test.getX(), 0);
         assertEquals(test.getY(), 0);
         assertEquals(test.getAltitude(), 0);
@@ -55,9 +57,6 @@ public class ExplorerDataTest {
 
         test.updateAltitude(1);
         assertEquals(test.getAltitude(), 1);
-
-
-
 
     }
 }

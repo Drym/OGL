@@ -9,14 +9,16 @@ import org.junit.Test;
  */
 public class ResultsComputingTest {
 
-    ResultsComputing test = new ResultsComputing();
+    ResultsComputing test;
     Boolean isTrue;
-
 
     @Test public void TestResultsComputing() {
 
+        //Initialisation
+        test = new ResultsComputing();
         isTrue = true;
 
+        //Tests
         assertEquals(test.getStatus("{status : OK}"), isTrue);
 
         assertEquals(test.xOffset(0),0);

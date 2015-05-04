@@ -13,16 +13,20 @@ public class ResourceTest {
 
     @Test public void testResource() {
 
+        //Initialisation
         Resource r = new Resource("WOOD", "LOW", "FAIR");
 
+        //Tests
         assertEquals(r.getAmount(), "LOW");
         assertEquals(r.getCondition(), "FAIR");
         assertEquals(r.getType(), "WOOD");
 
+        //Set
         r.setAmount("MEDIUM");
         r.setCondition("HARSH");
         r.setType("FISH");
 
+        //Test des set
         assertEquals(r.getAmount(), "MEDIUM");
         assertEquals(r.getCondition(), "HARSH");
         assertEquals(r.getType(), "FISH");

@@ -24,6 +24,9 @@ public class TileProcessingTest {
     ArrayList<Resource> listResources = new ArrayList<>();
     List<Biome> listBiomes= new ArrayList<>();
 
+    /**
+     * Test la méthode scoutTile
+     */
     @Test
     public void testTileProcessingScout() {
 
@@ -68,10 +71,11 @@ public class TileProcessingTest {
         assertEquals(testResult.getAltitude(), 10);
         assertEquals(testResult.isUnreachable(), true);
         assertEquals(testResult.isAlreadyScouted(), true);
-
-
     }
 
+    /**
+     * Test la méthode exploretTile
+     */
     @Test
     public void testTileProcessingExplore() {
 
@@ -133,6 +137,9 @@ public class TileProcessingTest {
     }
 
 
+    /**
+     * Test la méthode glimpseTile, cas distance : 1
+     */
     @Test public void testTileProcessingGlimpse1() {
 
          /* Initialisation */
@@ -186,10 +193,12 @@ public class TileProcessingTest {
         testResultList.get(0).glimpseTile(listBiomes, 1);
         assertEquals(testResultList.get(0).isAlreadyGlimpsed(), true);
 
-
-
     }
 
+
+    /**
+     * Test la méthode glimpseTile, cas distance : 2
+     */
     @Test public void testTileProcessingGlimpse2() {
 
          /* Initialisation */
@@ -236,6 +245,9 @@ public class TileProcessingTest {
 
     }
 
+    /**
+     * Test la méthode glimpseTile, cas distance : 3
+     */
     @Test public void testTileProcessingGlimpse3() {
 
          /* Initialisation */
@@ -291,6 +303,9 @@ public class TileProcessingTest {
 
     }
 
+    /**
+     * Test la méthode glimpseTile, cas distance : 4
+     */
     @Test public void testTileProcessingGlimpse4() {
 
          /* Initialisation */

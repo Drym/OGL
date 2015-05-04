@@ -11,14 +11,18 @@ import static org.junit.Assert.assertEquals;
 public class POITest {
 
     @Test public void POIExit() {
+        //Initalisation
         POI p = new POI("creek", "9166ed94-1fd6-4a31-9480-cac7f75d7922");
 
+        //Tests
         assertEquals(p.getType(),"creek");
         assertEquals(p.getId(), "9166ed94-1fd6-4a31-9480-cac7f75d7922");
 
+        //Set
         p.setId("id");
         p.setType("type");
 
+        //Tests des set
         assertEquals(p.getType(), "type");
         assertEquals(p.getId(), "id");
 

@@ -1,19 +1,11 @@
 package fr.unice.polytech.ogl.islbb;
 
-import com.atlassian.clover.reporters.json.JSONObject;
 import fr.unice.polytech.ogl.islbb.data.ArenaData;
-import fr.unice.polytech.ogl.islbb.data.ExplorerData;
-import fr.unice.polytech.ogl.islbb.data.ExplorerDecision;
-import fr.unice.polytech.ogl.islbb.data.TileProcessing;
-import fr.unice.polytech.ogl.islbb.reports.IslandMap;
 import static org.junit.Assert.assertEquals;
 
-import fr.unice.polytech.ogl.islbb.reports.IslandTile;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 /**
  * Created by Lucas on 26/04/2015.
@@ -29,8 +21,10 @@ public class ArenaDataTest {
     String resultExploit = "{\"status\":\"OK\",\"cost\":1,\"extras\":{\"amount\":300}}";
     String resultGlimpse = "{\"cost\":39,\"extras\":{\"asked_range\":4,\"report\":[[[\"MANGROVE\",80],[\"BEACH\",20]],[[\"MANGROVE\",80],[\"BEACH\",20]],[\"TROPICAL_RAIN_FOREST\",\"OTHER\"],[\"TROPICAL_RAIN_FOREST\"]]},\"status\":\"OK\"}";
 
-    @Test
-    public void testArenaData() {
+    /**
+     * Test de différentes méthode suivant les actions : land, exit, move, explore et exploit
+     */
+    @Test public void testArenaData() {
 
         arenaData = new ArenaData(init);
 
@@ -95,6 +89,9 @@ public class ArenaDataTest {
 
     }
 
+    /**
+     *  Test de différentes méthode suivant l'action : scout
+     */
     @Test public void testArenaDataScout() {
 
         arenaData = new ArenaData(init);
@@ -121,6 +118,9 @@ public class ArenaDataTest {
         arenaData.update(resultScout);
     }
 
+    /**
+     *  Test de différentes méthode suivant l'action : glimpse
+     */
     @Test public void testArenaDataGlimpse() {
 
         arenaData = new ArenaData(init);
@@ -152,6 +152,9 @@ public class ArenaDataTest {
 
     }
 
+    /**
+     * Test des méthodes restantes
+     */
     @Test public void testArenaDataOther() {
 
         arenaData = new ArenaData(init);

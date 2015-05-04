@@ -20,20 +20,15 @@ public class DataTest {
 
         ArrayList<String> list = new ArrayList<String>();
         list.add("FISH");
-
         assertEquals(test.getBiomeResources("OCEAN"), list);
 
-
         JSONObject result = new JSONObject();
-
         JSONObject extras = new JSONObject();
-
         JSONArray allResources = new JSONArray();
         JSONObject currentResource = new JSONObject();
 
         JSONArray allPOIs = new JSONArray();
         JSONObject currentPOI = new JSONObject();
-
 
         result.put("status", "OK");
         result.put("cost", 39);
@@ -70,6 +65,4 @@ public class DataTest {
         result.put("extras", extras);
 
     }
-
-
 }

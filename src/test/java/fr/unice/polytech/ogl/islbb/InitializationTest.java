@@ -17,6 +17,7 @@ public class InitializationTest {
     @Test
     public void testInitialization() {
 
+        //Initalisation
         ArrayList<Integer> list = new ArrayList<Integer>();
         list.add(600);
         list.add(600);
@@ -31,6 +32,7 @@ public class InitializationTest {
         list3.add("OCEAN");
         list3.add("LAKE");
 
+        //Tests
         assertEquals(init2.getBudget(), 600);
         assertEquals(init2.getMen(), 50);
         assertEquals(init2.getAmounts(), list);

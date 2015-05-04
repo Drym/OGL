@@ -23,10 +23,13 @@ public class ObjectiveTest {
     @Test
     public void testObjective() {
 
+        //Initialisation
         objectiveRef = new Objective("WOOD",600);
         objectiveRef2= new Objective("FISH",600);
         contract = new Initialization("{\"creek\":\"creek_id\", \"budget\":70,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}");
         this.objectives = Objective.buildObjectives(this.contract.getResources(), this.contract.getAmounts());
+
+        //Tests
 
         //Vérifie l'object ref
         assertEquals(objectiveRef.getObjective(), "WOOD");
@@ -39,21 +42,17 @@ public class ObjectiveTest {
         assertEquals(objectiveRef2.getObjective(), objectives.get(1).getObjective());
         assertEquals(objectiveRef2.getAmount(), objectives.get(1).getAmount());
 
+        //Set
         objectiveRef.setAmount(1000);
         objectiveRef.setObjective("FISH");
-
+        //Test les set
         assertEquals(objectiveRef.getObjective(), "FISH");
         assertEquals(objectiveRef.getAmount(), 1000);
 
         objectiveRef.updateAmount(10);
         assertEquals(objectiveRef.getAmount(), 990);
-
         assertEquals(objectiveRef.updateAmount(1), false);
         assertEquals(objectiveRef.updateAmount(989), true);
-
         assertEquals(objectiveRef.toString(), "FISH: 0");
-
-
-
     }
 }

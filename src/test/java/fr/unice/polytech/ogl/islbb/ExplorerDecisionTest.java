@@ -1,12 +1,10 @@
 package fr.unice.polytech.ogl.islbb;
 
-import fr.unice.polytech.ogl.islbb.actions.Explore;
 import fr.unice.polytech.ogl.islbb.data.ArenaData;
 import fr.unice.polytech.ogl.islbb.data.ExplorerData;
 import fr.unice.polytech.ogl.islbb.data.ExplorerDecision;
 import static org.junit.Assert.assertEquals;
 
-import fr.unice.polytech.ogl.islbb.reports.Objective;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -44,11 +42,14 @@ public class ExplorerDecisionTest {
     @Test
     public void testExplorerDecision() {
 
+        //Initialisation
         init2 = new Initialization(init);
         explorerCurrentState = new ExplorerData(init2);
         arenaData = new ArenaData(init);
 
         test = new ExplorerDecision(explorerCurrentState, arenaData);
+
+        //Tests
 
         //null, revient a land
         test.getExplorerCurrentState().setLastDecision(null);
@@ -83,31 +84,40 @@ public class ExplorerDecisionTest {
         arenaData.update(resultExploit);
         test.getExplorerCurrentState().setLastDecision("exploit");
         assertEquals(test.computeDecision(), exploit);
-
     }
 
+    /**
+     * Test si l'explorer prend les bonnes decisions quand il n'a plus de budget
+     */
     @Test
     public void testExplorerDecisionOutOfBudget() {
 
+        //Initialisation
         init2 = new Initialization(initOutOfBudget);
         explorerCurrentState = new ExplorerData(init2);
         arenaData = new ArenaData(initOutOfBudget);
 
         test = new ExplorerDecision(explorerCurrentState, arenaData);
 
+        //Test
         test.getExplorerCurrentState().setLastDecision("scout");
         assertEquals(test.computeDecision(), exit2);
-
     }
 
+    /**
+     * Test si l'explorer prendre les bonnes decision après un scout
+     */
     @Test
     public void testExplorerDecisionScout() {
 
+        //Initialisation
         init2 = new Initialization(init);
         explorerCurrentState = new ExplorerData(init2);
         arenaData = new ArenaData(init);
 
         test = new ExplorerDecision(explorerCurrentState, arenaData);
+
+        //Tests
 
         //Scout then move
         arenaData.getExplorerInformation().setLastDecision("scout");
@@ -120,18 +130,22 @@ public class ExplorerDecisionTest {
         arenaData.update(resultScoutFail);
         test.getExplorerCurrentState().setLastDecision("scout");
         assertEquals(test.computeDecision(), scoutE);
-
-
     }
 
+    /**
+     * Test si l'explorer prendre les bonnes decision après un glimpse
+     */
     @Test
     public void testExplorerDecisionGlimpse() {
 
+        //Initialisation
         init2 = new Initialization(init);
         explorerCurrentState = new ExplorerData(init2);
         arenaData = new ArenaData(init);
 
         test = new ExplorerDecision(explorerCurrentState, arenaData);
+
+        //Tests
 
         //Glimpse
         test.getExplorerCurrentState().setLastDecision("glimpse");
@@ -142,18 +156,22 @@ public class ExplorerDecisionTest {
         arenaData.update(resultGlimpse);
         test.getExplorerCurrentState().setLastDecision("glimpse");
         assertEquals(test.computeDecision(), glimpseE);
-
-
     }
 
+    /**
+     * Test si l'explorer prendre les bonnes decision après un move
+     */
     @Test
     public void testExplorerDecisionMove() {
 
+        //Initialisation
         init2 = new Initialization(init);
         explorerCurrentState = new ExplorerData(init2);
         arenaData = new ArenaData(init);
 
         test = new ExplorerDecision(explorerCurrentState, arenaData);
+
+        //Tests
 
         //Move for scout
         test.getExplorerCurrentState().setLastDecision("move");
@@ -164,8 +182,5 @@ public class ExplorerDecisionTest {
         arenaData.update(resultScout);
         test.getExplorerCurrentState().setLastDecision("scout");
         assertEquals(test.computeDecision(), moveAfterScoutSucess);
-
-
-
     }
 }
