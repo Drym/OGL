@@ -18,6 +18,7 @@ public class ExplorerData {
 
     protected String lastDecision;
     protected String exploitedObjective;
+    protected String transformedObjective;
 
     protected boolean starting;
     protected boolean hasObjective;
@@ -118,6 +119,8 @@ public class ExplorerData {
     public void setExploitedObjective(String exploitedObjective) {
         this.exploitedObjective = exploitedObjective;
     }
+
+    public void setTransformedObjective(String transformedObjective) { this.transformedObjective = transformedObjective; }
 
     public void setStartCreek(String startCreek) {
         this.startCreek = startCreek;

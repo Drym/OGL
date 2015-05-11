@@ -137,7 +137,8 @@ public class ArenaData {
 
             for (Objective currentObjective : this.explorerInformation.objectives) {
 
-                if (currentObjective.getObjective().equals(this.explorerInformation.exploitedObjective)) {
+
+                if (currentObjective.getObjective().equals(this.explorerInformation.transformedObjective)) {
 
                     if (currentObjective.updateAmount(JSONResults.getJSONObject("extras").getInt("production"))) {
                         this.explorerInformation.objectives.remove(currentObjective);
