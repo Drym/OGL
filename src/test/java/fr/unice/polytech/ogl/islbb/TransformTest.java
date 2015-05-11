@@ -15,9 +15,8 @@ public class TransformTest {
     public void testTransform() {
 
         //Test si l'action retourne la bonne chose
-        assertEquals(Transform.transform("WOOD", 10), "{\"action\":\"transform\",\"parameters\":{\"WOOD\":\"10\"}}");
-        assertEquals(Transform.transform("SUGAR_CANE", 100 , "FRUIT" , 10 ), "{\"action\":\"transform\",\"parameters\":{\"SUGAR_CANE\":\"100\",\"FRUIT\":\"10\"}}");
-        assertEquals(Transform.transform("SUGAR_CANE", 100 , "FRUIT" , 10 , "exemple debug" ), "{\"debug\":\"exemple debug\",\"action\":\"transform\",\"parameters\":{\"SUGAR_CANE\":\"100\",\"FRUIT\":\"10\"}}");
+        assertEquals(Transform.transform("WOOD", 10, "exemple debug"), "{\"debug\":\"exemple debug\",\"action\":\"transform\",\"parameters\":{\"WOOD\":10}}");
+        assertEquals(Transform.transform("FRUIT", 10 , "SUGAR_CANE" , 100 , "exemple debug" ), "{\"debug\":\"exemple debug\",\"action\":\"transform\",\"parameters\":{\"FRUIT\":10,\"SUGAR_CANE\":100}}");
 
     }
 }
