@@ -133,6 +133,22 @@ public class ArenaData {
             }
         }
 
+        if (this.explorerInformation.lastDecision.equals("transform")) {
+
+            for (Objective currentObjective : this.explorerInformation.objectives) {
+
+                if (currentObjective.getObjective().equals(this.explorerInformation.exploitedObjective)) {
+
+                    if (currentObjective.updateAmount(JSONResults.getJSONObject("extras").getInt("production"))) {
+                        this.explorerInformation.objectives.remove(currentObjective);
+                    }
+
+                    break;
+                }
+
+            }
+        }
+
         this.explorerInformation.decreaseCost(JSONResults.getInt("cost"));
 
     }
