@@ -15,11 +15,13 @@ public class ArenaDataTest {
 
     ArenaData arenaData;
     String init = "{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"WOOD\", \"amount\":600}, { \"resource\": \"FISH\", \"amount\": 600}]}";
+    String init2 = "{\"creek\":\"creek_id\", \"budget\":600,\"men\":50,\"objective\":[{ \"resource\": \"RUM\", \"amount\":10}]}";
     String resultClasic = "{\"status\":\"OK\",\"cost\":1}";
     String resultExplore = "{\"cost\": 1,\"extras\": {\"resources\": [{\"amount\": \"HIGH\",\"resource\": \"FISH\",\"cond\": \"FAIR\"}],\"pois\": []},\"status\": \"OK\"}";
     String resultScout = "{\"status\":\"OK\",\"cost\":1,\"extras\":{\"resources\":[\"FISH\"],\"altitude\":23}}";
     String resultExploit = "{\"status\":\"OK\",\"cost\":1,\"extras\":{\"amount\":300}}";
     String resultGlimpse = "{\"cost\":39,\"extras\":{\"asked_range\":4,\"report\":[[[\"MANGROVE\",80],[\"BEACH\",20]],[[\"MANGROVE\",80],[\"BEACH\",20]],[\"TROPICAL_RAIN_FOREST\",\"OTHER\"],[\"TROPICAL_RAIN_FOREST\"]]},\"status\":\"OK\"}";
+    String resultTransform = "{\"status\":\"OK\",\"cost\":1, \"extras\": { \"kind\": \"RUM\", \"production\": 9 }}";
 
     /**
      * Test de différentes méthode suivant les actions : land, exit, move, explore et exploit
@@ -125,7 +127,7 @@ public class ArenaDataTest {
 
         arenaData = new ArenaData(init);
 
-        //scout
+        //glimpse
         arenaData.getExplorerInformation().setLastDecision("glimpse");
         arenaData.update(resultGlimpse);
         //True
@@ -148,7 +150,32 @@ public class ArenaDataTest {
         assertEquals(arenaData.getArenaMap().firstDirectionToGlimpse(0, 1), 0);
 
         //TODO améliorable
-        assertEquals(arenaData.getArenaMap().bestBiomeDirections(0,1).isEmpty(), false);
+        assertEquals(arenaData.getArenaMap().bestBiomeDirections(0, 1).isEmpty(), false);
+
+    }
+
+    /**
+     *  Test de différentes méthode suivant l'action : transform
+     */
+    @Test public void testArenaDataTransform() {
+
+        arenaData = new ArenaData(init2);
+        arenaData.getExplorerInformation().setTransformedObjective("RUM");
+
+        assertEquals(arenaData.getExplorerInformation().getTransformedObjective(), arenaData.getExplorerInformation().getObjectives().get(0).getObjective());
+        assertEquals(arenaData.getExplorerInformation().getObjectives().size(), 1);
+
+        //Transform
+        arenaData.getExplorerInformation().setLastDecision("transform");
+        arenaData.update(resultTransform);
+
+        assertEquals(arenaData.getExplorerInformation().getObjectives().size(), 1);
+        assertEquals(arenaData.getExplorerInformation().getObjectives().get(0).getAmount(), 1);
+
+        arenaData.getExplorerInformation().setLastDecision("transform");
+        arenaData.update(resultTransform);
+
+        assertEquals(arenaData.getExplorerInformation().getObjectives().size(), 0);
 
     }
 

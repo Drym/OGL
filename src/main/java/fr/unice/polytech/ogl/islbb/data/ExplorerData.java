@@ -116,6 +116,10 @@ public class ExplorerData {
         this.lastDecision = lastDecision;
     }
 
+    public String getTransformedObjective() {
+        return transformedObjective;
+    }
+
     public void setExploitedObjective(String exploitedObjective) {
         this.exploitedObjective = exploitedObjective;
     }
